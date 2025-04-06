@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  email-checker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bulk-email-checker
+    ports:
+      - "8081:8081"
+    environment:
+      - JAVA_OPTS=-Xms128m -Xmx384m
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    restart: unless-stopped

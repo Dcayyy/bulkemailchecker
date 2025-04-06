@@ -28,10 +28,7 @@ import java.time.Instant;
 public class BulkEmailCheckerService {
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerService.class);
     
-    // Maximum concurrent requests per domain to avoid overwhelming servers
     private static final int MAX_CONCURRENT_PER_DOMAIN = 5;
-    
-    // Map to store rate limiters for each domain
     private final ConcurrentHashMap<String, Semaphore> domainLimiters = new ConcurrentHashMap<>();
 
     private final SMTPValidator smtpValidator;

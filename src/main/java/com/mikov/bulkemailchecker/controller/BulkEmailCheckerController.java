@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class BulkEmailCheckerController {
 
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerController.class);
-    private static final long RESPONSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(30);
+    private static final long RESPONSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(120);
     
     private final BulkEmailCheckerService bulkEmailCheckerService;
     
