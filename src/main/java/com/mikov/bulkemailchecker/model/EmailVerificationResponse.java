@@ -1,15 +1,18 @@
 package com.mikov.bulkemailchecker.model;
 
+import lombok.Getter;
+
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 /**
  * Response model for email verification that matches BulkEmailChecker format
  * 
  * @author zahari.mikov
  */
+@Getter
 public class EmailVerificationResponse {
+
     private final long id;
     private final String email;
     private final String status;
@@ -89,11 +92,6 @@ public class EmailVerificationResponse {
                 this.localPart = parts[0];
                 this.domain = parts[1];
             }
-        }
-        
-        public Builder withId(final long id) {
-            this.id = id;
-            return this;
         }
         
         public Builder withStatus(final String status) {
@@ -176,11 +174,6 @@ public class EmailVerificationResponse {
             return this;
         }
         
-        public Builder withCheckedAt(final String checkedAt) {
-            this.checkedAt = checkedAt;
-            return this;
-        }
-        
         public Builder withCreatedAt(final String createdAt) {
             this.createdAt = createdAt;
             return this;
@@ -190,93 +183,5 @@ public class EmailVerificationResponse {
             return new EmailVerificationResponse(this);
         }
     }
-    
-    // Getters
-    public long getId() {
-        return id;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-    
-    public boolean isValid() {
-        return valid;
-    }
-    
-    public String getDomain() {
-        return domain;
-    }
-    
-    public String getLocalPart() {
-        return localPart;
-    }
-    
-    public String getResultCode() {
-        return resultCode;
-    }
-    
-    public String getMessage() {
-        return message;
-    }
-    
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-    
-    public boolean isSubAddressing() {
-        return subAddressing;
-    }
-    
-    public boolean isDisposable() {
-        return disposable;
-    }
-    
-    public boolean isRole() {
-        return role;
-    }
-    
-    public boolean isFree() {
-        return free;
-    }
-    
-    public boolean isSpam() {
-        return spam;
-    }
-    
-    public boolean isHasMx() {
-        return hasMx;
-    }
-    
-    public String getSmtpServer() {
-        return smtpServer;
-    }
-    
-    public String getIpAddress() {
-        return ipAddress;
-    }
-    
-    public String getCountry() {
-        return country;
-    }
-    
-    public String getCheckedAt() {
-        return checkedAt;
-    }
-    
-    public long getResponseTime() {
-        return responseTime;
-    }
-    
-    public String getCreatedAt() {
-        return createdAt;
-    }
-    
-    public int getRetries() {
-        return retries;
-    }
+
 } 

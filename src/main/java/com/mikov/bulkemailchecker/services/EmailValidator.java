@@ -8,6 +8,7 @@ import com.mikov.bulkemailchecker.model.ServiceValidationResult;
  * @author zahari.mikov
  */
 public interface EmailValidator {
+
     /**
      * Validates an email address
      * @param email Email to validate

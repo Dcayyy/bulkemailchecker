@@ -1,5 +1,7 @@
 package com.mikov.bulkemailchecker.model;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import java.util.Map;
  * 
  * @author zahari.mikov
  */
+@Getter
 public class ServiceValidationResult {
     private final boolean isValid;
     private final String validator;
@@ -25,45 +28,12 @@ public class ServiceValidationResult {
         this.reason = reason;
         this.details = details;
     }
-    
-    /**
-     * Create a valid result
-     * @param validator Name of the validator
-     * @param confidence Confidence score (0-1)
-     * @param details Additional details
-     * @return ServiceValidationResult
-     */
+
     public static ServiceValidationResult valid(final String validator, final double confidence, final Map<String, Double> details) {
         return new ServiceValidationResult(true, validator, confidence, null, details);
     }
-    
-    /**
-     * Create an invalid result
-     * @param validator Name of the validator
-     * @param reason Reason for invalidity
-     * @return ServiceValidationResult
-     */
+
     public static ServiceValidationResult invalid(final String validator, final String reason) {
         return new ServiceValidationResult(false, validator, 0.0, reason, new HashMap<>());
-    }
-    
-    public boolean isValid() {
-        return isValid;
-    }
-    
-    public String getValidator() {
-        return validator;
-    }
-    
-    public double getConfidence() {
-        return confidence;
-    }
-    
-    public String getReason() {
-        return reason;
-    }
-    
-    public Map<String, Double> getDetails() {
-        return details;
     }
 } 

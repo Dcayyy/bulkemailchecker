@@ -19,18 +19,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableAsync
 public class WebConfig implements WebMvcConfigurer {
 
-    /**
-     * Configure asynchronous request processing
-     */
     @Override
     public void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
         configurer.setDefaultTimeout(30000);
         configurer.setTaskExecutor(asyncTaskExecutor());
     }
 
-    /**
-     * Task executor for async processing using virtual threads (Java 21)
-     */
     @Bean
     public AsyncTaskExecutor asyncTaskExecutor() {
         final var executor = new ThreadPoolTaskExecutor();

@@ -67,30 +67,4 @@ public class ValidationResult {
     public static ValidationResult invalid() {
         return invalid("unknown", "Unknown validation failure");
     }
-
-    public ValidationResult combine(final ValidationResult other) {
-        if (other == null) {
-            return this;
-        }
-
-        final var isValid = this.isValid() && other.isValid();
-        final var combined = ValidationResult.builder()
-                .valid(isValid)
-                .score((this.getScore() + other.getScore()) / 2.0)
-                .validatorName("combined");
-        
-        final var combinedDetails = new HashMap<>(this.getDetails());
-        combinedDetails.putAll(other.getDetails());
-        combined.details(combinedDetails);
-        
-        if (!isValid) {
-            if (!this.isValid()) {
-                combined.reason(this.getReason());
-            } else {
-                combined.reason(other.getReason());
-            }
-        }
-        
-        return combined.build();
-    }
 } 
