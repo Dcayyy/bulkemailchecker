@@ -34,7 +34,7 @@ public class ValidationResult {
                 .build();
     }
 
-    public static ValidationResult valid(final String validatorName, final double score, final HashMap<String, Double> details) {
+    public static ValidationResult valid(final String validatorName, final double score, final Map<String, Double> details) {
         return ValidationResult.builder()
                 .valid(true)
                 .score(Math.min(1.0, Math.max(0.0, score)))
@@ -52,7 +52,7 @@ public class ValidationResult {
                 .build();
     }
 
-    public static ValidationResult invalid(final String validatorName, final String reason, final HashMap<String, Double> details) {
+    public static ValidationResult invalid(final String validatorName, final String reason, final Map<String, Double> details) {
         return ValidationResult.builder()
                 .valid(false)
                 .score(0.0)

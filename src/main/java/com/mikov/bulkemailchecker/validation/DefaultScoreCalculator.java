@@ -5,6 +5,9 @@ import java.util.Map;
 
 /**
  * Default implementation of score calculator for email validation.
+ * Calculates a weighted score based on various validation results.
+ * 
+ * @author zahari.mikov
  */
 @Component
 public class DefaultScoreCalculator implements CustomScoreCalculator {
@@ -16,9 +19,9 @@ public class DefaultScoreCalculator implements CustomScoreCalculator {
     private static final double OTHER_WEIGHT = 0.1;
 
     @Override
-    public double calculateScore(Map<String, Double> scores, int domainAge) {
-        double finalScore = 0.0;
-        double weightSum = 0.0;
+    public double calculateScore(final Map<String, Double> scores, final int domainAge) {
+        var finalScore = 0.0;
+        var weightSum = 0.0;
         
         // SMTP validation has highest weight
         if (scores.containsKey("smtp")) {
@@ -27,7 +30,7 @@ public class DefaultScoreCalculator implements CustomScoreCalculator {
         }
         
         // Domain age affects score
-        double ageScore = calculateAgeScore(domainAge);
+        final var ageScore = calculateAgeScore(domainAge);
         finalScore += ageScore * DOMAIN_AGE_WEIGHT;
         weightSum += DOMAIN_AGE_WEIGHT;
         
@@ -44,10 +47,10 @@ public class DefaultScoreCalculator implements CustomScoreCalculator {
         }
         
         // Average of other validators
-        double otherScoreSum = 0.0;
-        int otherCount = 0;
-        for (Map.Entry<String, Double> entry : scores.entrySet()) {
-            String validatorName = entry.getKey();
+        var otherScoreSum = 0.0;
+        var otherCount = 0;
+        for (final var entry : scores.entrySet()) {
+            final var validatorName = entry.getKey();
             if (!validatorName.equals("smtp") && !validatorName.equals("syntax") && 
                 !validatorName.equals("mx-record") && !validatorName.equals("domain-age")) {
                 otherScoreSum += entry.getValue();
@@ -68,7 +71,7 @@ public class DefaultScoreCalculator implements CustomScoreCalculator {
         return Math.min(1.0, Math.max(0.0, finalScore));
     }
     
-    private double calculateAgeScore(int ageInYears) {
+    private double calculateAgeScore(final int ageInYears) {
         if (ageInYears < 1) {
             return 0.3; // New domains are suspicious
         } else if (ageInYears < 2) {

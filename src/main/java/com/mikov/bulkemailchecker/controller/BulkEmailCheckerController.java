@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * REST controller for email verification
+ * 
+ * @author zahari.mikov
  */
 @RestController
 @RequestMapping("/bulkemailchecker")
@@ -29,7 +31,7 @@ public class BulkEmailCheckerController {
     private final BulkEmailCheckerService bulkEmailCheckerService;
     
     @Autowired
-    public BulkEmailCheckerController(BulkEmailCheckerService bulkEmailCheckerService) {
+    public BulkEmailCheckerController(final BulkEmailCheckerService bulkEmailCheckerService) {
         this.bulkEmailCheckerService = bulkEmailCheckerService;
     }
     
@@ -39,11 +41,10 @@ public class BulkEmailCheckerController {
      * @return Deferred result with email verification response
      */
     @GetMapping("/verify/{email}")
-    public DeferredResult<ResponseEntity<EmailVerificationResponse>> verifyEmail(@PathVariable String email) {
+    public DeferredResult<ResponseEntity<EmailVerificationResponse>> verifyEmail(@PathVariable final String email) {
         logger.info("Received request to verify email: {}", email);
         
-        DeferredResult<ResponseEntity<EmailVerificationResponse>> deferredResult = 
-            new DeferredResult<>(RESPONSE_TIMEOUT_MS);
+        final var deferredResult = new DeferredResult<ResponseEntity<EmailVerificationResponse>>(RESPONSE_TIMEOUT_MS);
         
         // Process verification asynchronously
         CompletableFuture.supplyAsync(() -> bulkEmailCheckerService.verifyEmail(email))
@@ -65,20 +66,18 @@ public class BulkEmailCheckerController {
      */
     @PostMapping(value = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE)
     public DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> verifyEmails(
-            @RequestBody BulkEmailVerificationRequest request) {
+            @RequestBody final BulkEmailVerificationRequest request) {
         if (request == null || request.getEmails() == null || request.getEmails().isEmpty()) {
             logger.warn("Received empty request for bulk email verification");
             
-            DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> emptyResult = 
-                new DeferredResult<>(RESPONSE_TIMEOUT_MS);
+            final var emptyResult = new DeferredResult<ResponseEntity<List<EmailVerificationResponse>>>(RESPONSE_TIMEOUT_MS);
             emptyResult.setResult(ResponseEntity.badRequest().body(Collections.emptyList()));
             return emptyResult;
         }
         
         logger.info("Received request to verify {} emails", request.getEmails().size());
         
-        DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> deferredResult = 
-            new DeferredResult<>(RESPONSE_TIMEOUT_MS);
+        final var deferredResult = new DeferredResult<ResponseEntity<List<EmailVerificationResponse>>>(RESPONSE_TIMEOUT_MS);
         
         // Process bulk verification asynchronously
         CompletableFuture.supplyAsync(() -> bulkEmailCheckerService.verifyEmails(request.getEmails()))
@@ -95,7 +94,7 @@ public class BulkEmailCheckerController {
     /**
      * Create an error response for failed verification
      */
-    private EmailVerificationResponse createErrorResponse(String email, String message) {
+    private EmailVerificationResponse createErrorResponse(final String email, final String message) {
         return new EmailVerificationResponse.Builder(email)
                 .withStatus("failed")
                 .withValid(false)

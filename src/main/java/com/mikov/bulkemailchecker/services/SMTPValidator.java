@@ -126,15 +126,15 @@ public class SMTPValidator implements EmailValidator {
             }
             
             // Get provider information from MX records
-            String provider = identifyProvider(mxHosts);
+            final var provider = identifyProvider(mxHosts);
             
             // Use direct approach to validating emails
             for (final var mxHost : mxHosts) {
                 logger.debug("======= BEGIN EMAIL VALIDATION FOR {} AT MX HOST {} =======", email, mxHost);
-                SmtpServerInfo serverInfo = new SmtpServerInfo(mxHost, getIpAddress(mxHost), provider);
+                final var serverInfo = new SmtpServerInfo(mxHost, getIpAddress(mxHost), provider);
                 
                 // FIRST: Use advanced catch-all detection instead of single email check
-                boolean isCatchAll = detectCatchAll(domain, mxHost);
+                final var isCatchAll = detectCatchAll(domain, mxHost);
                 logger.debug("Catch-all detection result for {}: {}", domain, isCatchAll ? "IS CATCH-ALL" : "Not catch-all");
                 
                 if (isCatchAll) {
@@ -147,7 +147,7 @@ public class SMTPValidator implements EmailValidator {
                 // If we get here, the domain is not catch-all
                 // Now check the real email
                 logger.debug("Domain {} is not catch-all, checking specific email: {}", domain, email);
-                SmtpValidationResult realResult = checkEmailViaSMTP(localPart, domain, mxHost);
+                final var realResult = checkEmailViaSMTP(localPart, domain, mxHost);
                 
                 logger.debug("Email validation result for {}: isDeliverable={}, responseCode={}, isTempError={}", 
                         email, realResult.isDeliverable, realResult.responseCode, realResult.isTempError);
@@ -209,14 +209,14 @@ public class SMTPValidator implements EmailValidator {
      * Generate a random username that would definitely never be valid
      * Used for catch-all testing
      */
-    private String generateRandomUser(String domain) {
+    private String generateRandomUser(final String domain) {
         // Create a very unlikely username that would never be valid in a real world scenario
         // Current timestamp for uniqueness
-        String timestamp = String.valueOf(System.currentTimeMillis());
+        final var timestamp = String.valueOf(System.currentTimeMillis());
         // Domain hash to create domain-specific randomness
-        String domainHash = Integer.toHexString(domain.hashCode()).substring(0, 4);
+        final var domainHash = Integer.toHexString(domain.hashCode()).substring(0, 4);
         // Random UUID fragment for additional randomness
-        String uuid = UUID.randomUUID().toString().substring(0, 8);
+        final var uuid = UUID.randomUUID().toString().substring(0, 8);
         
         // Combine multiple unlikelihood factors - longer is better for this test
         return "nonexistent-user-" + uuid + "-" + timestamp + "-" + domainHash + "-zxygkwtpqs";

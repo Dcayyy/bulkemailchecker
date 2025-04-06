@@ -6,6 +6,8 @@ import java.util.UUID;
 
 /**
  * Response model for email verification that matches BulkEmailChecker format
+ * 
+ * @author zahari.mikov
  */
 public class EmailVerificationResponse {
     private final long id;
@@ -31,7 +33,7 @@ public class EmailVerificationResponse {
     private final String createdAt;
     private final int retries;
     
-    private EmailVerificationResponse(Builder builder) {
+    private EmailVerificationResponse(final Builder builder) {
         this.id = builder.id;
         this.email = builder.email;
         this.status = builder.status;
@@ -80,106 +82,106 @@ public class EmailVerificationResponse {
         private String createdAt = OffsetDateTime.now().toString();
         private int retries = 0;
         
-        public Builder(String email) {
+        public Builder(final String email) {
             this.email = email;
             if (email != null && email.contains("@")) {
-                String[] parts = email.split("@", 2);
+                final var parts = email.split("@", 2);
                 this.localPart = parts[0];
                 this.domain = parts[1];
             }
         }
         
-        public Builder withId(long id) {
+        public Builder withId(final long id) {
             this.id = id;
             return this;
         }
         
-        public Builder withStatus(String status) {
+        public Builder withStatus(final String status) {
             this.status = status;
             return this;
         }
         
-        public Builder withValid(boolean valid) {
+        public Builder withValid(final boolean valid) {
             this.valid = valid;
             return this;
         }
         
-        public Builder withResultCode(String resultCode) {
+        public Builder withResultCode(final String resultCode) {
             this.resultCode = resultCode;
             return this;
         }
         
-        public Builder withMessage(String message) {
+        public Builder withMessage(final String message) {
             this.message = message;
             return this;
         }
         
-        public Builder withHasMx(boolean hasMx) {
+        public Builder withHasMx(final boolean hasMx) {
             this.hasMx = hasMx;
             return this;
         }
         
-        public Builder withSmtpServer(String smtpServer) {
+        public Builder withSmtpServer(final String smtpServer) {
             this.smtpServer = smtpServer;
             return this;
         }
         
-        public Builder withIpAddress(String ipAddress) {
+        public Builder withIpAddress(final String ipAddress) {
             this.ipAddress = ipAddress;
             return this;
         }
         
-        public Builder withResponseTime(long responseTime) {
+        public Builder withResponseTime(final long responseTime) {
             this.responseTime = responseTime;
             return this;
         }
         
-        public Builder withRetries(int retries) {
+        public Builder withRetries(final int retries) {
             this.retries = retries;
             return this;
         }
         
-        public Builder withDisposable(boolean disposable) {
+        public Builder withDisposable(final boolean disposable) {
             this.disposable = disposable;
             return this;
         }
         
-        public Builder withRole(boolean role) {
+        public Builder withRole(final boolean role) {
             this.role = role;
             return this;
         }
         
-        public Builder withSubAddressing(boolean subAddressing) {
+        public Builder withSubAddressing(final boolean subAddressing) {
             this.subAddressing = subAddressing;
             return this;
         }
         
-        public Builder withFree(boolean free) {
+        public Builder withFree(final boolean free) {
             this.free = free;
             return this;
         }
         
-        public Builder withSpam(boolean spam) {
+        public Builder withSpam(final boolean spam) {
             this.spam = spam;
             return this;
         }
         
-        public Builder withAdditionalInfo(String additionalInfo) {
+        public Builder withAdditionalInfo(final String additionalInfo) {
             this.additionalInfo = additionalInfo;
             return this;
         }
         
-        public Builder withCountry(String country) {
+        public Builder withCountry(final String country) {
             this.country = country;
             return this;
         }
         
-        public Builder withCheckedAt(String checkedAt) {
+        public Builder withCheckedAt(final String checkedAt) {
             this.checkedAt = checkedAt;
             return this;
         }
         
-        public Builder withCreatedAt(String createdAt) {
+        public Builder withCreatedAt(final String createdAt) {
             this.createdAt = createdAt;
             return this;
         }

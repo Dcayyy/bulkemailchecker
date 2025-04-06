@@ -11,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Web configuration for optimal performance
+ * 
+ * @author zahari.mikov
  */
 @Configuration
 @EnableWebMvc
@@ -21,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
      * Configure asynchronous request processing
      */
     @Override
-    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+    public void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
         configurer.setDefaultTimeout(30000);
         configurer.setTaskExecutor(asyncTaskExecutor());
     }
@@ -31,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Bean
     public AsyncTaskExecutor asyncTaskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        final var executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
         executor.setMaxPoolSize(50);
         executor.setQueueCapacity(100);

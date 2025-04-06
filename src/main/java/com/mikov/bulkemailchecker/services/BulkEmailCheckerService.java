@@ -21,6 +21,8 @@ import java.time.Instant;
 
 /**
  * Service for handling email verification
+ * 
+ * @author zahari.mikov
  */
 @Service
 public class BulkEmailCheckerService {
@@ -40,8 +42,8 @@ public class BulkEmailCheckerService {
     private static final int MAX_REQUESTS_PER_MINUTE = 60;
     
     @Autowired
-    public BulkEmailCheckerService(SMTPValidator smtpValidator, SyntaxValidator syntaxValidator, 
-                                  MXRecordValidator mxRecordValidator) {
+    public BulkEmailCheckerService(final SMTPValidator smtpValidator, final SyntaxValidator syntaxValidator, 
+                                  final MXRecordValidator mxRecordValidator) {
         this.smtpValidator = smtpValidator;
         this.syntaxValidator = syntaxValidator;
         this.mxRecordValidator = mxRecordValidator;
@@ -60,7 +62,7 @@ public class BulkEmailCheckerService {
     @SuppressWarnings("unchecked")
     public EmailVerificationResponse verifyEmail(final String email) {
         // Normalize email
-        final String normalizedEmail = email.trim().toLowerCase();
+        final var normalizedEmail = email.trim().toLowerCase();
         
         // Create response builder
         final var builder = new EmailVerificationResponse.Builder(normalizedEmail)
@@ -176,11 +178,11 @@ public class BulkEmailCheckerService {
     /**
      * Extracts value from the additional info in SMTP validator details
      */
-    private String getAdditionalInfoValue(Map<String, Double> details, String key) {
+    private String getAdditionalInfoValue(final Map<String, Double> details, final String key) {
         try {
             // Check if we have an encoded value (key-value format)
             if (details.containsKey(key + "-value")) {
-                double encodedValue = details.get(key + "-value");
+                final var encodedValue = details.get(key + "-value");
                 // Use the SMTPValidator to decode the value
                 return smtpValidator.getStringValue(encodedValue);
             }
@@ -196,22 +198,21 @@ public class BulkEmailCheckerService {
      * @param emails List of emails to verify
      * @return List of email verification responses
      */
-    public List<EmailVerificationResponse> verifyEmails(List<String> emails) {
+    public List<EmailVerificationResponse> verifyEmails(final List<String> emails) {
         // Group by domain for more efficient processing
-        Map<String, List<String>> emailsByDomain = emails.stream()
+        final var emailsByDomain = emails.stream()
                 .collect(Collectors.groupingBy(this::extractDomain));
         
-        List<CompletableFuture<EmailVerificationResponse>> futures = new ArrayList<>();
+        final var futures = new ArrayList<CompletableFuture<EmailVerificationResponse>>();
         
         // Process each domain sequentially to avoid overwhelming individual mail servers
-        for (Map.Entry<String, List<String>> entry : emailsByDomain.entrySet()) {
-            String domain = entry.getKey();
-            List<String> domainEmails = entry.getValue();
+        for (final var entry : emailsByDomain.entrySet()) {
+            final var domain = entry.getKey();
+            final var domainEmails = entry.getValue();
             
             // Process emails within each domain in parallel
             domainEmails.forEach(email -> {
-                CompletableFuture<EmailVerificationResponse> future = 
-                    CompletableFuture.supplyAsync(() -> verifyEmail(email), executorService);
+                final var future = CompletableFuture.supplyAsync(() -> verifyEmail(email), executorService);
                 futures.add(future);
                 
                 // Small delay between requests to the same domain
@@ -228,39 +229,33 @@ public class BulkEmailCheckerService {
                 .collect(Collectors.toList());
     }
     
-    private String extractDomain(String email) {
-        int atIndex = email.lastIndexOf('@');
+    private String extractDomain(final String email) {
+        final var atIndex = email.lastIndexOf('@');
         if (atIndex != -1 && atIndex < email.length() - 1) {
             return email.substring(atIndex + 1).toLowerCase();
         }
         return "";
     }
     
-    private boolean shouldThrottle(String domain) {
-        ThrottleInfo info = domainThrottling.get(domain);
+    private boolean shouldThrottle(final String domain) {
+        final var info = domainThrottling.get(domain);
         if (info == null) {
             return false;
         }
         
         // Check if we're exceeding the rate limit
-        long currentTime = System.currentTimeMillis();
-        long windowStart = currentTime - TimeUnit.MINUTES.toMillis(1);
+        final var currentTime = System.currentTimeMillis();
+        final var windowStart = currentTime - TimeUnit.MINUTES.toMillis(1);
         
         // Remove requests older than 1 minute
         info.getRequestTimes().removeIf(time -> time < windowStart);
         
-        // Check if we've exceeded the limit
         return info.getRequestTimes().size() >= MAX_REQUESTS_PER_MINUTE;
     }
     
-    private void updateThrottlingInfo(String domain) {
-        domainThrottling.compute(domain, (k, v) -> {
-            if (v == null) {
-                v = new ThrottleInfo();
-            }
-            v.addRequest(System.currentTimeMillis());
-            return v;
-        });
+    private void updateThrottlingInfo(final String domain) {
+        final var info = domainThrottling.computeIfAbsent(domain, k -> new ThrottleInfo());
+        info.addRequest(System.currentTimeMillis());
     }
     
     private EmailVerificationResponse createThrottledResponse() {
@@ -275,37 +270,27 @@ public class BulkEmailCheckerService {
     }
     
     private void startCacheCleanupTask() {
-        Thread cleanupThread = new Thread(() -> {
-            while (true) {
+        final var cleanupThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    // Sleep for 5 minutes
                     Thread.sleep(TimeUnit.MINUTES.toMillis(5));
-                    
-                    // Clean up expired cache entries
-                    resultCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
-                    
-                    logger.debug("Cache cleanup complete. Current size: {}", resultCache.size());
+                    final var currentTime = System.currentTimeMillis();
+                    resultCache.entrySet().removeIf(entry -> entry.getValue().isExpired(currentTime));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
-                } catch (Exception e) {
-                    logger.error("Error during cache cleanup", e);
                 }
             }
         });
         cleanupThread.setDaemon(true);
-        cleanupThread.setName("email-verification-cache-cleanup");
         cleanupThread.start();
     }
     
-    /**
-     * Cached result with expiration
-     */
     private static class CachedResult {
         private final EmailVerificationResponse response;
         private final long timestamp;
         
-        public CachedResult(EmailVerificationResponse response) {
+        public CachedResult(final EmailVerificationResponse response) {
             this.response = response;
             this.timestamp = System.currentTimeMillis();
         }
@@ -314,18 +299,15 @@ public class BulkEmailCheckerService {
             return response;
         }
         
-        public boolean isExpired() {
-            return System.currentTimeMillis() - timestamp > CACHE_TTL_MS;
+        public boolean isExpired(final long currentTime) {
+            return currentTime - timestamp > CACHE_TTL_MS;
         }
     }
     
-    /**
-     * Throttling information for a domain
-     */
     private static class ThrottleInfo {
         private final List<Long> requestTimes = new ArrayList<>();
         
-        public void addRequest(long timestamp) {
+        public void addRequest(final long timestamp) {
             requestTimes.add(timestamp);
         }
         

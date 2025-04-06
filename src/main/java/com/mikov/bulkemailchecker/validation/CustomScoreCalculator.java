@@ -4,6 +4,9 @@ import java.util.Map;
 
 /**
  * Interface for custom scoring calculations in the validation pipeline.
+ * Allows for flexible scoring strategies based on validation results.
+ * 
+ * @author zahari.mikov
  */
 public interface CustomScoreCalculator {
     
@@ -14,5 +17,5 @@ public interface CustomScoreCalculator {
      * @param domainAge Age of the domain in years
      * @return Final calculated score between 0.0 and 1.0
      */
-    double calculateScore(Map<String, Double> scores, int domainAge);
+    double calculateScore(final Map<String, Double> scores, final int domainAge);
 } 

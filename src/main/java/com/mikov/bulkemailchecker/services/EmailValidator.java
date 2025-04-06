@@ -4,6 +4,8 @@ import com.mikov.bulkemailchecker.model.ValidationResult;
 
 /**
  * Interface for email validation in the services package
+ * 
+ * @author zahari.mikov
  */
 public interface EmailValidator {
     /**
@@ -11,7 +13,7 @@ public interface EmailValidator {
      * @param email Email to validate
      * @return Validation result
      */
-    ValidationResult validate(String email);
+    ValidationResult validate(final String email);
     
     /**
      * Gets the name of the validator

@@ -5,6 +5,8 @@ import java.util.Map;
 
 /**
  * Result of email validation
+ * 
+ * @author zahari.mikov
  */
 public class ValidationResult {
     private final boolean isValid;
@@ -13,7 +15,8 @@ public class ValidationResult {
     private final String reason;
     private final Map<String, Double> details;
     
-    private ValidationResult(boolean isValid, String validator, double confidence, String reason, Map<String, Double> details) {
+    private ValidationResult(final boolean isValid, final String validator, final double confidence, 
+            final String reason, final Map<String, Double> details) {
         this.isValid = isValid;
         this.validator = validator;
         this.confidence = confidence;
@@ -28,7 +31,7 @@ public class ValidationResult {
      * @param details Additional details
      * @return ValidationResult
      */
-    public static ValidationResult valid(String validator, double confidence, Map<String, Double> details) {
+    public static ValidationResult valid(final String validator, final double confidence, final Map<String, Double> details) {
         return new ValidationResult(true, validator, confidence, null, details);
     }
     
@@ -38,7 +41,7 @@ public class ValidationResult {
      * @param reason Reason for invalidity
      * @return ValidationResult
      */
-    public static ValidationResult invalid(String validator, String reason) {
+    public static ValidationResult invalid(final String validator, final String reason) {
         return new ValidationResult(false, validator, 0.0, reason, new HashMap<>());
     }
     
