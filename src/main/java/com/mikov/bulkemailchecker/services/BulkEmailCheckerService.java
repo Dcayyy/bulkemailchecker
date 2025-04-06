@@ -178,7 +178,7 @@ public class BulkEmailCheckerService {
         return results;
     }
 
-    private ArrayList<CompletableFuture<EmailVerificationResponse>> getVerifiedEmails(Map<String, List<String>> emailsByDomain) {
+    private ArrayList<CompletableFuture<EmailVerificationResponse>> getVerifiedEmails(final Map<String, List<String>> emailsByDomain) {
         final var futures = new ArrayList<CompletableFuture<EmailVerificationResponse>>();
         for (final var entry : emailsByDomain.entrySet()) {
             final var domainEmails = entry.getValue();

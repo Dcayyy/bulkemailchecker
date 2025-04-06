@@ -1,7 +1,6 @@
 package com.mikov.bulkemailchecker.validation;
 
 import com.mikov.bulkemailchecker.dtos.ValidationResult;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.retry.annotation.Backoff;
@@ -29,9 +28,6 @@ public class DomainAgeValidator implements EmailValidator {
     private static final Logger logger = LoggerFactory.getLogger(DomainAgeValidator.class);
     
     private final Map<String, LocalDate> domainRegistrationDates = new HashMap<>();
-    private final Map<String, Double> domainReputationScores = new HashMap<>();
-    private static final long MIN_DOMAIN_AGE_DAYS = 30;
-    private static final long IDEAL_DOMAIN_AGE_DAYS = 365;
 
     private static final Map<String, String> WHOIS_SERVERS = Map.of(
         ".com", "whois.verisign-grs.com",
@@ -58,34 +54,18 @@ public class DomainAgeValidator implements EmailValidator {
         
         final var domain = parts[1].toLowerCase();
         final var domainAgeDays = getDomainAgeDays(domain);
-        final var reputationScore = getDomainReputationScore(domain);
         
-        final double ageScore;
-        if (domainAgeDays < MIN_DOMAIN_AGE_DAYS) {
-            ageScore = domainAgeDays / (double) MIN_DOMAIN_AGE_DAYS * 0.7;
-        } else if (domainAgeDays >= IDEAL_DOMAIN_AGE_DAYS) {
-            ageScore = 1.0;
-        } else {
-            ageScore = 0.7 + (domainAgeDays - MIN_DOMAIN_AGE_DAYS) /
-                    (double) (IDEAL_DOMAIN_AGE_DAYS - MIN_DOMAIN_AGE_DAYS) * 0.3;
-        }
-
         final var details = new HashMap<String, Double>();
         details.put("age_days", (double) domainAgeDays);
-        details.put("age_score", ageScore);
-        details.put("reputation", reputationScore);
         
         int ageInYears = (int) (domainAgeDays / 365);
         details.put("age", (double) ageInYears);
 
-        final var finalScore = ageScore * 0.6 + reputationScore * 0.4;
-        final var result = ValidationResult.valid(getName(), finalScore, details);
-
-        if (domainAgeDays < 7 && reputationScore < 0.3) {
-            return ValidationResult.invalid(getName(), "Very new domain with low reputation");
+        if (domainAgeDays < 7) {
+            return ValidationResult.invalid(getName(), "Very new domain (less than 1 week old)", details);
         }
         
-        return result;
+        return ValidationResult.valid(getName(), details);
     }
 
     @Override
@@ -94,9 +74,7 @@ public class DomainAgeValidator implements EmailValidator {
     }
 
     @Retryable(
-        value = { IOException.class },
-        maxAttempts = 3,
-        backoff = @Backoff(delay = 1000, multiplier = 2)
+        value = { IOException.class }, backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     public long getDomainAgeDays(final String domain) {
         try {
@@ -173,23 +151,5 @@ public class DomainAgeValidator implements EmailValidator {
             }
         }
         return Optional.empty();
-    }
-
-    private double getDomainReputationScore(final String domain) {
-        final var score = domainReputationScores.get(domain);
-        
-        if (score == null) {
-            if (domain.contains("google") || domain.contains("microsoft") ||
-                domain.contains("apple") || domain.contains("amazon")) {
-                domainReputationScores.put(domain, 1.0);
-            } else if (domain.contains("yahoo") || domain.contains("facebook") || 
-                       domain.contains("twitter") || domain.contains("linkedin")) {
-                domainReputationScores.put(domain, 0.95);
-            } else {
-                domainReputationScores.put(domain, 0.5 + Math.random() * 0.5);
-            }
-        }
-        
-        return domainReputationScores.get(domain);
     }
 } 

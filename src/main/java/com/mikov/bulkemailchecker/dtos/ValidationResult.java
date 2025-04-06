@@ -18,28 +18,22 @@ import java.util.Map;
 public class ValidationResult {
 
     private final boolean valid;
-
-    @Builder.Default
-    private final double score = 0.0;
-
     private final String validatorName;
     private final String reason;
 
     @Builder.Default
     private final Map<String, Double> details = new HashMap<>();
 
-    public static ValidationResult valid(final String validatorName, final double score) {
+    public static ValidationResult valid(final String validatorName) {
         return ValidationResult.builder()
                 .valid(true)
-                .score(Math.min(1.0, Math.max(0.0, score)))
                 .validatorName(validatorName)
                 .build();
     }
 
-    public static ValidationResult valid(final String validatorName, final double score, final Map<String, Double> details) {
+    public static ValidationResult valid(final String validatorName, final Map<String, Double> details) {
         return ValidationResult.builder()
                 .valid(true)
-                .score(Math.min(1.0, Math.max(0.0, score)))
                 .validatorName(validatorName)
                 .details(details)
                 .build();
@@ -48,7 +42,6 @@ public class ValidationResult {
     public static ValidationResult invalid(final String validatorName, final String reason) {
         return ValidationResult.builder()
                 .valid(false)
-                .score(0.0)
                 .validatorName(validatorName)
                 .reason(reason)
                 .build();
@@ -57,14 +50,9 @@ public class ValidationResult {
     public static ValidationResult invalid(final String validatorName, final String reason, final Map<String, Double> details) {
         return ValidationResult.builder()
                 .valid(false)
-                .score(0.0)
                 .validatorName(validatorName)
                 .reason(reason)
                 .details(details)
                 .build();
-    }
-
-    public static ValidationResult invalid() {
-        return invalid("unknown", "Unknown validation failure");
     }
 } 

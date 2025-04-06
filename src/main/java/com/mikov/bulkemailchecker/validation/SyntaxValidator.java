@@ -102,11 +102,9 @@ public class SyntaxValidator implements EmailValidator {
             if (!BASIC_EMAIL_PATTERN.matcher(cleanEmail).matches()) {
                 return ValidationResult.invalid(getName(), "Email fails RFC-5322 compliance");
             }
-            
-            return ValidationResult.valid(getName(), 0.7);
         }
         
-        return ValidationResult.valid(getName(), 1.0);
+        return ValidationResult.valid(getName());
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class TyposquattingValidator implements EmailValidator {
         final var domain = parts[1].toLowerCase();
         
         if (popularDomains.contains(domain)) {
-            return ValidationResult.valid(getName(), 1.0);
+            return ValidationResult.valid(getName());
         }
         
         for (final var popularDomain : popularDomains) {
@@ -56,17 +57,16 @@ public class TyposquattingValidator implements EmailValidator {
                 logger.debug("Email domain {} is similar to popular domain {} (distance={})", 
                         domain, popularDomain, distance);
 
-                final var score = 1.0 - (distance / 3.0);
+                final var details = new HashMap<String, Double>();
+                details.put("similar-to", (double) distance);
+                details.put("popular-domain", 1.0);
+                details.put("domain", 0.0);
                 
-                final var result = ValidationResult.valid(getName(), score);
-                result.getDetails().put("similar-to", (double) distance);
-                result.getDetails().put("popular-domain", 1.0);
-                result.getDetails().put("domain", 0.0);
-                return result;
+                return ValidationResult.valid(getName(), details);
             }
         }
         
-        return ValidationResult.valid(getName(), 1.0);
+        return ValidationResult.valid(getName());
     }
 
     @Override

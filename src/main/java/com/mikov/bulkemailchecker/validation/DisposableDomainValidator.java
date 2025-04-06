@@ -74,7 +74,7 @@ public class DisposableDomainValidator implements EmailValidator {
             }
         }
         
-        return ValidationResult.valid(getName(), 1.0);
+        return ValidationResult.valid(getName());
     }
 
     @Override

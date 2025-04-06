@@ -1,12 +1,12 @@
 package com.mikov.bulkemailchecker.validation;
 
 import com.mikov.bulkemailchecker.dtos.ValidationResult;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
-import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +35,7 @@ public class MXRecordValidator implements EmailValidator {
         final var cachedResult = resultCache.get(domain);
         if (cachedResult != null && !cachedResult.isExpired()) {
             return cachedResult.isValid()
-                   ? ValidationResult.valid(getName(), 1.0) 
+                   ? ValidationResult.valid(getName()) 
                    : ValidationResult.invalid(getName(), "Domain has no MX records");
         }
         
@@ -45,7 +45,7 @@ public class MXRecordValidator implements EmailValidator {
             if (!hasMx) {
                 return ValidationResult.invalid(getName(), "Domain has no MX records");
             }
-            return ValidationResult.valid(getName(), 1.0);
+            return ValidationResult.valid(getName());
         } catch (final Exception e) {
             logger.error("Error checking MX records for domain {}: {}", domain, e.getMessage());
             return ValidationResult.invalid(getName(), "Error checking MX records: " + e.getMessage());
@@ -57,7 +57,7 @@ public class MXRecordValidator implements EmailValidator {
         return "mx-record";
     }
 
-    private boolean checkMxRecords(final String domain) throws Exception {
+    private boolean checkMxRecords(final String domain) {
         try {
             // Simple DNS check - if the domain resolves, assume it has MX records
             // This is a simplified implementation for compatibility
@@ -69,6 +69,7 @@ public class MXRecordValidator implements EmailValidator {
         }
     }
 
+    @Getter
     private static class CachedResult {
         private final boolean valid;
         private final long timestamp;
@@ -76,14 +77,6 @@ public class MXRecordValidator implements EmailValidator {
         public CachedResult(final boolean valid) {
             this.valid = valid;
             this.timestamp = System.currentTimeMillis();
-        }
-
-        public boolean isValid() {
-            return valid;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
         }
 
         public boolean isExpired() {

@@ -35,8 +35,7 @@ public class SMTPValidator implements EmailValidator {
     private static final int SOCKET_TIMEOUT_MS = 5000;
     
     private final ConcurrentHashMap<String, SmtpCacheEntry> cache = new ConcurrentHashMap<>();
-    private static final long CACHE_TTL_MS = TimeUnit.HOURS.toMillis(4);
-    
+
     private final Map<String, Integer> throttledDomains = new ConcurrentHashMap<>();
     private static final long THROTTLE_PERIOD_MS = TimeUnit.MINUTES.toMillis(10);
     private static final int MAX_DOMAIN_REQUESTS = 3;
@@ -89,10 +88,10 @@ public class SMTPValidator implements EmailValidator {
         final var cachedResult = cache.get(domain);
         if (cachedResult != null && !cachedResult.isExpired()) {
             if (cachedResult.isCatchAll()) {
-                return ValidationResult.valid(getName(), 0.5, createDetailsMap(true, "Catch-all domain", 
+                return ValidationResult.valid(getName(), createDetailsMap(true, "Catch-all domain",
                         cachedResult.getSmtpServer(), cachedResult.getIpAddress(), cachedResult.getProvider()));
             } else if (cachedResult.getValidEmails().contains(localPart)) {
-                return ValidationResult.valid(getName(), 1.0, createDetailsMap(false, null, 
+                return ValidationResult.valid(getName(), createDetailsMap(false, null,
                         cachedResult.getSmtpServer(), cachedResult.getIpAddress(), cachedResult.getProvider()));
             } else if (cachedResult.getInvalidEmails().contains(localPart)) {
                 return ValidationResult.invalid(getName(), "Email not deliverable");
@@ -100,12 +99,12 @@ public class SMTPValidator implements EmailValidator {
         }
         
         if (isThrottled(domain)) {
-            return ValidationResult.valid(getName(), 0.5, createDetailsMap(false, "Domain throttled, skipping check", "", "", ""));
+            return ValidationResult.valid(getName(), createDetailsMap(false, "Domain throttled, skipping check", "", "", ""));
         }
         
         try {
             final var mxHosts = getMxRecordsWithCaching(domain);
-            if (mxHosts == null || mxHosts.length == 0) {
+            if (mxHosts.length == 0) {
                 return ValidationResult.invalid(getName(), "No MX records found");
             }
             
@@ -118,7 +117,7 @@ public class SMTPValidator implements EmailValidator {
                 
                 if (isCatchAll) {
                     updateCache(domain, true, new HashSet<>(), new HashSet<>(), serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
-                    return ValidationResult.valid(getName(), 0.5, createDetailsMap(true, "Catch-all domain", 
+                    return ValidationResult.valid(getName(), createDetailsMap(true, "Catch-all domain",
                             serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider()));
                 }
                 
@@ -136,16 +135,14 @@ public class SMTPValidator implements EmailValidator {
                         logger.warn("Email {} using problematic mail server {}", email, mxHost);
                     }
                     
-                    // Log the validation result
                     logger.info("Email validation result for {}: DELIVERABLE", email);
                     
                     final var validEmails = new HashSet<String>();
                     validEmails.add(localPart);
                     updateCache(domain, false, validEmails, new HashSet<>(), serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
-                    return ValidationResult.valid(getName(), 1.0, createDetailsMap(false, null, 
+                    return ValidationResult.valid(getName(), createDetailsMap(false, null,
                             serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider()));
                 } else {
-                    // Log the validation result
                     logger.info("Email validation result for {}: NOT DELIVERABLE", email);
                     
                     final var invalidEmails = new HashSet<String>();
@@ -155,12 +152,12 @@ public class SMTPValidator implements EmailValidator {
                 }
             }
             
-            return ValidationResult.valid(getName(), 0.3, createDetailsMap(false, "Temporary SMTP error", 
+            return ValidationResult.valid(getName(), createDetailsMap(false, "Temporary SMTP error",
                     mxHosts[0], getIpAddress(mxHosts[0]), identifyProvider(new String[]{mxHosts[0]})));
             
         } catch (final Exception e) {
             logger.warn("SMTP validation failed for email {}: {}", email, e.getMessage());
-            return ValidationResult.valid(getName(), 0.3, createDetailsMap(false, "SMTP check error: " + e.getMessage(), "", "", ""));
+            return ValidationResult.valid(getName(), createDetailsMap(false, "SMTP check error: " + e.getMessage(), "", "", ""));
         } finally {
             incrementThrottleCount(domain);
         }
@@ -254,7 +251,7 @@ public class SMTPValidator implements EmailValidator {
                 Thread.sleep(100);
             }
             
-            boolean allAccepted = probeResults.stream().allMatch(r -> r.isDeliverable());
+            boolean allAccepted = probeResults.stream().allMatch(SmtpValidationResult::isDeliverable);
             if (allAccepted) {
                 return true;
             }
@@ -267,12 +264,12 @@ public class SMTPValidator implements EmailValidator {
                 mxHost.toLowerCase().contains("mimecast");
 
             if (mxHost.toLowerCase().contains("iphmx.com")) {
-                return true; // Always treat iphmx.com as catch-all
+                return true;
             }
                 
             if (hasDeceptiveServerPattern) {
                 Set<String> uniqueResponses = probeResults.stream()
-                    .map(r -> r.getFullResponse())
+                    .map(SmtpValidationResult::getFullResponse)
                     .filter(r -> r != null && !r.isEmpty())
                     .collect(java.util.stream.Collectors.toSet());
                 
@@ -291,13 +288,9 @@ public class SMTPValidator implements EmailValidator {
                 }
             }
 
-            long acceptedCount = probeResults.stream().filter(r -> r.isDeliverable()).count();
-            if (acceptedCount >= 3) {
-                return true;
-            }
+            long acceptedCount = probeResults.stream().filter(SmtpValidationResult::isDeliverable).count();
+            return acceptedCount >= 3;
 
-            return false;
-            
         } catch (Exception e) {
             return false;
         }
