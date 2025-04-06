@@ -46,7 +46,10 @@ server:
 logging:
   level:
     root: INFO
-    com.mikov.bulkemailchecker: INFO
+    com.mikov.bulkemailchecker: DEBUG
+    com.mikov.bulkemailchecker.services: DEBUG
+    com.mikov.bulkemailchecker.validation: DEBUG
+    com.mikov.bulkemailchecker.controller: INFO
     org.springframework.web: WARN
     org.springframework.security: INFO
   pattern:

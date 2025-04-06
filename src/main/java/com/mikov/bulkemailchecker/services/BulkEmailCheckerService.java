@@ -27,11 +27,13 @@ import java.time.Instant;
 public class BulkEmailCheckerService {
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerService.class);
     
-    private static final int MAX_CONCURRENT_PER_DOMAIN = 5;
+    private static final int MAX_CONCURRENT_PER_DOMAIN = 3;
+    private static final long DOMAIN_THROTTLE_DELAY_MS = 500;
     private final ConcurrentHashMap<String, Semaphore> domainLimiters = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Long> lastDomainAccessTime = new ConcurrentHashMap<>();
 
     private final SMTPValidator smtpValidator;
-    private final SyntaxValidator syntaxValidator; 
+    private final SyntaxValidator syntaxValidator;
     private final MXRecordValidator mxRecordValidator;
     private final TaskExecutor taskExecutor;
 
@@ -47,8 +49,6 @@ public class BulkEmailCheckerService {
     }
 
     public EmailVerificationResponse verifyEmail(final String email) {
-        logger.info("Verifying email: {}", email);
-        
         final var normalizedEmail = email.trim().toLowerCase();
         final var builder = new EmailVerificationResponse.Builder(normalizedEmail)
                 .withCreatedAt(Instant.now().toString());
@@ -91,38 +91,75 @@ public class BulkEmailCheckerService {
 
         final var smtpResult = smtpValidator.validate(normalizedEmail);
         var isCatchAll = false;
+        String event = "is_deliverable";
+        String status = "deliverable";
+        String emailMessage = null;
+        String additionalInfo = "";
+        double confidence = 0.0;
         
         builder.withHasMx(true);
         
         if (smtpResult.getDetails() != null) {
             if (smtpResult.getDetails().containsKey("catch-all") &&
-                smtpResult.getDetails().get("catch-all") == 1.0) {
+                smtpResult.getDetails().get("catch-all").equals(1.0)) {
                 isCatchAll = true;
             }
             
+            if (smtpResult.getDetails().containsKey("status")) {
+                status = smtpResult.getDetails().get("status").toString();
+            }
+            
+            if (smtpResult.getDetails().containsKey("event")) {
+                event = smtpResult.getDetails().get("event").toString();
+            }
+            
+            if (smtpResult.getDetails().containsKey("confidence")) {
+                try {
+                    confidence = (Double) smtpResult.getDetails().get("confidence");
+                    additionalInfo = "Confidence score: " + String.format("%.2f", confidence);
+                } catch (Exception e) {
+                    logger.warn("Could not parse confidence value");
+                }
+            }
+            
             if (smtpResult.getDetails().containsKey("smtp-server")) {
-                final var server = getAdditionalInfoValue(smtpResult.getDetails(), "smtp-server");
+                final var server = smtpResult.getDetails().get("smtp-server").toString();
                 if (server != null && !server.isEmpty()) {
                     builder.withSmtpServer(server);
                 }
             }
             
             if (smtpResult.getDetails().containsKey("ip-address")) {
-                final var ip = getAdditionalInfoValue(smtpResult.getDetails(), "ip-address");
+                final var ip = smtpResult.getDetails().get("ip-address").toString();
                 if (ip != null && !ip.isEmpty()) {
                     builder.withIpAddress(ip);
                 }
             }
             
             if (smtpResult.getDetails().containsKey("provider")) {
-                final var emailProvider = getAdditionalInfoValue(smtpResult.getDetails(), "provider");
+                final var emailProvider = smtpResult.getDetails().get("provider").toString();
                 if (emailProvider != null && !emailProvider.isEmpty()) {
-                    builder.withAdditionalInfo("Email provider: " + emailProvider);
+                    if (!additionalInfo.isEmpty()) {
+                        additionalInfo += "; ";
+                    }
+                    additionalInfo += "Email provider: " + emailProvider;
+                }
+            }
+            
+            if (smtpResult.getDetails().containsKey("reason")) {
+                final var reason = smtpResult.getDetails().get("reason").toString();
+                if (reason != null && !reason.isEmpty()) {
+                    emailMessage = reason;
                 }
             }
         }
+        
+        if (!additionalInfo.isEmpty()) {
+            builder.withAdditionalInfo(additionalInfo);
+        }
 
         final EmailVerificationResponse response;
+        
         if (isCatchAll) {
             response = builder.withStatus("unknown")
                     .withValid(true)
@@ -134,14 +171,36 @@ public class BulkEmailCheckerService {
                     .build();
                     
             logger.info("Email verification result for {}: CATCH-ALL DOMAIN", email);
-        } else if (smtpResult.isValid()) {
+        } else if (status.equals("unknown")) {
+            response = builder.withStatus("unknown")
+                    .withValid(true)
+                    .withResultCode("inconclusive")
+                    .withMessage(emailMessage != null ? emailMessage : "The email verification result is inconclusive")
+                    .withHasMx(true)
+                    .withCountry("")
+                    .withEvent(event)
+                    .build();
+                    
+            logger.info("Email verification result for {}: INCONCLUSIVE", email);
+        } else if (smtpResult.isValid() || event.equals("mailbox_exists")) {
+            String resultMessage = emailMessage;
+            if (resultMessage == null) {
+                if (confidence >= 0.9) {
+                    resultMessage = "Email address exists and can receive email";
+                } else if (confidence >= 0.7) {
+                    resultMessage = "Email address is likely to exist and receive email";
+                } else {
+                    resultMessage = "Email address appears to exist, but verification is not conclusive";
+                }
+            }
+            
             response = builder.withStatus("deliverable")
                     .withValid(true)
                     .withResultCode("success")
-                    .withMessage("Email address exists and can receive email")
+                    .withMessage(resultMessage)
                     .withHasMx(true)
                     .withCountry("")
-                    .withEvent("is_deliverable")
+                    .withEvent(event)
                     .build();
                     
             logger.info("Email verification result for {}: DELIVERABLE", email);
@@ -149,10 +208,10 @@ public class BulkEmailCheckerService {
             response = builder.withStatus("undeliverable")
                     .withValid(false)
                     .withResultCode("failure")
-                    .withMessage("Email address does not exist")
+                    .withMessage(emailMessage != null ? emailMessage : "Email address does not exist")
                     .withHasMx(true)
                     .withCountry("")
-                    .withEvent("is_non-existent")
+                    .withEvent(event)
                     .build();
                     
             logger.info("Email verification result for {}: UNDELIVERABLE", email);
@@ -161,11 +220,19 @@ public class BulkEmailCheckerService {
         return response;
     }
 
-    private String getAdditionalInfoValue(final Map<String, Double> details, final String key) {
+    private String getAdditionalInfoValue(final Map<String, Object> details, final String key) {
         try {
+            if (details.containsKey(key)) {
+                final var value = details.get(key);
+                if (value != null) {
+                    return value.toString();
+                }
+            }
             if (details.containsKey(key + "-value")) {
-                final var encodedValue = details.get(key + "-value");
-                return smtpValidator.getStringValue(encodedValue);
+                final var value = details.get(key + "-value");
+                if (value != null) {
+                    return value.toString();
+                }
             }
             return null;
         } catch (final Exception e) {
@@ -207,9 +274,12 @@ public class BulkEmailCheckerService {
                             logger.warn("Timeout waiting for rate limit permit for domain {}", domain);
                         }
                         
+                        applyDomainThrottling(domain);
+                        
                         try {
                             return verifyEmail(email);
                         } finally {
+                            lastDomainAccessTime.put(domain, System.currentTimeMillis());
                             domainLimiter.release();
                         }
                     } catch (InterruptedException e) {
@@ -234,6 +304,24 @@ public class BulkEmailCheckerService {
         }
         
         return futures;
+    }
+    
+    private void applyDomainThrottling(String domain) {
+        final var lastAccess = lastDomainAccessTime.getOrDefault(domain, 0L);
+        final var elapsedSinceLastAccess = System.currentTimeMillis() - lastAccess;
+        
+        if (lastAccess > 0 && elapsedSinceLastAccess < DOMAIN_THROTTLE_DELAY_MS) {
+            try {
+                final var delayNeeded = DOMAIN_THROTTLE_DELAY_MS - elapsedSinceLastAccess;
+                if (delayNeeded > 0) {
+                    logger.debug("Throttling domain {} for {} ms", domain, delayNeeded);
+                    Thread.sleep(delayNeeded);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.warn("Domain throttling interrupted for {}", domain);
+            }
+        }
     }
 
     private String extractDomain(final String email) {

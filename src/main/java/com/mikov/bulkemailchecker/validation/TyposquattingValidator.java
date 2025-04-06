@@ -57,7 +57,7 @@ public class TyposquattingValidator implements EmailValidator {
                 logger.debug("Email domain {} is similar to popular domain {} (distance={})", 
                         domain, popularDomain, distance);
 
-                final var details = new HashMap<String, Double>();
+                final var details = new HashMap<String, Object>();
                 details.put("similar-to", (double) distance);
                 details.put("popular-domain", 1.0);
                 details.put("domain", 0.0);

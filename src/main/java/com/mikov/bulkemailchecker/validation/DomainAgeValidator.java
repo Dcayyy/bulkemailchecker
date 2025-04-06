@@ -47,6 +47,10 @@ public class DomainAgeValidator implements EmailValidator {
 
     @Override
     public ValidationResult validate(final String email) {
+        if (email == null || email.isBlank()) {
+            return ValidationResult.invalid(getName(), "Email is null or empty");
+        }
+        
         final var parts = email.split("@", 2);
         if (parts.length != 2) {
             return ValidationResult.invalid(getName(), "Invalid email format");
@@ -55,8 +59,8 @@ public class DomainAgeValidator implements EmailValidator {
         final var domain = parts[1].toLowerCase();
         final var domainAgeDays = getDomainAgeDays(domain);
         
-        final var details = new HashMap<String, Double>();
-        details.put("age_days", (double) domainAgeDays);
+        final var details = new HashMap<String, Object>();
+        details.put("domain-age-days", (double) domainAgeDays);
         
         int ageInYears = (int) (domainAgeDays / 365);
         details.put("age", (double) ageInYears);

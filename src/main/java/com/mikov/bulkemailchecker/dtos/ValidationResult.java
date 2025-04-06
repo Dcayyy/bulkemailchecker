@@ -22,7 +22,7 @@ public class ValidationResult {
     private final String reason;
 
     @Builder.Default
-    private final Map<String, Double> details = new HashMap<>();
+    private final Map<String, Object> details = new HashMap<>();
 
     public static ValidationResult valid(final String validatorName) {
         return ValidationResult.builder()
@@ -31,7 +31,7 @@ public class ValidationResult {
                 .build();
     }
 
-    public static ValidationResult valid(final String validatorName, final Map<String, Double> details) {
+    public static ValidationResult valid(final String validatorName, final Map<String, Object> details) {
         return ValidationResult.builder()
                 .valid(true)
                 .validatorName(validatorName)
@@ -47,7 +47,7 @@ public class ValidationResult {
                 .build();
     }
 
-    public static ValidationResult invalid(final String validatorName, final String reason, final Map<String, Double> details) {
+    public static ValidationResult invalid(final String validatorName, final String reason, final Map<String, Object> details) {
         return ValidationResult.builder()
                 .valid(false)
                 .validatorName(validatorName)
