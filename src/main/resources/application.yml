@@ -56,5 +56,4 @@ logging:
 # -Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
 
 security:
-  api-key: ${API_KEY:ZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy} # Base64 encoded UUID
-  allowed-ips: ${ALLOWED_IPS:127.0.0.1,::1,0:0:0:0:0:0:0:1} # Comma-separated list of allowed IPs 
+  api-key: ${API_KEY:ZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy} # Base64 encoded UUID 

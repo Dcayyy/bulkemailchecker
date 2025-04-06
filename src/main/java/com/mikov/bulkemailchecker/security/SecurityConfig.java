@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Security configuration for the Bulk Email Checker service.
- * Implements API key validation and IP whitelisting.
+ * Implements API key validation for service-to-service authentication.
  * 
  * @author zahari.mikov
  */
@@ -27,12 +27,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final ApiKeyAuthFilter apiKeyAuthFilter;
-    private final IpWhitelistFilter ipWhitelistFilter;
 
-    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter,
-                         IpWhitelistFilter ipWhitelistFilter) {
+    public SecurityConfig(ApiKeyAuthFilter apiKeyAuthFilter) {
         this.apiKeyAuthFilter = apiKeyAuthFilter;
-        this.ipWhitelistFilter = ipWhitelistFilter;
     }
 
     @Bean
@@ -46,7 +43,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )
-            .addFilterBefore(ipWhitelistFilter, BasicAuthenticationFilter.class)
             .addFilterBefore(apiKeyAuthFilter, BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((request, response, authException) -> {
