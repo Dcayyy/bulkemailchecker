@@ -2,6 +2,7 @@ package com.mikov.bulkemailchecker.services;
 
 import com.mikov.bulkemailchecker.model.EmailVerificationResponse;
 import com.mikov.bulkemailchecker.dtos.ValidationResult;
+import com.mikov.bulkemailchecker.model.ServiceValidationResult;
 import com.mikov.bulkemailchecker.validation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.time.Instant;
 
 /**
- * Service for handling email verification
+ * Service for handling email verification.
+ * This service coordinates between the validation package (using ValidationResult)
+ * and the service layer (using ServiceValidationResult).
  * 
  * @author zahari.mikov
  */

@@ -4,18 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Result of email validation
+ * Service-level result of email validation.
+ * Used specifically for the service layer validation results.
+ * This is the internal model used within the service components.
  * 
  * @author zahari.mikov
  */
-public class ValidationResult {
+public class ServiceValidationResult {
     private final boolean isValid;
     private final String validator;
     private final double confidence;
     private final String reason;
     private final Map<String, Double> details;
     
-    private ValidationResult(final boolean isValid, final String validator, final double confidence, 
+    private ServiceValidationResult(final boolean isValid, final String validator, final double confidence, 
             final String reason, final Map<String, Double> details) {
         this.isValid = isValid;
         this.validator = validator;
@@ -29,20 +31,20 @@ public class ValidationResult {
      * @param validator Name of the validator
      * @param confidence Confidence score (0-1)
      * @param details Additional details
-     * @return ValidationResult
+     * @return ServiceValidationResult
      */
-    public static ValidationResult valid(final String validator, final double confidence, final Map<String, Double> details) {
-        return new ValidationResult(true, validator, confidence, null, details);
+    public static ServiceValidationResult valid(final String validator, final double confidence, final Map<String, Double> details) {
+        return new ServiceValidationResult(true, validator, confidence, null, details);
     }
     
     /**
      * Create an invalid result
      * @param validator Name of the validator
      * @param reason Reason for invalidity
-     * @return ValidationResult
+     * @return ServiceValidationResult
      */
-    public static ValidationResult invalid(final String validator, final String reason) {
-        return new ValidationResult(false, validator, 0.0, reason, new HashMap<>());
+    public static ServiceValidationResult invalid(final String validator, final String reason) {
+        return new ServiceValidationResult(false, validator, 0.0, reason, new HashMap<>());
     }
     
     public boolean isValid() {

@@ -1,6 +1,6 @@
 package com.mikov.bulkemailchecker.services;
 
-import com.mikov.bulkemailchecker.model.ValidationResult;
+import com.mikov.bulkemailchecker.model.ServiceValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -69,18 +69,18 @@ public class SMTPValidator implements EmailValidator {
     }
     
     @Override
-    public ValidationResult validate(final String email) {
+    public ServiceValidationResult validate(final String email) {
         logger.debug("BEGIN SMTP validation for: {}", email);
         
         if (email == null || email.isBlank()) {
             logger.debug("Email is null or empty: {}", email);
-            return ValidationResult.invalid(getName(), "Email is null or empty");
+            return ServiceValidationResult.invalid(getName(), "Email is null or empty");
         }
         
         final var parts = email.split("@", 2);
         if (parts.length != 2) {
             logger.debug("Invalid email format: {}", email);
-            return ValidationResult.invalid(getName(), "Invalid email format");
+            return ServiceValidationResult.invalid(getName(), "Invalid email format");
         }
         
         final var localPart = parts[0];
@@ -98,22 +98,22 @@ public class SMTPValidator implements EmailValidator {
         if (cachedResult != null && !cachedResult.isExpired()) {
             if (cachedResult.isCatchAll) {
                 logger.debug("Cache hit (catch-all domain) for email: {}", email);
-                return ValidationResult.valid(getName(), 0.5, createDetailsMap(true, "Catch-all domain", 
+                return ServiceValidationResult.valid(getName(), 0.5, createDetailsMap(true, "Catch-all domain", 
                         cachedResult.smtpServer, cachedResult.ipAddress, cachedResult.provider));
             } else if (cachedResult.validEmails.contains(localPart)) {
                 logger.debug("Cache hit (valid email) for email: {}", email);
-                return ValidationResult.valid(getName(), 1.0, createDetailsMap(false, null, 
+                return ServiceValidationResult.valid(getName(), 1.0, createDetailsMap(false, null, 
                         cachedResult.smtpServer, cachedResult.ipAddress, cachedResult.provider));
             } else if (cachedResult.invalidEmails.contains(localPart)) {
                 logger.debug("Cache hit (invalid email) for email: {}", email);
-                return ValidationResult.invalid(getName(), "Email not deliverable");
+                return ServiceValidationResult.invalid(getName(), "Email not deliverable");
             }
         }
         
         // Check if domain is being throttled
         if (isThrottled(domain)) {
             logger.debug("Domain {} is throttled, skipping SMTP check for email: {}", domain, email);
-            return ValidationResult.valid(getName(), 0.5, createDetailsMap(false, "Domain throttled, skipping check", "", "", ""));
+            return ServiceValidationResult.valid(getName(), 0.5, createDetailsMap(false, "Domain throttled, skipping check", "", "", ""));
         }
         
         try {
@@ -122,7 +122,7 @@ public class SMTPValidator implements EmailValidator {
             final var mxHosts = getMxRecordsWithCaching(domain);
             if (mxHosts == null || mxHosts.length == 0) {
                 logger.debug("No MX records found for domain {} (email: {})", domain, email);
-                return ValidationResult.invalid(getName(), "No MX records found");
+                return ServiceValidationResult.invalid(getName(), "No MX records found");
             }
             
             // Get provider information from MX records
@@ -140,7 +140,7 @@ public class SMTPValidator implements EmailValidator {
                 if (isCatchAll) {
                     logger.debug("Advanced detection confirmed catch-all domain: {}", domain);
                     updateCache(domain, true, new HashSet<>(), new HashSet<>(), serverInfo.hostname, serverInfo.ipAddress, serverInfo.provider);
-                    return ValidationResult.valid(getName(), 0.5, createDetailsMap(true, "Catch-all domain", 
+                    return ServiceValidationResult.valid(getName(), 0.5, createDetailsMap(true, "Catch-all domain", 
                             serverInfo.hostname, serverInfo.ipAddress, serverInfo.provider));
                 }
                 
@@ -173,7 +173,7 @@ public class SMTPValidator implements EmailValidator {
                     final var validEmails = new HashSet<String>();
                     validEmails.add(localPart);
                     updateCache(domain, false, validEmails, new HashSet<>(), serverInfo.hostname, serverInfo.ipAddress, serverInfo.provider);
-                    return ValidationResult.valid(getName(), 1.0, createDetailsMap(false, null, 
+                    return ServiceValidationResult.valid(getName(), 1.0, createDetailsMap(false, null, 
                             serverInfo.hostname, serverInfo.ipAddress, serverInfo.provider));
                 } else {
                     // Email is invalid
@@ -181,18 +181,18 @@ public class SMTPValidator implements EmailValidator {
                     final var invalidEmails = new HashSet<String>();
                     invalidEmails.add(localPart);
                     updateCache(domain, false, new HashSet<>(), invalidEmails, serverInfo.hostname, serverInfo.ipAddress, serverInfo.provider);
-                    return ValidationResult.invalid(getName(), "Email not deliverable");
+                    return ServiceValidationResult.invalid(getName(), "Email not deliverable");
                 }
             }
             
             // All MX servers gave temporary errors
             logger.debug("All MX servers gave temporary errors for email: {}", email);
-            return ValidationResult.valid(getName(), 0.3, createDetailsMap(false, "Temporary SMTP error", 
+            return ServiceValidationResult.valid(getName(), 0.3, createDetailsMap(false, "Temporary SMTP error", 
                     mxHosts[0], getIpAddress(mxHosts[0]), identifyProvider(new String[]{mxHosts[0]})));
             
         } catch (final Exception e) {
             logger.warn("SMTP validation failed for email {}: {}", email, e.getMessage());
-            return ValidationResult.valid(getName(), 0.3, createDetailsMap(false, "SMTP check error: " + e.getMessage(), "", "", ""));
+            return ServiceValidationResult.valid(getName(), 0.3, createDetailsMap(false, "SMTP check error: " + e.getMessage(), "", "", ""));
         } finally {
             logger.debug("END SMTP validation for: {}", email);
             // Always increment throttle count to prevent overloading SMTP servers

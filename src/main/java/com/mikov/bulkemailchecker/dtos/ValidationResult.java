@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Holds the result of an email validation.
+ * Data Transfer Object (DTO) that holds the result of an email validation.
+ * Used for transferring validation results between layers of the application.
+ * This is the primary validation result class used throughout the validation pipeline.
  *
  * @author zahari.mikov
  */
