@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -35,17 +33,17 @@ public class BulkEmailCheckerService {
     private final SMTPValidator smtpValidator;
     private final SyntaxValidator syntaxValidator; 
     private final MXRecordValidator mxRecordValidator;
-    private final ExecutorService executorService;
     private final TaskExecutor taskExecutor;
 
     @Autowired
-    public BulkEmailCheckerService(final SMTPValidator smtpValidator, final SyntaxValidator syntaxValidator, 
-                                  final MXRecordValidator mxRecordValidator, final TaskExecutor taskExecutor) {
+    public BulkEmailCheckerService(final SMTPValidator smtpValidator,
+                                   final SyntaxValidator syntaxValidator,
+                                   final MXRecordValidator mxRecordValidator,
+                                   final TaskExecutor taskExecutor) {
         this.smtpValidator = smtpValidator;
         this.syntaxValidator = syntaxValidator;
         this.mxRecordValidator = mxRecordValidator;
         this.taskExecutor = taskExecutor;
-        this.executorService = Executors.newVirtualThreadPerTaskExecutor();
     }
 
     public EmailVerificationResponse verifyEmail(final String email) {
@@ -63,6 +61,7 @@ public class BulkEmailCheckerService {
                     .withMessage(formatResult.getReason())
                     .withHasMx(false)
                     .withCountry("")
+                    .withEvent("is_non-existent")
                     .build();
                     
             logger.info("Email verification result for {}: INVALID FORMAT", email);
@@ -80,6 +79,7 @@ public class BulkEmailCheckerService {
                     .withMessage("No MX records found for domain " + domain)
                     .withHasMx(false)
                     .withCountry("")
+                    .withEvent("is_non-existent")
                     .build();
                     
             logger.info("Email verification result for {}: NO MX RECORDS", email);
@@ -130,6 +130,7 @@ public class BulkEmailCheckerService {
                     .withMessage("This domain appears to be a catch-all domain. While this email may be deliverable, the domain accepts mail for any address.")
                     .withHasMx(true)
                     .withCountry("")
+                    .withEvent("is_catchall")
                     .build();
                     
             logger.info("Email verification result for {}: CATCH-ALL DOMAIN", email);
@@ -140,6 +141,7 @@ public class BulkEmailCheckerService {
                     .withMessage("Email address exists and can receive email")
                     .withHasMx(true)
                     .withCountry("")
+                    .withEvent("is_deliverable")
                     .build();
                     
             logger.info("Email verification result for {}: DELIVERABLE", email);
@@ -150,6 +152,7 @@ public class BulkEmailCheckerService {
                     .withMessage("Email address does not exist")
                     .withHasMx(true)
                     .withCountry("")
+                    .withEvent("is_non-existent")
                     .build();
                     
             logger.info("Email verification result for {}: UNDELIVERABLE", email);
@@ -221,6 +224,7 @@ public class BulkEmailCheckerService {
                                 .withMessage("Email verification was interrupted")
                                 .withHasMx(false)
                                 .withCountry("")
+                                .withEvent("inconclusive")
                                 .build();
                     }
                 }, taskExecutor);

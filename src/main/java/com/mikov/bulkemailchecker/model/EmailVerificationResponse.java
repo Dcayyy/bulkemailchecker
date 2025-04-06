@@ -35,6 +35,8 @@ public class EmailVerificationResponse {
     private final long responseTime;
     private final String createdAt;
     private final int retries;
+    private final String event;
+    private final String details;
     
     private EmailVerificationResponse(final Builder builder) {
         this.id = builder.id;
@@ -59,6 +61,8 @@ public class EmailVerificationResponse {
         this.responseTime = builder.responseTime;
         this.createdAt = builder.createdAt;
         this.retries = builder.retries;
+        this.event = builder.event;
+        this.details = builder.details;
     }
     
     public static class Builder {
@@ -84,6 +88,8 @@ public class EmailVerificationResponse {
         private long responseTime = 0;
         private String createdAt = OffsetDateTime.now().toString();
         private int retries = 0;
+        private String event = null;
+        private String details = null;
         
         public Builder(final String email) {
             this.email = email;
@@ -134,11 +140,6 @@ public class EmailVerificationResponse {
             return this;
         }
         
-        public Builder withRetries(final int retries) {
-            this.retries = retries;
-            return this;
-        }
-        
         public Builder withDisposable(final boolean disposable) {
             this.disposable = disposable;
             return this;
@@ -176,6 +177,11 @@ public class EmailVerificationResponse {
         
         public Builder withCreatedAt(final String createdAt) {
             this.createdAt = createdAt;
+            return this;
+        }
+        
+        public Builder withEvent(final String event) {
+            this.event = event;
             return this;
         }
         

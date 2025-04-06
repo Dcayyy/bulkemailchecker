@@ -96,6 +96,7 @@ public class BulkEmailCheckerController {
                 .withSmtpServer("")
                 .withIpAddress("")
                 .withAdditionalInfo("")
+                .withEvent("inconclusive")
                 .build();
     }
 }
