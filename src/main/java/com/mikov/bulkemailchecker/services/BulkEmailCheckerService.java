@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.time.Instant;
 
@@ -24,6 +27,12 @@ import java.time.Instant;
 @Service
 public class BulkEmailCheckerService {
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerService.class);
+    
+    // Maximum concurrent requests per domain to avoid overwhelming servers
+    private static final int MAX_CONCURRENT_PER_DOMAIN = 5;
+    
+    // Map to store rate limiters for each domain
+    private final ConcurrentHashMap<String, Semaphore> domainLimiters = new ConcurrentHashMap<>();
 
     private final SMTPValidator smtpValidator;
     private final SyntaxValidator syntaxValidator; 
@@ -180,19 +189,46 @@ public class BulkEmailCheckerService {
 
     private ArrayList<CompletableFuture<EmailVerificationResponse>> getVerifiedEmails(final Map<String, List<String>> emailsByDomain) {
         final var futures = new ArrayList<CompletableFuture<EmailVerificationResponse>>();
+        
         for (final var entry : emailsByDomain.entrySet()) {
+            final var domain = entry.getKey();
             final var domainEmails = entry.getValue();
-
-            domainEmails.forEach(email -> {
-                final var future = CompletableFuture.supplyAsync(() -> verifyEmail(email), executorService);
-                futures.add(future);
-                try {
-                    Thread.sleep(100);
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            });
+            final var domainLimiter = domainLimiters.computeIfAbsent(
+                domain, k -> new Semaphore(MAX_CONCURRENT_PER_DOMAIN)
+            );
+            
+            for (final var email : domainEmails) {
+                final var emailFuture = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        if (!domainLimiter.tryAcquire(30, TimeUnit.SECONDS)) {
+                            logger.warn("Timeout waiting for rate limit permit for domain {}", domain);
+                        }
+                        
+                        try {
+                            return verifyEmail(email);
+                        } finally {
+                            domainLimiter.release();
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        logger.error("Interrupted while waiting for rate limit permit", e);
+                        
+                        return new EmailVerificationResponse.Builder(email)
+                                .withCreatedAt(Instant.now().toString())
+                                .withStatus("error")
+                                .withValid(false)
+                                .withResultCode("rate_limit_error")
+                                .withMessage("Email verification was interrupted")
+                                .withHasMx(false)
+                                .withCountry("")
+                                .build();
+                    }
+                }, executorService);
+                
+                futures.add(emailFuture);
+            }
         }
+        
         return futures;
     }
 
