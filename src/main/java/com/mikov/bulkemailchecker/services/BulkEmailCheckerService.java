@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +36,15 @@ public class BulkEmailCheckerService {
     private final SyntaxValidator syntaxValidator; 
     private final MXRecordValidator mxRecordValidator;
     private final ExecutorService executorService;
+    private final TaskExecutor taskExecutor;
 
     @Autowired
     public BulkEmailCheckerService(final SMTPValidator smtpValidator, final SyntaxValidator syntaxValidator, 
-                                  final MXRecordValidator mxRecordValidator) {
+                                  final MXRecordValidator mxRecordValidator, final TaskExecutor taskExecutor) {
         this.smtpValidator = smtpValidator;
         this.syntaxValidator = syntaxValidator;
         this.mxRecordValidator = mxRecordValidator;
+        this.taskExecutor = taskExecutor;
         this.executorService = Executors.newVirtualThreadPerTaskExecutor();
     }
 
@@ -220,7 +223,7 @@ public class BulkEmailCheckerService {
                                 .withCountry("")
                                 .build();
                     }
-                }, executorService);
+                }, taskExecutor);
                 
                 futures.add(emailFuture);
             }

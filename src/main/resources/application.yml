@@ -14,6 +14,11 @@ spring:
   mvc:
     async:
       request-timeout: 30s
+  # Disable default security
+  security:
+    user:
+      name: disabled
+      password: disabled
 
 # Server configuration
 server:
@@ -43,8 +48,13 @@ logging:
     root: INFO
     com.mikov.bulkemailchecker: INFO
     org.springframework.web: WARN
+    org.springframework.security: INFO
   pattern:
     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 # JVM Options to add when deploying:
-# -Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication 
+# -Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
+
+security:
+  api-key: ${API_KEY:ZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy} # Base64 encoded UUID
+  allowed-ips: ${ALLOWED_IPS:127.0.0.1,::1,0:0:0:0:0:0:0:1} # Comma-separated list of allowed IPs 
