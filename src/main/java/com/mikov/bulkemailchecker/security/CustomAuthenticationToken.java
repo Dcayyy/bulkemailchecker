@@ -19,7 +19,7 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken imple
     private static final long serialVersionUID = 1L;
 
     private final Object principal;
-    private Object credentials;
+    private final Object credentials;
 
     public CustomAuthenticationToken(Object principal, Object credentials,
                                    Collection<? extends GrantedAuthority> authorities) {
