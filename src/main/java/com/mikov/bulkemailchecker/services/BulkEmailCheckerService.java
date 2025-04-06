@@ -1,7 +1,7 @@
 package com.mikov.bulkemailchecker.services;
 
 import com.mikov.bulkemailchecker.model.EmailVerificationResponse;
-import com.mikov.bulkemailchecker.dtos.ValidationResult;
+import com.mikov.bulkemailchecker.dtos.EmailCacheEntry;
 import com.mikov.bulkemailchecker.validation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,7 @@ public class BulkEmailCheckerService {
     private final MXRecordValidator mxRecordValidator;
     private final ExecutorService executorService;
     
-    private final ConcurrentHashMap<String, CachedResult> resultCache = new ConcurrentHashMap<>();
-    private static final long CACHE_TTL_MS = TimeUnit.MINUTES.toMillis(30);
+    private final ConcurrentHashMap<String, EmailCacheEntry> resultCache = new ConcurrentHashMap<>();
 
     @Autowired
     public BulkEmailCheckerService(final SMTPValidator smtpValidator, final SyntaxValidator syntaxValidator, 
@@ -48,19 +47,25 @@ public class BulkEmailCheckerService {
 
     @SuppressWarnings("unchecked")
     public EmailVerificationResponse verifyEmail(final String email) {
+        logger.info("Verifying email: {}", email);
+        
         final var normalizedEmail = email.trim().toLowerCase();
         final var builder = new EmailVerificationResponse.Builder(normalizedEmail)
                 .withCreatedAt(Instant.now().toString());
 
         final var formatResult = syntaxValidator.validate(normalizedEmail);
         if (!formatResult.isValid()) {
-            return builder.withStatus("invalid")
+            final var response = builder.withStatus("invalid")
                     .withValid(false)
                     .withResultCode("invalid_format")
                     .withMessage(formatResult.getReason())
                     .withHasMx(false)
                     .withCountry("")
                     .build();
+                    
+            // Log the verification result
+            logger.info("Email verification result for {}: INVALID FORMAT", email);
+            return response;
         }
 
         final var parts = normalizedEmail.split("@", 2);
@@ -68,13 +73,17 @@ public class BulkEmailCheckerService {
 
         final var mxRecordResult = mxRecordValidator.validate(normalizedEmail);
         if (!mxRecordResult.isValid()) {
-            return builder.withStatus("invalid")
+            final var response = builder.withStatus("invalid")
                     .withValid(false)
                     .withResultCode("mx_record_not_found")
                     .withMessage("No MX records found for domain " + domain)
                     .withHasMx(false)
                     .withCountry("")
                     .build();
+                    
+            // Log the verification result
+            logger.info("Email verification result for {}: NO MX RECORDS", email);
+            return response;
         }
 
         builder.withHasMx(true);
@@ -116,32 +125,43 @@ public class BulkEmailCheckerService {
             }
         }
 
+        EmailVerificationResponse response;
         if (isCatchAll) {
-            return builder.withStatus("unknown")
+            response = builder.withStatus("unknown")
                     .withValid(true)
                     .withResultCode("is_catchall")
                     .withMessage("This domain appears to be a catch-all domain. While this email may be deliverable, the domain accepts mail for any address.")
                     .withHasMx(true)
                     .withCountry("")
                     .build();
+                    
+            // Log the verification result
+            logger.info("Email verification result for {}: CATCH-ALL DOMAIN", email);
         } else if (smtpResult.isValid()) {
-            return builder.withStatus("deliverable")
+            response = builder.withStatus("deliverable")
                     .withValid(true)
                     .withResultCode("success")
                     .withMessage("Email address exists and can receive email")
                     .withHasMx(true)
                     .withCountry("")
                     .build();
+                    
+            // Log the verification result
+            logger.info("Email verification result for {}: DELIVERABLE", email);
         } else {
-            // Handle invalid email
-            return builder.withStatus("undeliverable")
+            response = builder.withStatus("undeliverable")
                     .withValid(false)
                     .withResultCode("failure")
                     .withMessage("Email address does not exist")
                     .withHasMx(true)
                     .withCountry("")
                     .build();
+                    
+            // Log the verification result
+            logger.info("Email verification result for {}: UNDELIVERABLE", email);
         }
+        
+        return response;
     }
 
     private String getAdditionalInfoValue(final Map<String, Double> details, final String key) {
@@ -158,6 +178,9 @@ public class BulkEmailCheckerService {
     }
 
     public List<EmailVerificationResponse> verifyEmails(final List<String> emails) {
+        // Log the number of emails being verified
+        logger.info("Verifying batch of {} emails", emails.size());
+        
         final var emailsByDomain = emails.stream()
                 .collect(Collectors.groupingBy(this::extractDomain));
         
@@ -176,9 +199,14 @@ public class BulkEmailCheckerService {
             });
         }
         
-        return futures.stream()
+        final var results = futures.stream()
                 .map(CompletableFuture::join)
                 .collect(Collectors.toList());
+                
+        // Log the completion of batch verification
+        logger.info("Completed verification of {} emails", emails.size());
+        
+        return results;
     }
     
     private String extractDomain(final String email) {
@@ -195,7 +223,7 @@ public class BulkEmailCheckerService {
                 try {
                     Thread.sleep(TimeUnit.MINUTES.toMillis(5));
                     final var currentTime = System.currentTimeMillis();
-                    resultCache.entrySet().removeIf(entry -> entry.getValue().isExpired(currentTime));
+                    resultCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
@@ -204,17 +232,5 @@ public class BulkEmailCheckerService {
         });
         cleanupThread.setDaemon(true);
         cleanupThread.start();
-    }
-    
-    private static class CachedResult {
-        private final long timestamp;
-        
-        public CachedResult(final EmailVerificationResponse response) {
-            this.timestamp = System.currentTimeMillis();
-        }
-
-        public boolean isExpired(final long currentTime) {
-            return currentTime - timestamp > CACHE_TTL_MS;
-        }
     }
 }
