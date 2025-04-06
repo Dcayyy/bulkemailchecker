@@ -1,6 +1,6 @@
 package com.mikov.bulkemailchecker.services;
 
-import com.mikov.bulkemailchecker.model.ServiceValidationResult;
+import com.mikov.bulkemailchecker.dtos.ValidationResult;
 
 /**
  * Interface for email validation in the services package
@@ -14,7 +14,7 @@ public interface EmailValidator {
      * @param email Email to validate
      * @return Validation result
      */
-    ServiceValidationResult validate(final String email);
+    ValidationResult validate(final String email);
     
     /**
      * Gets the name of the validator
