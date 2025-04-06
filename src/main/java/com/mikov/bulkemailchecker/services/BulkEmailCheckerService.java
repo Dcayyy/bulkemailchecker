@@ -71,8 +71,10 @@ public class BulkEmailCheckerService {
         if (!formatResult.isValid()) {
             return builder.withStatus("invalid")
                     .withValid(false)
-                    .withResultCode("invalid_email")
+                    .withResultCode("invalid_format")
                     .withMessage(formatResult.getReason())
+                    .withHasMx(false)
+                    .withCountry("")
                     .build();
         }
 
@@ -87,8 +89,14 @@ public class BulkEmailCheckerService {
                     .withValid(false)
                     .withResultCode("mx_record_not_found")
                     .withMessage("No MX records found for domain " + domain)
+                    .withHasMx(false)
+                    .withCountry("")
                     .build();
         }
+
+        // MX records exist, set hasMx to true for all subsequent responses
+        builder.withHasMx(true);
+        builder.withCountry("");
 
         // Validate SMTP
         final var smtpResult = smtpValidator.validate(normalizedEmail);
@@ -96,6 +104,9 @@ public class BulkEmailCheckerService {
         String smtpServer = null;
         String ipAddress = null;
         String provider = null;
+        
+        // Always set hasMx based on previous MX validation
+        builder.withHasMx(true);
         
         // Extract additional information from SMTP result details
         if (smtpResult.getDetails() != null) {
@@ -137,21 +148,27 @@ public class BulkEmailCheckerService {
             return builder.withStatus("unknown")
                     .withValid(true)
                     .withResultCode("is_catchall")
-                    .withMessage("Email cannot be verified (catch-all domain)")
+                    .withMessage("This domain appears to be a catch-all domain. While this email may be deliverable, the domain accepts mail for any address.")
+                    .withHasMx(true)
+                    .withCountry("")
                     .build();
         } else if (smtpResult.isValid()) {
             // Handle valid email
             return builder.withStatus("deliverable")
                     .withValid(true)
-                    .withResultCode("mailbox_exists")
+                    .withResultCode("success")
                     .withMessage("Email address exists and can receive email")
+                    .withHasMx(true)
+                    .withCountry("")
                     .build();
         } else {
             // Handle invalid email
             return builder.withStatus("undeliverable")
                     .withValid(false)
-                    .withResultCode("mailbox_does_not_exist")
+                    .withResultCode("failure")
                     .withMessage("Email address does not exist")
+                    .withHasMx(true)
+                    .withCountry("")
                     .build();
         }
     }
@@ -246,25 +263,14 @@ public class BulkEmailCheckerService {
         });
     }
     
-    private EmailVerificationResponse createThrottledResponse(String email, long startTime) {
-        long responseTime = System.currentTimeMillis() - startTime;
-        
-        return new EmailVerificationResponse.Builder(email)
+    private EmailVerificationResponse createThrottledResponse() {
+        return new EmailVerificationResponse.Builder("")
                 .withStatus("unknown")
                 .withValid(false)
-                .withResultCode("rate_limited")
-                .withMessage("Too many requests for this domain. Please try again later.")
-                .withResponseTime(responseTime)
-                .withDisposable(false)
-                .withRole(false)
-                .withSubAddressing(false)
-                .withFree(false)
-                .withSpam(false)
                 .withHasMx(false)
                 .withCountry("")
-                .withSmtpServer("")
-                .withIpAddress("")
-                .withAdditionalInfo("")
+                .withMessage("Too many requests. Please reduce rate of requests.")
+                .withResultCode("throttle_limit_reached")
                 .build();
     }
     

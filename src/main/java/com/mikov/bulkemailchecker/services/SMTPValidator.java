@@ -541,6 +541,8 @@ public class SMTPValidator implements EmailValidator {
         final var details = new HashMap<String, Double>();
         details.put("smtp-validated", 1.0);
         details.put("catch-all", isCatchAll ? 1.0 : 0.0);
+        details.put("has-mx", 1.0);  // Always include hasMx=true since this validator only runs after MX check
+        
         if (reason != null) {
             details.put("reason", 1.0);
             details.put("reason-text", encodeStringAsDouble(reason));
