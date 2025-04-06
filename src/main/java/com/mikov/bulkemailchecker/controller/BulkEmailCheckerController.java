@@ -31,7 +31,6 @@ public class BulkEmailCheckerController {
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerController.class);
     private static final long RESPONSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(120);
     
-    // Limit concurrent batch verification requests
     private static final int MAX_CONCURRENT_BATCH_REQUESTS = 5;
     private static final int MAX_CONCURRENT_SINGLE_REQUESTS = 15;
     private static final int MAX_EMAILS_PER_BATCH = 25;
@@ -40,7 +39,6 @@ public class BulkEmailCheckerController {
     private final Semaphore batchRequestThrottler = new Semaphore(MAX_CONCURRENT_BATCH_REQUESTS, true);
     private final Semaphore singleRequestThrottler = new Semaphore(MAX_CONCURRENT_SINGLE_REQUESTS, true);
     
-    // Queue for handling requests that exceed the concurrent limit
     private final ConcurrentLinkedQueue<PendingRequest> requestQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean queueProcessorRunning = new AtomicBoolean(false);
     
@@ -55,18 +53,15 @@ public class BulkEmailCheckerController {
     public DeferredResult<ResponseEntity<EmailVerificationResponse>> verifyEmail(@PathVariable final String email) {
         final var deferredResult = new DeferredResult<ResponseEntity<EmailVerificationResponse>>(RESPONSE_TIMEOUT_MS);
         
-        // Try to acquire a permit immediately
         boolean permitAcquired = singleRequestThrottler.tryAcquire();
         if (permitAcquired) {
             processEmailVerification(email, deferredResult);
         } else {
-            // If we can't get a permit immediately, try to queue the request
             if (requestQueue.size() < QUEUE_CAPACITY) {
                 logger.info("Queuing email verification request for: {}", email);
                 requestQueue.add(new PendingRequest(email, deferredResult, null));
                 startQueueProcessor(); // Ensure the queue processor is running
             } else {
-                // If the queue is full, return a throttling response
                 logger.warn("Request queue full, rejecting verification request for email: {}", email);
                 deferredResult.setResult(ResponseEntity.status(429)
                     .body(createErrorResponse(email, "Too many requests. Please try again later.")));
@@ -87,7 +82,6 @@ public class BulkEmailCheckerController {
             return emptyResult;
         }
         
-        // Limit batch size
         if (request.emails().size() > MAX_EMAILS_PER_BATCH) {
             logger.warn("Batch email verification request exceeds maximum allowed size: {} emails", request.emails().size());
             final var errorResult = new DeferredResult<ResponseEntity<List<EmailVerificationResponse>>>(RESPONSE_TIMEOUT_MS);
@@ -101,18 +95,15 @@ public class BulkEmailCheckerController {
         
         final var deferredResult = new DeferredResult<ResponseEntity<List<EmailVerificationResponse>>>(RESPONSE_TIMEOUT_MS);
         
-        // Try to acquire a permit immediately
         boolean permitAcquired = batchRequestThrottler.tryAcquire();
         if (permitAcquired) {
             processBatchVerification(request.emails(), deferredResult);
         } else {
-            // If we can't get a permit immediately, try to queue the request
             if (requestQueue.size() < QUEUE_CAPACITY) {
                 logger.info("Queuing batch verification request for {} emails", request.emails().size());
                 requestQueue.add(new PendingRequest(null, null, new BatchRequest(request.emails(), deferredResult)));
                 startQueueProcessor(); // Ensure the queue processor is running
             } else {
-                // If the queue is full, return a throttling response
                 logger.warn("Request queue full, rejecting batch verification of {} emails", request.emails().size());
                 deferredResult.setResult(ResponseEntity.status(429)
                     .body(Collections.singletonList(createErrorResponse("batch", 
@@ -134,8 +125,8 @@ public class BulkEmailCheckerController {
                 return null;
             })
             .whenComplete((r, e) -> {
-                singleRequestThrottler.release(); // Always release permit
-                processNextQueuedRequest(); // Process next request from queue
+                singleRequestThrottler.release();
+                processNextQueuedRequest();
             });
     }
     
@@ -149,8 +140,8 @@ public class BulkEmailCheckerController {
                 return null;
             })
             .whenComplete((r, e) -> {
-                batchRequestThrottler.release(); // Always release permit
-                processNextQueuedRequest(); // Process next request from queue
+                batchRequestThrottler.release();
+                processNextQueuedRequest();
             });
     }
     
@@ -170,26 +161,20 @@ public class BulkEmailCheckerController {
         queueProcessorRunning.set(true);
         
         if (request.email != null) {
-            // Handle single email request
             if (singleRequestThrottler.tryAcquire()) {
                 logger.debug("Processing queued single email request: {}", request.email);
                 processEmailVerification(request.email, request.singleResult);
             } else {
-                // Put it back in the queue if we can't process it yet
                 requestQueue.add(request);
-                // Wait briefly before trying again
                 CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
                     .execute(this::processNextQueuedRequest);
             }
         } else if (request.batchRequest != null) {
-            // Handle batch request
             if (batchRequestThrottler.tryAcquire()) {
                 logger.debug("Processing queued batch request with {} emails", request.batchRequest.emails.size());
                 processBatchVerification(request.batchRequest.emails, request.batchRequest.deferredResult);
             } else {
-                // Put it back in the queue if we can't process it yet
                 requestQueue.add(request);
-                // Wait briefly before trying again
                 CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
                     .execute(this::processNextQueuedRequest);
             }
@@ -222,35 +207,12 @@ public class BulkEmailCheckerController {
                 .withEvent("inconclusive")
                 .build();
     }
-    
-    /**
-     * Helper class to store pending requests in the queue
-     */
-    private static class PendingRequest {
-        final String email;
-        final DeferredResult<ResponseEntity<EmailVerificationResponse>> singleResult;
-        final BatchRequest batchRequest;
-        
-        PendingRequest(String email, 
-                      DeferredResult<ResponseEntity<EmailVerificationResponse>> singleResult,
-                      BatchRequest batchRequest) {
-            this.email = email;
-            this.singleResult = singleResult;
-            this.batchRequest = batchRequest;
-        }
+
+    private record PendingRequest(String email, DeferredResult<ResponseEntity<EmailVerificationResponse>> singleResult,
+                                  BatchRequest batchRequest) {
     }
-    
-    /**
-     * Helper class to store batch request details
-     */
-    private static class BatchRequest {
-        final List<String> emails;
-        final DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> deferredResult;
-        
-        BatchRequest(List<String> emails, 
-                   DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> deferredResult) {
-            this.emails = emails;
-            this.deferredResult = deferredResult;
-        }
+
+    private record BatchRequest(List<String> emails,
+                                DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> deferredResult) {
     }
 }
