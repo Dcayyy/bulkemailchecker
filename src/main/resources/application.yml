@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: BulkEmailChecker
+  docker:
+    compose:
+      enabled: false
+  # Enable response compression
+  server:
+    compression:
+      enabled: true
+      mime-types: application/json,application/xml,text/html,text/plain
+      min-response-size: 1024
+  # Set reasonable connection timeouts
+  mvc:
+    async:
+      request-timeout: 30s
+
+# Server configuration
+server:
+  port: 8081
+  # Enable HTTP/2
+  http2:
+    enabled: true
+  # Optimize connection handling
+  tomcat:
+    threads:
+      max: 20
+      min-spare: 5
+    max-connections: 200
+    accept-count: 100
+    connection-timeout: 5s
+    max-keep-alive-requests: 100
+    keep-alive-timeout: 30s
+  # Enable response compression
+  compression:
+    enabled: true
+    mime-types: application/json
+    min-response-size: 1024
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    com.mikov.bulkemailchecker: INFO
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# JVM Options to add when deploying:
+# -Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication 
