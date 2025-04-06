@@ -1,7 +1,6 @@
 package com.mikov.bulkemailchecker.services;
 
 import com.mikov.bulkemailchecker.model.EmailVerificationResponse;
-import com.mikov.bulkemailchecker.dtos.EmailCacheEntry;
 import com.mikov.bulkemailchecker.validation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +13,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.concurrent.ConcurrentHashMap;
 import java.time.Instant;
 
 /**
@@ -32,8 +29,6 @@ public class BulkEmailCheckerService {
     private final SyntaxValidator syntaxValidator; 
     private final MXRecordValidator mxRecordValidator;
     private final ExecutorService executorService;
-    
-    private final ConcurrentHashMap<String, EmailCacheEntry> resultCache = new ConcurrentHashMap<>();
 
     @Autowired
     public BulkEmailCheckerService(final SMTPValidator smtpValidator, final SyntaxValidator syntaxValidator, 
@@ -42,10 +37,8 @@ public class BulkEmailCheckerService {
         this.syntaxValidator = syntaxValidator;
         this.mxRecordValidator = mxRecordValidator;
         this.executorService = Executors.newVirtualThreadPerTaskExecutor();
-        startCacheCleanupTask();
     }
 
-    @SuppressWarnings("unchecked")
     public EmailVerificationResponse verifyEmail(final String email) {
         logger.info("Verifying email: {}", email);
         
@@ -63,7 +56,6 @@ public class BulkEmailCheckerService {
                     .withCountry("")
                     .build();
                     
-            // Log the verification result
             logger.info("Email verification result for {}: INVALID FORMAT", email);
             return response;
         }
@@ -81,7 +73,6 @@ public class BulkEmailCheckerService {
                     .withCountry("")
                     .build();
                     
-            // Log the verification result
             logger.info("Email verification result for {}: NO MX RECORDS", email);
             return response;
         }
@@ -90,10 +81,7 @@ public class BulkEmailCheckerService {
         builder.withCountry("");
 
         final var smtpResult = smtpValidator.validate(normalizedEmail);
-        boolean isCatchAll = false;
-        String smtpServer;
-        String ipAddress;
-        String provider;
+        var isCatchAll = false;
         
         builder.withHasMx(true);
         
@@ -104,28 +92,28 @@ public class BulkEmailCheckerService {
             }
             
             if (smtpResult.getDetails().containsKey("smtp-server")) {
-                smtpServer = getAdditionalInfoValue(smtpResult.getDetails(), "smtp-server");
-                if (smtpServer != null && !smtpServer.isEmpty()) {
-                    builder.withSmtpServer(smtpServer);
+                final var server = getAdditionalInfoValue(smtpResult.getDetails(), "smtp-server");
+                if (server != null && !server.isEmpty()) {
+                    builder.withSmtpServer(server);
                 }
             }
             
             if (smtpResult.getDetails().containsKey("ip-address")) {
-                ipAddress = getAdditionalInfoValue(smtpResult.getDetails(), "ip-address");
-                if (ipAddress != null && !ipAddress.isEmpty()) {
-                    builder.withIpAddress(ipAddress);
+                final var ip = getAdditionalInfoValue(smtpResult.getDetails(), "ip-address");
+                if (ip != null && !ip.isEmpty()) {
+                    builder.withIpAddress(ip);
                 }
             }
             
             if (smtpResult.getDetails().containsKey("provider")) {
-                provider = getAdditionalInfoValue(smtpResult.getDetails(), "provider");
-                if (provider != null && !provider.isEmpty()) {
-                    builder.withAdditionalInfo("Email provider: " + provider);
+                final var emailProvider = getAdditionalInfoValue(smtpResult.getDetails(), "provider");
+                if (emailProvider != null && !emailProvider.isEmpty()) {
+                    builder.withAdditionalInfo("Email provider: " + emailProvider);
                 }
             }
         }
 
-        EmailVerificationResponse response;
+        final EmailVerificationResponse response;
         if (isCatchAll) {
             response = builder.withStatus("unknown")
                     .withValid(true)
@@ -135,7 +123,6 @@ public class BulkEmailCheckerService {
                     .withCountry("")
                     .build();
                     
-            // Log the verification result
             logger.info("Email verification result for {}: CATCH-ALL DOMAIN", email);
         } else if (smtpResult.isValid()) {
             response = builder.withStatus("deliverable")
@@ -146,7 +133,6 @@ public class BulkEmailCheckerService {
                     .withCountry("")
                     .build();
                     
-            // Log the verification result
             logger.info("Email verification result for {}: DELIVERABLE", email);
         } else {
             response = builder.withStatus("undeliverable")
@@ -157,7 +143,6 @@ public class BulkEmailCheckerService {
                     .withCountry("")
                     .build();
                     
-            // Log the verification result
             logger.info("Email verification result for {}: UNDELIVERABLE", email);
         }
         
@@ -171,19 +156,29 @@ public class BulkEmailCheckerService {
                 return smtpValidator.getStringValue(encodedValue);
             }
             return null;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.warn("Error extracting additional info for {}: {}", key, e.getMessage());
             return null;
         }
     }
 
     public List<EmailVerificationResponse> verifyEmails(final List<String> emails) {
-        // Log the number of emails being verified
         logger.info("Verifying batch of {} emails", emails.size());
         
         final var emailsByDomain = emails.stream()
                 .collect(Collectors.groupingBy(this::extractDomain));
+
+        final var verifiedEmails = getVerifiedEmails(emailsByDomain);
+        final var results = verifiedEmails.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
+                
+        logger.info("Completed verification of {} emails", emails.size());
         
+        return results;
+    }
+
+    private ArrayList<CompletableFuture<EmailVerificationResponse>> getVerifiedEmails(Map<String, List<String>> emailsByDomain) {
         final var futures = new ArrayList<CompletableFuture<EmailVerificationResponse>>();
         for (final var entry : emailsByDomain.entrySet()) {
             final var domainEmails = entry.getValue();
@@ -193,44 +188,19 @@ public class BulkEmailCheckerService {
                 futures.add(future);
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             });
         }
-        
-        final var results = futures.stream()
-                .map(CompletableFuture::join)
-                .collect(Collectors.toList());
-                
-        // Log the completion of batch verification
-        logger.info("Completed verification of {} emails", emails.size());
-        
-        return results;
+        return futures;
     }
-    
+
     private String extractDomain(final String email) {
         final var atIndex = email.lastIndexOf('@');
         if (atIndex != -1 && atIndex < email.length() - 1) {
             return email.substring(atIndex + 1).toLowerCase();
         }
         return "";
-    }
-    
-    private void startCacheCleanupTask() {
-        final var cleanupThread = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    Thread.sleep(TimeUnit.MINUTES.toMillis(5));
-                    final var currentTime = System.currentTimeMillis();
-                    resultCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-        });
-        cleanupThread.setDaemon(true);
-        cleanupThread.start();
     }
 }
