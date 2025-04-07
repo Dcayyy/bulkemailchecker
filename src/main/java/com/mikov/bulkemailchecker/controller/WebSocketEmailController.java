@@ -88,9 +88,9 @@ public class WebSocketEmailController {
                 
                 // Process each email one at a time
                 for (String email : domainEmails) {
-                    // Verify email
+                    // Verify email using the enhanced method with catch-all heuristics
                     long startTime = System.currentTimeMillis();
-                    EmailVerificationResponse response = bulkEmailCheckerService.verifyEmail(email);
+                    EmailVerificationResponse response = bulkEmailCheckerService.validateEmailWithRetry(email);
                     ValidationResult result = convertToValidationResult(response);
                     long processingTime = System.currentTimeMillis() - startTime;
                     
@@ -106,6 +106,13 @@ public class WebSocketEmailController {
                     // Update progress
                     processedCount++;
                     sendStatusUpdate(sessionId, "PROGRESS", processedCount, totalEmails, stats);
+                    
+                    // Add a small delay between emails to reduce load
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }
             

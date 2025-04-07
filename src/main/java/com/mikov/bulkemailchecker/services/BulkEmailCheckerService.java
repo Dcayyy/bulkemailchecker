@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Service for bulk email verification.
@@ -60,83 +62,109 @@ public class BulkEmailCheckerService {
     /**
      * Verify a single email address
      */
-    public EmailVerificationResponse verifyEmail(final String email) {
-        final var startTime = Instant.now();
+    public EmailVerificationResponse verifyEmail(String email) {
         logger.info("Starting email verification for: {}", email);
         
+        if (email == null || email.isBlank()) {
+            logger.info("Email is null or empty: {}", email);
+            return new EmailVerificationResponse.Builder(email)
+                    .withStatus("invalid")
+                    .withResultCode("empty_email")
+                    .build();
+        }
+
+        // Clean email (trim, lowercase)
+        email = email.trim().toLowerCase();
+
         // Execute validation pipeline
-        final var result = executeValidationPipeline(email);
-        final var detailsByValidator = getDetailsByValidator(result);
+        ValidationResult result = executeValidationPipeline(email);
         
-        // Extract properties from validation results
-        final var hasMx = detailsByValidator.values().stream()
-                .anyMatch(details -> details.containsKey("has-mx") && details.get("has-mx") != null && 
-                        details.get("has-mx").toString().equals("1.0"));
-        
-        final var smtpValidated = detailsByValidator.containsKey("smtp") &&
-                detailsByValidator.get("smtp").containsKey("smtp-validated") &&
-                detailsByValidator.get("smtp").get("smtp-validated") != null &&
-                detailsByValidator.get("smtp").get("smtp-validated").toString().equals("1.0");
-        
-        // Check for pending verification (rate-limited)
-        Map<String, Object> smtpDetails = detailsByValidator.getOrDefault("smtp", new HashMap<>());
-        if (smtpDetails != null && smtpDetails.containsKey("event") && 
-                "retry_scheduled".equals(smtpDetails.get("event"))) {
-            
-            // Create a unique verification ID for this pending email
-            String verificationId = UUID.randomUUID().toString();
-            
-            // Create a pending response
-            EmailVerificationResponse pendingResponse = EmailVerificationResponse.createPendingResponse(
-                    email, "Email verification delayed due to rate limiting. Please check status endpoint.");
-            
-            // Store the pending future so it can be completed later when validation completes
-            CompletableFuture<EmailVerificationResponse> pendingFuture = new CompletableFuture<>();
-            pendingVerifications.put(verificationId, pendingFuture);
-            
-            // Schedule the completion of this pending verification when SMTP validator completes it
-            schedulePendingVerificationCompletion(email, verificationId);
-            
-            logger.info("Rate-limited email verification for {} queued with ID {}", email, verificationId);
-            return pendingResponse;
-        }
-        
-        final var detailMap = new HashMap<String, Object>();
-        for (final var entry : detailsByValidator.entrySet()) {
-            detailMap.putAll(entry.getValue());
-        }
-        
-        // Build response
-        final var responseBuilder = new EmailVerificationResponse.Builder(email)
-                .withValid(result.isValid())
-                .withResponseTime(Duration.between(startTime, Instant.now()).toMillis())
-                .withHasMx(hasMx);
-        
-        // Set flags based on validation results
-        setEmailVerificationFlags(responseBuilder, detailMap);
-        
-        // Set status and result code
+        // Determine email status based on the validity of the result
         String status;
+        
         if (!result.isValid()) {
             status = "invalid";
-        } else if (detailMap.containsKey("catch-all") && detailMap.get("catch-all").toString().equals("1.0")) {
-            status = "catch-all";
-        } else if (detailMap.containsKey("event") && 
-                  ("inconclusive".equals(detailMap.get("event")) || detailMap.get("event").toString().contains("inconclusive"))) {
-            status = "inconclusive";
+        } else if (result.getDetails() != null) {
+            // Check for specific cases in the result details
+            Map<String, Object> details = result.getDetails();
+            
+            // Check for catch-all domains
+            if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
+                status = "catch-all";
+            } 
+            // Check for DNS issues that might affect deliverability
+            else if (details.containsKey("has_dns_issues") && Boolean.TRUE.equals(details.get("has_dns_issues"))) {
+                // If there are DNS issues but the email is otherwise valid, mark as potentially valid
+                // but include the DNS issues in the response
+                status = "valid_with_warnings";
+            }
+            // Check for greylisting behavior
+            else if (details.containsKey("greylisting_detected") && Boolean.TRUE.equals(details.get("greylisting_detected"))) {
+                // If greylisting was detected and bypassed, the email is likely valid
+                status = "valid";
+            }
+            // Check for inconclusive events
+            else if (details.containsKey("event") && "inconclusive".equals(details.get("event"))) {
+                status = "inconclusive";
+            } else {
+                status = "valid";
+            }
         } else {
             status = "valid";
         }
         
-        final var resultCode = getResultCode(result);
+        // Get result code
+        String resultCode = getResultCode(result);
         
-        responseBuilder.withStatus(status)
-                .withResultCode(resultCode);
+        // Build response
+        EmailVerificationResponse.Builder responseBuilder = new EmailVerificationResponse.Builder(email)
+                .withStatus(status)
+                .withResultCode(resultCode)
+                .withValid(result.isValid());
                 
-        final var response = responseBuilder.build();
+        // Add details if available
+        if (result.getDetails() != null) {
+            Map<String, Object> details = result.getDetails();
+            
+            // Add basic SMTP details
+            if (details.containsKey("server")) {
+                responseBuilder.withSmtpServer((String) details.get("server"));
+            }
+            if (details.containsKey("ip_address")) {
+                responseBuilder.withIpAddress((String) details.get("ip_address"));
+            }
+            if (details.containsKey("event")) {
+                responseBuilder.withEvent((String) details.get("event"));
+            }
+            
+            // Handle MX record info
+            if (details.containsKey("has-mx")) {
+                responseBuilder.withHasMx(Boolean.TRUE.equals(details.get("has-mx")));
+            }
+            
+            // Add DNS verification details
+            StringBuilder additionalInfo = new StringBuilder();
+            if (details.containsKey("spf_record")) {
+                additionalInfo.append("SPF: ").append(details.get("spf_record"));
+            }
+            if (details.containsKey("dmarc_record")) {
+                if (additionalInfo.length() > 0) additionalInfo.append(", ");
+                additionalInfo.append("DMARC: ").append(details.get("dmarc_record"));
+            }
+            if (details.containsKey("dkim_record")) {
+                if (additionalInfo.length() > 0) additionalInfo.append(", ");
+                additionalInfo.append("DKIM: ").append(details.get("dkim_record"));
+            }
+            
+            if (additionalInfo.length() > 0) {
+                responseBuilder.withAdditionalInfo(additionalInfo.toString());
+            }
+        }
         
-        logger.info("Email verification result for {}: {}", email, response.getResultCode());
-        return response;
+        // Set current timestamp
+        responseBuilder.withCreatedAt(OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        
+        return responseBuilder.build();
     }
 
     /**
@@ -353,39 +381,43 @@ public class BulkEmailCheckerService {
         return "syntax".equals(validatorName) || "dns".equals(validatorName) || "mx-record".equals(validatorName);
     }
 
-    private String getResultCode(final ValidationResult result) {
-        final var detailsByValidator = getDetailsByValidator(result);
-        
-        if (detailsByValidator.containsKey("syntax") && !detailsByValidator.get("syntax").isEmpty()) {
-            if (!result.isValid()) {
-                return "invalid_format";
-            }
+    private String getResultCode(ValidationResult result) {
+        if (!result.isValid()) {
+            return result.getReason() != null ? result.getReason() : "invalid_email";
         }
         
-        if (detailsByValidator.containsKey("mx-record") && !detailsByValidator.get("mx-record").isEmpty()) {
-            if (!result.isValid()) {
-                return "no_mx_records";
-            }
-        }
-        
-        if (detailsByValidator.containsKey("smtp") && !detailsByValidator.get("smtp").isEmpty()) {
-            final var smtpDetails = detailsByValidator.get("smtp");
+        // If valid but with specific conditions
+        if (result.getDetails() != null) {
+            Map<String, Object> details = result.getDetails();
             
-            if (smtpDetails.containsKey("event")) {
-                final var event = smtpDetails.get("event").toString();
-                switch (event) {
-                    case "mailbox_exists": return "deliverable";
-                    case "mailbox_does_not_exist": return "undeliverable";
-                    case "is_catchall": return "catch_all";
-                    case "verification_pending": return "pending";
-                    case "retry_scheduled": return "pending";
-                    case "retry_limit_exceeded": return "inconclusive";
-                    default: return "inconclusive";
+            // Check for catch-all domains
+            if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
+                return "catch_all_domain";
+            }
+            
+            // Check for DNS issues
+            if (details.containsKey("has_dns_issues") && Boolean.TRUE.equals(details.get("has_dns_issues"))) {
+                if (details.containsKey("spf_record") && "missing".equals(details.get("spf_record"))) {
+                    return "missing_spf";
                 }
+                if (details.containsKey("dmarc_record") && "missing".equals(details.get("dmarc_record"))) {
+                    return "missing_dmarc";
+                }
+                return "dns_configuration_issues";
+            }
+            
+            // Check for greylisting
+            if (details.containsKey("greylisting_detected") && Boolean.TRUE.equals(details.get("greylisting_detected"))) {
+                return "greylisting_passed";
+            }
+            
+            // Check for inconclusive events
+            if (details.containsKey("event") && "inconclusive".equals(details.get("event"))) {
+                return "inconclusive_result";
             }
         }
         
-        return result.isValid() ? "deliverable" : "undeliverable";
+        return "valid_email";
     }
 
     private void setEmailVerificationFlags(final EmailVerificationResponse.Builder builder, 
@@ -476,86 +508,216 @@ public class BulkEmailCheckerService {
         return email.substring(email.indexOf('@') + 1).toLowerCase();
     }
 
-    private EmailVerificationResponse validateEmailWithRetry(String email) {
-        long startTime = System.currentTimeMillis();
+    /**
+     * Verify a single email address with retry and advanced catch-all analysis
+     */
+    public EmailVerificationResponse validateEmailWithRetry(final String email) {
+        final var startTime = Instant.now();
+        logger.info("Starting email verification for: {}", email);
         
-        try {
-            // Clean up the email first
-            email = email.trim().toLowerCase();
-            
-            // Run through the entire validation pipeline
-            ValidationResult validationResult = executeValidationPipeline(email);
-            
-            // Start building the response
-            EmailVerificationResponse.Builder responseBuilder = new EmailVerificationResponse.Builder(email)
-                .withResponseTime(System.currentTimeMillis() - startTime);
-            
-            // Set response based on validation result
-            if (validationResult.isValid()) {
-                Map<String, Object> details = validationResult.getDetails();
-                
-                // Check for catch-all domain
-                boolean isCatchAll = false;
-                if (details != null && details.containsKey("catch-all")) {
-                    isCatchAll = true;
-                    responseBuilder
-                        .withEvent("is_catchall")
-                        .withMessage("Catch-all domain detected")
-                        .withStatus("deliverable")
-                        .withResultCode("catch_all")
-                        .withValid(true);
-                } 
-                // Check for inconclusive results
-                else if (validationResult.getReason() != null && 
-                         (validationResult.getReason().contains("Inconclusive") || 
-                          validationResult.getReason().contains("rate limit") || 
-                          validationResult.getReason().contains("Rate limited"))) {
-                    responseBuilder
-                        .withStatus("inconclusive")
-                        .withResultCode("inconclusive")
-                        .withMessage(validationResult.getReason())
-                        .withEvent("inconclusive")
-                        .withValid(false);
-                }
-                // If valid and not catch-all
-                else {
-                    responseBuilder
-                        .withStatus("valid")
-                        .withResultCode("deliverable")
-                        .withMessage("Email appears deliverable")
-                        .withValid(true);
-                }
+        // Clean the email
+        String cleanEmail = email.trim().toLowerCase();
+        
+        // Execute validation pipeline
+        final var result = executeValidationPipeline(cleanEmail);
+        final var detailsByValidator = getDetailsByValidator(result);
+        
+        // Extract properties from validation results
+        final var hasMx = detailsByValidator.values().stream()
+                .anyMatch(details -> details.containsKey("has-mx") && details.get("has-mx") != null && 
+                        details.get("has-mx").toString().equals("1.0"));
+        
+        final var detailMap = new HashMap<String, Object>();
+        for (final var entry : detailsByValidator.entrySet()) {
+            detailMap.putAll(entry.getValue());
+        }
+        
+        // Build response
+        final var responseBuilder = new EmailVerificationResponse.Builder(cleanEmail)
+                .withValid(result.isValid())
+                .withResponseTime(Duration.between(startTime, Instant.now()).toMillis())
+                .withHasMx(hasMx);
+        
+        // Set flags based on validation results
+        setEmailVerificationFlags(responseBuilder, detailMap);
+        
+        // Determine status for catch-all domains with improved heuristics
+        String status;
+        String resultCode;
+        
+        if (!result.isValid()) {
+            status = "invalid";
+            resultCode = "undeliverable";
+        } else if (detailMap.containsKey("catch-all") && detailMap.get("catch-all").toString().equals("1.0")) {
+            // For catch-all domains, apply heuristics
+            if (analyzeEmailInCatchAllDomain(cleanEmail)) {
+                status = "valid";
+                resultCode = "deliverable";
+                logger.info("Email {} in catch-all domain assessed as likely deliverable", cleanEmail);
             } else {
-                responseBuilder
-                    .withStatus("invalid")
-                    .withResultCode("undeliverable")
-                    .withMessage(validationResult.getReason())
-                    .withValid(false);
+                status = "catch-all";
+                resultCode = "catch_all";
+                logger.info("Email {} in catch-all domain without additional confidence", cleanEmail);
+            }
+        } else if (detailMap.containsKey("event") && 
+                  ("inconclusive".equals(detailMap.get("event")) || detailMap.get("event").toString().contains("inconclusive"))) {
+            status = "inconclusive";
+            resultCode = "inconclusive";
+        } else {
+            status = "valid";
+            resultCode = "deliverable";
+        }
+        
+        responseBuilder.withStatus(status)
+                .withResultCode(resultCode);
+                
+        final var response = responseBuilder.build();
+        
+        logger.info("Email verification result for {}: {}", cleanEmail, response.getResultCode());
+        return response;
+    }
+    
+    /**
+     * Analyze an email in a catch-all domain with heuristics to determine
+     * if it's likely a real address despite being in a catch-all domain.
+     * 
+     * @param email The email to analyze
+     * @return true if the email is likely valid within the catch-all domain
+     */
+    private boolean analyzeEmailInCatchAllDomain(String email) {
+        try {
+            String[] parts = email.split("@", 2);
+            if (parts.length != 2) {
+                return false;
             }
             
-            // Add any useful additional details
-            if (validationResult.getDetails() != null && !validationResult.getDetails().isEmpty()) {
-                for (Map.Entry<String, Object> entry : validationResult.getDetails().entrySet()) {
-                    if (entry.getKey().equals("has-mx")) {
-                        responseBuilder.withHasMx(Boolean.valueOf(entry.getValue().toString()));
-                    } else if (entry.getKey().equals("smtp-server")) {
-                        responseBuilder.withSmtpServer(entry.getValue().toString());
-                    }
-                    // could add more mappings here
-                }
+            String localPart = parts[0];
+            String domain = parts[1];
+            
+            // Heuristic 1: Common email patterns (first.last, first_last, firstlast)
+            if (isCommonEmailPattern(localPart)) {
+                logger.debug("Email {} matches common naming pattern", email);
+                return true;
             }
             
-            return responseBuilder.build();
+            // Heuristic 2: Length-based analysis (extremely long or very short emails are less likely)
+            if (localPart.length() > 30 || localPart.length() < 3) {
+                logger.debug("Email {} has unusual length local part: {}", email, localPart.length());
+                return false;
+            }
+            
+            // Heuristic 3: Character distribution (real emails tend to have more letters than numbers/symbols)
+            double letterRatio = calculateLetterRatio(localPart);
+            if (letterRatio < 0.5) {
+                logger.debug("Email {} has low letter ratio: {}", email, letterRatio);
+                return false;
+            }
+            
+            // Heuristic 4: Domain-specific conventions
+            if (domainHasKnownFormat(domain, localPart)) {
+                logger.debug("Email {} matches known domain format for {}", email, domain);
+                return true;
+            }
+            
+            // Default: moderate confidence
+            return true;
             
         } catch (Exception e) {
-            logger.error("Error validating email {}: {}", email, e.getMessage(), e);
-            return new EmailVerificationResponse.Builder(email)
-                .withStatus("error")
-                .withResultCode("error")
-                .withMessage("Validation error: " + e.getMessage())
-                .withResponseTime(System.currentTimeMillis() - startTime)
-                .withValid(false)
-                .build();
+            logger.warn("Error analyzing email in catch-all domain: {}", e.getMessage());
+            return false;
         }
+    }
+    
+    /**
+     * Checks if the local part follows common email patterns
+     */
+    private boolean isCommonEmailPattern(String localPart) {
+        // Pattern 1: first.last
+        if (localPart.contains(".") && !localPart.startsWith(".") && !localPart.endsWith(".")) {
+            String[] nameParts = localPart.split("\\.");
+            if (nameParts.length == 2 && nameParts[0].length() >= 2 && nameParts[1].length() >= 2) {
+                return true;
+            }
+        }
+        
+        // Pattern 2: first_last
+        if (localPart.contains("_") && !localPart.startsWith("_") && !localPart.endsWith("_")) {
+            String[] nameParts = localPart.split("_");
+            if (nameParts.length == 2 && nameParts[0].length() >= 2 && nameParts[1].length() >= 2) {
+                return true;
+            }
+        }
+        
+        // Pattern 3: firstlast (e.g., johndoe)
+        if (localPart.length() >= 5 && localPart.length() <= 20 && localPart.matches("[a-zA-Z]+")) {
+            return true;
+        }
+        
+        // Pattern 4: first initial + last name (e.g., jdoe)
+        if (localPart.length() >= 4 && localPart.length() <= 12 && 
+            localPart.matches("[a-zA-Z][a-zA-Z]+") && 
+            Character.isLetter(localPart.charAt(0))) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Calculate the ratio of letters to total characters
+     */
+    private double calculateLetterRatio(String text) {
+        if (text.isEmpty()) {
+            return 0;
+        }
+        
+        int letterCount = 0;
+        for (char c : text.toCharArray()) {
+            if (Character.isLetter(c)) {
+                letterCount++;
+            }
+        }
+        
+        return (double) letterCount / text.length();
+    }
+    
+    /**
+     * Check if the email matches known patterns for specific domains
+     */
+    private boolean domainHasKnownFormat(String domain, String localPart) {
+        // Gmail typically uses firstname.lastname or firstnamelastname
+        if (domain.equals("gmail.com")) {
+            return localPart.contains(".") || localPart.matches("[a-zA-Z]+");
+        }
+        
+        // Microsoft domains often use firstname.lastname or first.last@
+        if (domain.equals("outlook.com") || domain.equals("hotmail.com") || domain.equals("live.com")) {
+            return localPart.contains(".") || localPart.contains("_");
+        }
+        
+        // Company domains often use first initial + last name or first.last
+        if (domain.contains(".com") && !isCommonPublicDomain(domain)) {
+            return localPart.contains(".") || 
+                   (localPart.length() >= 4 && localPart.length() <= 12);
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Check if domain is a common public email provider
+     */
+    private boolean isCommonPublicDomain(String domain) {
+        String[] publicDomains = {
+            "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", 
+            "aol.com", "icloud.com", "protonmail.com", "mail.com"
+        };
+        
+        for (String publicDomain : publicDomains) {
+            if (domain.equals(publicDomain)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
