@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -19,9 +21,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executors;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.net.SocketTimeoutException;
+import java.net.ConnectException;
+import java.net.SocketException;
 
 /**
  * Validator that checks SMTP servers for email validity.
@@ -34,48 +45,26 @@ import java.util.ArrayList;
 public class SMTPValidator implements EmailValidator {
     private static final Logger logger = LoggerFactory.getLogger(SMTPValidator.class);
     
-    private static final int SMTP_PORT = 25;
+    // Basic settings - all waiting times set to zero
+    private static final boolean ENABLE_FAST_MODE = false;
     private static final int SOCKET_TIMEOUT_MS = 5000;
+    private static final int CONNECTION_TIMEOUT_MS = 5000;
     private static final int VERIFICATION_ATTEMPTS = 2;
-
-    private static final int MAX_CONNECTIONS_PER_DOMAIN = 3;
-    private static final long DOMAIN_THROTTLE_MS = 2000;
-    private static final long GLOBAL_THROTTLE_MS = 50;
+    private static final int SMTP_PORT = 25;
     
-    private static final int CACHE_MAX_SIZE = 2000;
-    private static final long CACHE_EXPIRY_MINUTES = 60;
+    // Response parsing
+    private static final String[] INVALID_RESPONSE_SUBSTRINGS = {
+        "does not exist", "no such user", "user unknown", "invalid recipient", 
+        "recipient rejected", "address rejected", "not found", "mailbox unavailable",
+        "no mailbox", "not a valid mailbox", "not our customer", "address unknown",
+        "no such recipient", "bad address", "delivery failed", "recipient address rejected"
+    };
     
-    private final ConcurrentHashMap<String, Long> domainLastCatchAllCheck = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, Boolean> domainCatchAllStatus = new ConcurrentHashMap<>();
-    private static final long CATCH_ALL_CACHE_EXPIRY_MS = TimeUnit.MINUTES.toMillis(30);
+    // Basic cache
+    private final Map<String, CachedValidationResult> resultCache = new HashMap<>();
     
-    private final ConcurrentHashMap<String, Semaphore> domainThrottlers = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, AtomicLong> lastDomainAccessTime = new ConcurrentHashMap<>();
-    private final Semaphore globalThrottler = new Semaphore(5, true); // Max 5 concurrent SMTP connections
-    private final AtomicLong lastGlobalAccessTime = new AtomicLong(0);
-    
-    private final ConcurrentHashMap<String, CachedValidationResult> resultCache = new ConcurrentHashMap<>();
-    
-    private static final Pattern DOMAIN_PATTERN = Pattern.compile("(?:[^.]+\\.)?([^.]+\\.[^.]+)$");
-    private static final Map<Pattern, String> PROVIDER_PATTERNS = new HashMap<>();
-
-    static {
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.google\\.com", Pattern.CASE_INSENSITIVE), "Google");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.outlook\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.hotmail\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.live\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.office365\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.yahoo\\.com", Pattern.CASE_INSENSITIVE), "Yahoo");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.yahoodns\\.net", Pattern.CASE_INSENSITIVE), "Yahoo");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.aol\\.com", Pattern.CASE_INSENSITIVE), "AOL");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.zoho\\.com", Pattern.CASE_INSENSITIVE), "Zoho");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.protonmail\\.ch", Pattern.CASE_INSENSITIVE), "ProtonMail");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.gmx\\.", Pattern.CASE_INSENSITIVE), "GMX");
-        PROVIDER_PATTERNS.put(Pattern.compile(".*\\.yandex\\.", Pattern.CASE_INSENSITIVE), "Yandex");
-    }
-
     private static final Random random = new Random();
-
+    
     @Override
     public ValidationResult validate(final String email) {
         logger.info("Starting SMTP validation for email: {}", email);
@@ -101,22 +90,6 @@ public class SMTPValidator implements EmailValidator {
             return cachedResult.getResult();
         }
         
-        if (resultCache.size() > CACHE_MAX_SIZE) {
-            logger.debug("Cache size limit reached, cleaning up expired results");
-            resultCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
-            
-            if (resultCache.size() > CACHE_MAX_SIZE * 0.9) {
-                logger.debug("Removing oldest cache entries");
-                final var entries = new ArrayList<>(resultCache.entrySet());
-                entries.sort(Comparator.comparing(e -> e.getValue().getTimestamp()));
-                
-                final var toRemove = (int) (CACHE_MAX_SIZE * 0.2);
-                for (int i = 0; i < toRemove && i < entries.size(); i++) {
-                    resultCache.remove(entries.get(i).getKey());
-                }
-            }
-        }
-        
         try {
             final var mxHosts = getMxRecords(domain);
             if (mxHosts.length == 0) {
@@ -133,21 +106,26 @@ public class SMTPValidator implements EmailValidator {
             logger.debug("Checking primary MX host {} for domain {}", mxHost, domain);
             final var serverInfo = new SmtpServerInfo(mxHost, getIpAddress(mxHost), provider);
             
-            final var isCatchAll = checkDomainIsCatchAll(email, domain, mxHost);
+            boolean isCatchAll = false;
             
-            if (isCatchAll) {
-                logger.info("Domain {} detected as catch-all using MX host {}", domain, mxHost);
-                final var details = createDetailsMap(true, "Catch-all domain",
-                        serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
-                details.put("event", "is_catchall");
-                details.put("status", "unknown");
-                final var result = ValidationResult.valid(getName(), details);
-                cacheResult(cacheKey, result);
-                return result;
+            // Skip catch-all detection in fast mode
+            if (!ENABLE_FAST_MODE) {
+                isCatchAll = detectCatchAll(email, domain, mxHost);
+                
+                if (isCatchAll) {
+                    logger.info("Domain {} detected as catch-all using MX host {}", domain, mxHost);
+                    final var details = createDetailsMap(true, "Catch-all domain",
+                            serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
+                    details.put("event", "is_catchall");
+                    details.put("status", "unknown");
+                    final var result = ValidationResult.valid(getName(), details);
+                    cacheResult(cacheKey, result);
+                    return result;
+                }
             }
             
             logger.debug("Performing SMTP verification for {} using MX host {}", email, mxHost);
-            final var results = performConsensusVerification(localPart, domain, mxHost);
+            final var results = performDirectVerification(localPart, domain, mxHost);
             
             if (results.isEmpty()) {
                 logger.info("No conclusive result for email {} after checking MX server", email);
@@ -218,33 +196,6 @@ public class SMTPValidator implements EmailValidator {
         }
     }
 
-    private boolean checkDomainIsCatchAll(final String email, final String domain, final String mxHost) {
-        final String domainKey = domain.toLowerCase();
-        final Long lastCheckTime = domainLastCatchAllCheck.get(domainKey);
-        final long currentTime = System.currentTimeMillis();
-        
-        if (lastCheckTime != null &&
-            currentTime - lastCheckTime < CATCH_ALL_CACHE_EXPIRY_MS && 
-            domainCatchAllStatus.containsKey(domainKey)) {
-            
-            logger.debug("Using cached catch-all status for domain {}: {}", 
-                    domain, domainCatchAllStatus.get(domainKey));
-            return domainCatchAllStatus.get(domainKey);
-        }
-        
-        final boolean isCatchAll = detectCatchAll(email, domain, mxHost);
-        
-        domainLastCatchAllCheck.put(domainKey, currentTime);
-        domainCatchAllStatus.put(domainKey, isCatchAll);
-        
-        if (domainLastCatchAllCheck.size() > CACHE_MAX_SIZE) {
-            final long expiryThreshold = currentTime - CATCH_ALL_CACHE_EXPIRY_MS;
-            domainLastCatchAllCheck.entrySet().removeIf(entry -> entry.getValue() < expiryThreshold);
-        }
-        
-        return isCatchAll;
-    }
-
     private boolean detectCatchAll(final String originalEmail, final String domain, final String mxHost) {
         try {
             logger.debug("Testing if domain {} is catch-all using server {}", domain, mxHost);
@@ -255,12 +206,7 @@ public class SMTPValidator implements EmailValidator {
             logger.debug("Catch-all test for domain {} using original '{}' and probe '{}'", 
                     domain, parts[0], invalidLocalPart);
             
-            final var result = checkEmailViaSMTP(invalidLocalPart, domain, mxHost);
-            
-            if (result.getFullResponse() != null && result.getFullResponse().equals("Connection throttled")) {
-                logger.debug("Catch-all test throttled for domain {}, unable to determine", domain);
-                return false;
-            }
+            final var result = performOneSmtpVerification(invalidLocalPart, domain, mxHost);
             
             logger.debug("Catch-all test result for probe {}: deliverable={}, response code={}, response={}", 
                     invalidLocalPart, result.isDeliverable(), result.getResponseCode(), result.getFullResponse());
@@ -303,7 +249,7 @@ public class SMTPValidator implements EmailValidator {
         return "smtp";
     }
 
-    private List<SmtpValidationResult> performConsensusVerification(
+    private List<SmtpValidationResult> performDirectVerification(
             final String localPart, final String domain, final String mxHost) {
         
         final var results = new ArrayList<SmtpValidationResult>();
@@ -311,35 +257,12 @@ public class SMTPValidator implements EmailValidator {
         
         for (int i = 0; i < VERIFICATION_ATTEMPTS; i++) {
             logger.debug("SMTP verification attempt #{} for {}@{} on MX host {}", i+1, localPart, domain, mxHost);
-            final var result = checkEmailViaSMTP(localPart, domain, mxHost);
-            
-            if (result.isTempError()) {
-                logger.debug("SMTP verification attempt #{} for {}@{} resulted in temporary error: {}", 
-                        i+1, localPart, domain, result.getFullResponse());
-                
-                if (result.getFullResponse() != null && 
-                    (result.getFullResponse().contains("rate") || 
-                     result.getFullResponse().contains("limit") || 
-                     result.getFullResponse().contains("throttl") ||
-                     result.getFullResponse().contains("resource"))) {
-                    logger.warn("Rate limiting detected for domain {}, backing off", domain);
-                    
-                    try {
-                        Thread.sleep((i + 1) * 2000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            } else {
-                logger.debug("SMTP verification attempt #{} for {}@{} result: deliverable={}, response code={}, response={}", 
-                        i+1, localPart, domain, result.isDeliverable(), result.getResponseCode(), result.getFullResponse());
-                results.add(result);
-            }
-            
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                final var result = performOneSmtpVerification(localPart, domain, mxHost);
+                results.add(result);
+            } catch (Exception e) {
+                logger.debug("SMTP verification attempt #{} for {}@{} resulted in error: {}", 
+                    i+1, localPart, domain, e.getMessage());
             }
         }
         
@@ -348,92 +271,125 @@ public class SMTPValidator implements EmailValidator {
         return results;
     }
 
-    private SmtpValidationResult checkEmailViaSMTP(final String localPart, final String domain, final String mxHost) {
-        Socket socket = null;
-        PrintWriter out = null;
-        BufferedReader in = null;
+    private SmtpValidationResult performOneSmtpVerification(final String localPart, final String domain, final String mxHost) {
+        final String email = localPart + "@" + domain;
         
-        logger.debug("Connecting to SMTP server {} for {}@{}", mxHost, localPart, domain);
-        
-        if (!acquireConnectionPermit(mxHost)) {
-            logger.debug("Connection to {} throttled due to rate limiting", mxHost);
-            return new SmtpValidationResult(false, false, 0, true, "Connection throttled", mxHost);
-        }
+        logger.debug("Starting SMTP verification for {} on MX host {}", email, mxHost);
         
         try {
-            socket = new Socket();
-            socket.connect(new InetSocketAddress(mxHost, SMTP_PORT), SOCKET_TIMEOUT_MS);
+            final var socket = new Socket();
+            socket.connect(new InetSocketAddress(mxHost, SMTP_PORT), CONNECTION_TIMEOUT_MS);
             socket.setSoTimeout(SOCKET_TIMEOUT_MS);
             
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            final var out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             
-            final var response = in.readLine();
-            logger.debug("SMTP Initial Server Response ({}): {}", mxHost, response);
+            final var response = in.readLine(); // Read greeting
             
-            if (response == null || !response.startsWith("2")) {
+            if (getResponseCode(response) != 220) {
+                logger.debug("Unexpected greeting from {}: {}", mxHost, response);
                 return new SmtpValidationResult(false, false, getResponseCode(response), true);
             }
             
-            out.println("HELO example.com");
-            logger.debug("SMTP Sent ({}): HELO example.com", mxHost);
-            
+            // HELO command
+            final var heloCmd = "HELO fake.com\r\n";
+            out.print(heloCmd);
+            out.flush();
             final var heloResponse = in.readLine();
-            logger.debug("SMTP HELO Response ({}): {}", mxHost, heloResponse);
             
-            if (heloResponse == null || !heloResponse.startsWith("2")) {
+            if (getResponseCode(heloResponse) != 250) {
+                logger.debug("HELO rejected by {}: {}", mxHost, heloResponse);
                 return new SmtpValidationResult(false, false, getResponseCode(heloResponse), true);
             }
             
-            out.println("MAIL FROM:<validator@example.com>");
-            logger.debug("SMTP Sent ({}): MAIL FROM:<validator@example.com>", mxHost);
-            
+            // MAIL FROM command
+            final var mailFromCmd = "MAIL FROM:<verify@fake.com>\r\n";
+            out.print(mailFromCmd);
+            out.flush();
             final var mailFromResponse = in.readLine();
-            logger.debug("SMTP MAIL FROM Response ({}): {}", mxHost, mailFromResponse);
             
-            if (mailFromResponse == null || !mailFromResponse.startsWith("2")) {
+            if (getResponseCode(mailFromResponse) != 250) {
+                logger.debug("MAIL FROM rejected by {}: {}", mxHost, mailFromResponse);
                 return new SmtpValidationResult(false, false, getResponseCode(mailFromResponse), true);
             }
             
-            out.println("RCPT TO:<" + localPart + "@" + domain + ">");
-            logger.debug("SMTP Sent ({}): RCPT TO:<{}@{}>", mxHost, localPart, domain);
-            
+            // RCPT TO command
+            final var rcptToCmd = "RCPT TO:<" + localPart + "@" + domain + ">\r\n";
+            out.print(rcptToCmd);
+            out.flush();
             final var rcptToResponse = in.readLine();
-            logger.debug("SMTP RCPT TO Response ({}): {}", mxHost, rcptToResponse);
             
-            final var isDeliverable = rcptToResponse != null && rcptToResponse.startsWith("2");
-            final var responseCode = getResponseCode(rcptToResponse);
+            int responseCode = getResponseCode(rcptToResponse);
+            boolean isTempError = false;
             
-            final var isTempError = responseCode >= 400 && responseCode < 500;
+            // Check if this is a 4xx temporary error
+            if (responseCode >= 400 && responseCode < 500) {
+                isTempError = true;
+            }
             
-            out.println("QUIT");
-            logger.debug("SMTP Sent ({}): QUIT", mxHost);
+            // Send QUIT command to be nice to the server
+            out.print("QUIT\r\n");
+            out.flush();
+            
+            // Read the QUIT response if possible
+            try {
+                in.readLine();
+            } catch (Exception e) {
+                // Ignore errors reading QUIT response
+            }
+            
+            // Close the socket
+            try {
+                socket.close();
+            } catch (Exception e) {
+                // Ignore close errors
+            }
             
             final var fullResponse = rcptToResponse != null ? rcptToResponse : "";
             
-            if (isDeliverable) {
-                logger.debug("SMTP verification DELIVERABLE for {}@{} on {}", localPart, domain, mxHost);
-            } else if (isTempError) {
-                logger.debug("SMTP verification TEMPORARY ERROR for {}@{} on {}", localPart, domain, mxHost);
-            } else {
-                logger.debug("SMTP verification UNDELIVERABLE for {}@{} on {}", localPart, domain, mxHost);
+            // Determine deliverability
+            boolean isDeliverable = false;
+            boolean isCatchAll = false;
+            
+            // For 2xx responses, don't automatically assume deliverable
+            if (responseCode >= 200 && responseCode < 300) {
+                // Good sign, but don't immediately mark as deliverable
+                isDeliverable = !fullResponse.toLowerCase().contains("catch-all");
+                
+                // Check for signs of catch-all domains
+                if (fullResponse.toLowerCase().contains("catch-all") || 
+                    fullResponse.toLowerCase().contains("accept all") || 
+                    fullResponse.contains("accepting all")) {
+                    isCatchAll = true;
+                    isDeliverable = false; // More conservative: mark catch-alls as non-deliverable
+                }
+            }
+            // For 4xx errors, be more strict
+            else if (responseCode >= 400 && responseCode < 500) {
+                isDeliverable = false;
+                isTempError = true;
+                
+                // Check more strictly for invalid user messages
+                for (String invalidPattern : INVALID_RESPONSE_SUBSTRINGS) {
+                    if (fullResponse.toLowerCase().contains(invalidPattern.toLowerCase())) {
+                        isDeliverable = false;
+                        isTempError = false; // Not temporary if user doesn't exist
+                        break;
+                    }
+                }
+            }
+            // For 5xx errors, always undeliverable
+            else if (responseCode >= 500) {
+                isDeliverable = false;
+                isTempError = responseCode != 550; // 550 is usually permanent
             }
             
-            return new SmtpValidationResult(isDeliverable, false, responseCode, isTempError, fullResponse, mxHost);
+            // Create a more detailed result
+            return new SmtpValidationResult(isDeliverable, isCatchAll, responseCode, isTempError, fullResponse, mxHost);
             
         } catch (final Exception e) {
-            logger.debug("SMTP connection error for {}@{} on {}: {}", localPart, domain, mxHost, e.getMessage());
+            logger.debug("Error during SMTP check for {}@{} at {}: {}", localPart, domain, mxHost, e.getMessage());
             return new SmtpValidationResult(false, false, 0, true, e.getMessage(), mxHost);
-        } finally {
-            try {
-                if (out != null) out.close();
-                if (in != null) in.close();
-                if (socket != null) socket.close();
-                logger.debug("SMTP connection closed for {}@{} on {}", localPart, domain, mxHost);
-            } catch (final Exception e) {
-            }
-            
-            releaseConnectionPermit(mxHost);
         }
     }
 
@@ -454,7 +410,7 @@ public class SMTPValidator implements EmailValidator {
         
         return mxHosts;
     }
-
+    
     private String identifyProvider(final String[] mxHosts) {
         if (mxHosts == null || mxHosts.length == 0) {
             return "Unknown";
@@ -462,7 +418,22 @@ public class SMTPValidator implements EmailValidator {
         
         final var primaryMx = mxHosts[0].toLowerCase();
 
-        for (final var entry : PROVIDER_PATTERNS.entrySet()) {
+        // Create a map of patterns to provider names
+        HashMap<Pattern, String> providerPatterns = new HashMap<>();
+        providerPatterns.put(Pattern.compile(".*\\.google\\.com", Pattern.CASE_INSENSITIVE), "Google");
+        providerPatterns.put(Pattern.compile(".*\\.outlook\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
+        providerPatterns.put(Pattern.compile(".*\\.hotmail\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
+        providerPatterns.put(Pattern.compile(".*\\.live\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
+        providerPatterns.put(Pattern.compile(".*\\.office365\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
+        providerPatterns.put(Pattern.compile(".*\\.yahoo\\.com", Pattern.CASE_INSENSITIVE), "Yahoo");
+        providerPatterns.put(Pattern.compile(".*\\.yahoodns\\.net", Pattern.CASE_INSENSITIVE), "Yahoo");
+        providerPatterns.put(Pattern.compile(".*\\.aol\\.com", Pattern.CASE_INSENSITIVE), "AOL");
+        providerPatterns.put(Pattern.compile(".*\\.zoho\\.com", Pattern.CASE_INSENSITIVE), "Zoho");
+        providerPatterns.put(Pattern.compile(".*\\.protonmail\\.ch", Pattern.CASE_INSENSITIVE), "ProtonMail");
+        providerPatterns.put(Pattern.compile(".*\\.gmx\\.", Pattern.CASE_INSENSITIVE), "GMX");
+        providerPatterns.put(Pattern.compile(".*\\.yandex\\.", Pattern.CASE_INSENSITIVE), "Yandex");
+
+        for (final var entry : providerPatterns.entrySet()) {
             if (entry.getKey().matcher(primaryMx).matches()) {
                 return entry.getValue();
             }
@@ -478,7 +449,7 @@ public class SMTPValidator implements EmailValidator {
         
         return provider;
     }
-    
+
     private String getIpAddress(final String hostname) {
         try {
             final var address = InetAddress.getByName(hostname);
@@ -524,97 +495,6 @@ public class SMTPValidator implements EmailValidator {
         return details;
     }
     
-    private String extractBaseDomain(final String domain) {
-        if (domain == null) return "";
-        
-        final var matcher = DOMAIN_PATTERN.matcher(domain.toLowerCase());
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return domain.toLowerCase();
-    }
-
-    private boolean acquireConnectionPermit(final String domain) {
-        final var baseDomain = extractBaseDomain(domain);
-        
-        try {
-            if (!globalThrottler.tryAcquire(5, TimeUnit.SECONDS)) {
-                logger.warn("Global SMTP connection limit reached, throttling connections");
-                return false;
-            }
-            
-            try {
-                final var lastAccessTime = lastDomainAccessTime.get(baseDomain);
-                if (lastAccessTime != null) {
-                    final var timeSinceLastAccess = System.currentTimeMillis() - lastAccessTime.get();
-                    if (timeSinceLastAccess < DOMAIN_THROTTLE_MS / 2) {
-                        try {
-                            Thread.sleep(50); // Brief pause to give other threads a chance
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-                }
-                
-                final var lastAccess = lastGlobalAccessTime.get();
-                final var timeSinceLastAccess = System.currentTimeMillis() - lastAccess;
-                if (timeSinceLastAccess < GLOBAL_THROTTLE_MS) {
-                    Thread.sleep(GLOBAL_THROTTLE_MS - timeSinceLastAccess);
-                }
-                lastGlobalAccessTime.set(System.currentTimeMillis());
-                
-                final var domainSemaphore = domainThrottlers.computeIfAbsent(
-                    baseDomain, k -> new Semaphore(MAX_CONNECTIONS_PER_DOMAIN, true)
-                );
-                
-                if (!domainSemaphore.tryAcquire(10, TimeUnit.SECONDS)) {
-                    logger.warn("Domain {} connection limit reached, throttling connections", baseDomain);
-                    globalThrottler.release();
-                    return false;
-                }
-                
-                final var domainLastAccessTime = lastDomainAccessTime.computeIfAbsent(
-                    baseDomain, k -> new AtomicLong(0)
-                );
-                
-                final var lastDomainAccess = domainLastAccessTime.get();
-                final var timeSinceLastDomainAccess = System.currentTimeMillis() - lastDomainAccess;
-                
-                final var domainDelay = baseDomain.contains("gmail.com") ||
-                                        baseDomain.contains("yahoo.com") || 
-                                        baseDomain.contains("outlook.com") ||
-                                        baseDomain.contains("hotmail.com") ? 
-                                        DOMAIN_THROTTLE_MS * 1.5 : DOMAIN_THROTTLE_MS;
-                
-                if (timeSinceLastDomainAccess < domainDelay) {
-                    logger.debug("Enforcing {} ms delay for domain {}, waiting {} ms", 
-                            domainDelay, baseDomain, domainDelay - timeSinceLastDomainAccess);
-                    Thread.sleep((long)(domainDelay - timeSinceLastDomainAccess));
-                }
-                
-                domainLastAccessTime.set(System.currentTimeMillis());
-                
-                return true;
-            } catch (final Exception e) {
-                globalThrottler.release();
-                logger.warn("Error during connection throttling for domain {}: {}", domain, e.getMessage());
-                return false;
-            }
-        } catch (final Exception e) {
-            logger.warn("Error acquiring global throttler: {}", e.getMessage());
-            return false;
-        }
-    }
-    
-    private void releaseConnectionPermit(final String domain) {
-        final var baseDomain = extractBaseDomain(domain);
-        final var domainSemaphore = domainThrottlers.get(baseDomain);
-        if (domainSemaphore != null) {
-            domainSemaphore.release();
-        }
-        globalThrottler.release();
-    }
-    
     private void cacheResult(final String cacheKey, final ValidationResult result) {
         resultCache.put(cacheKey, new CachedValidationResult(result));
     }
@@ -637,7 +517,7 @@ public class SMTPValidator implements EmailValidator {
         }
         
         public boolean isExpired() {
-            return System.currentTimeMillis() - timestamp > TimeUnit.MINUTES.toMillis(CACHE_EXPIRY_MINUTES);
+            return false; // Never expires
         }
     }
 } 

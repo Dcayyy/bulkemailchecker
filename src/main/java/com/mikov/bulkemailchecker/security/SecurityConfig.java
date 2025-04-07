@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Security configuration for the Bulk Email Checker service.
- * Implements API key validation for service-to-service authentication.
+ * TESTING MODE: All authentication is disabled.
  * 
  * @author zahari.mikov
  */
@@ -39,10 +39,15 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/api/**").authenticated()
+                // Explicitly allow WebSocket endpoints and all SockJS connection URLs
+                .requestMatchers("/ws-emailverifier/**").permitAll()
+                .requestMatchers("/ws-emailverifier").permitAll()
+                .requestMatchers("/websocket-demo.html").permitAll()
+                .requestMatchers("/websocket-test.html").permitAll()
+                // Allow all requests without authentication for testing
                 .anyRequest().permitAll()
             )
+            // Re-enable the filter, but now it always authenticates all requests
             .addFilterBefore(apiKeyAuthFilter, BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((request, response, authException) -> {
@@ -57,10 +62,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*")); // Allow all origins for testing
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-        configuration.setAllowedHeaders(Arrays.asList("X-API-Key", "Content-Type"));
+        // Can't use wildcard "*" with allowCredentials=true, so specify common origins
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:8081",
+            "http://localhost:8080", 
+            "http://localhost:63342"
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("X-API-Key", "Content-Type", "Accept"));
         configuration.setExposedHeaders(List.of("X-Request-ID"));
+        configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

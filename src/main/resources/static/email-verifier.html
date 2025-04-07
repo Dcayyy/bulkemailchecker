@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Email Verifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --danger-color: #ef476f;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            font-size: 1rem;
+        }
+        
+        textarea.form-control {
+            min-height: 140px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-valid {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: #4cc9f0;
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+        
+        .status-invalid {
+            background-color: rgba(239, 71, 111, 0.1);
+            color: #ef476f;
+            border: 1px solid rgba(239, 71, 111, 0.3);
+        }
+        
+        .status-unknown {
+            background-color: rgba(247, 127, 0, 0.1);
+            color: #f77f00;
+            border: 1px solid rgba(247, 127, 0, 0.3);
+        }
+        
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            background-color: var(--success-color);
+            transition: width 0.3s ease;
+        }
+        
+        #resultsTable th, #resultsTable td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+        
+        #resultsTable thead th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            border-top: none;
+        }
+        
+        .email-cell {
+            font-weight: 500;
+        }
+        
+        .detail-row {
+            background-color: #f8f9fb;
+            font-size: 0.9rem;
+        }
+        
+        .detail-row td {
+            padding: 10px 15px 15px 15px !important;
+            border-top: none !important;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            margin-right: 5px;
+            color: #666;
+        }
+        
+        .connection-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-connected {
+            background-color: #4cc9f0;
+            box-shadow: 0 0 5px #4cc9f0;
+        }
+        
+        .status-disconnected {
+            background-color: #ef476f;
+            box-shadow: 0 0 5px #ef476f;
+        }
+        
+        .animation-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .filter-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-count {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        .stats-card {
+            transition: all 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-icon {
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        
+        .loading-overlay {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .spinner-container {
+            text-align: center;
+        }
+        
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-upload input[type=file] {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="bi bi-envelope-check me-2"></i>Bulk Email Verifier</a>
+            <div class="navbar-text text-white d-flex align-items-center">
+                <span class="connection-status status-disconnected" id="connectionIndicator"></span>
+                <span id="connectionStatus">Disconnected</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Input Section -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-input-cursor-text me-2"></i>Email Input</span>
+                        <button type="button" class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#inputCollapse" aria-expanded="true">
+                            <i class="bi bi-chevron-up"></i>
+                        </button>
+                    </div>
+                    <div class="card-body collapse show" id="inputCollapse">
+                        <form id="emailForm">
+                            <div class="mb-3">
+                                <label for="emailInput" class="form-label">Enter Emails (one per line)</label>
+                                <textarea class="form-control" id="emailInput" rows="6" placeholder="email1@example.com&#10;email2@example.com&#10;email3@example.com"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button type="button" class="btn btn-outline-primary me-2 file-upload">
+                                        <i class="bi bi-upload me-1"></i> Upload CSV/TXT
+                                        <input type="file" id="fileUpload" accept=".csv,.txt">
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" id="clearBtn">
+                                        <i class="bi bi-x-circle me-1"></i> Clear
+                                    </button>
+                                </div>
+                                <button type="submit" class="btn btn-primary px-4" id="verifyBtn">
+                                    <i class="bi bi-check2-circle me-1"></i> Verify Emails
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="row" id="progressSection" style="display: none;">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-activity me-2"></i>Verification Progress
+                    </div>
+                    <div class="card-body">
+                        <div class="progress">
+                            <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span id="progressText" class="text-muted">Initializing...</span>
+                            <span id="progressPercentage">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0">Statistics</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-6">
+                                <div class="card mb-2 bg-primary text-white">
+                                    <div class="card-body text-center py-2">
+                                        <h4 id="totalEmails">0</h4>
+                                        <small>Total Emails</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="card mb-2 bg-success text-white">
+                                    <div class="card-body text-center py-2">
+                                        <h4 id="validEmails">0</h4>
+                                        <small>Valid</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="card mb-2 bg-danger text-white">
+                                    <div class="card-body text-center py-2">
+                                        <h4 id="invalidEmails">0</h4>
+                                        <small>Invalid</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="card mb-2 bg-warning text-white">
+                                    <div class="card-body text-center py-2">
+                                        <h4 id="catchallEmails">0</h4>
+                                        <small>Catch-all</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="card mb-2 bg-secondary text-white">
+                                    <div class="card-body text-center py-2">
+                                        <h4 id="inconclusiveEmails">0</h4>
+                                        <small>Inconclusive</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row mt-3" id="resultsSection" style="display: none;">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-table me-2"></i>Verification Results</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-2" id="exportCsvBtn">
+                                <i class="bi bi-download me-1"></i> Export CSV
+                            </button>
+                            <button type="button" class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#resultsCollapse" aria-expanded="true">
+                                <i class="bi bi-chevron-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body collapse show" id="resultsCollapse">
+                        <div class="filter-section mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="bi bi-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Search emails...">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" id="filterSelect">
+                                        <option value="all">All Results</option>
+                                        <option value="valid">Valid Only</option>
+                                        <option value="invalid">Invalid Only</option>
+                                        <option value="catch-all">Catch-all Only</option>
+                                        <option value="inconclusive">Inconclusive Only</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table" id="resultsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Reason</th>
+                                        <th>Response Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Results will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="result-count" id="resultCount">Showing 0 results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-3 bg-light">
+        <div class="container text-center">
+            <p class="text-muted mb-0">Bulk Email Verifier &copy; 2023</p>
+        </div>
+    </footer>
+
+    <!-- SockJS and STOMP -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables
+        let stompClient = null;
+        let sessionId = generateSessionId();
+        let allResults = [];
+        let processingStats = {
+            valid: 0,
+            invalid: 0,
+            catchall: 0,
+            total: 0
+        };
+        let isVerificationInProgress = false;
+        
+        // DOM elements
+        const connectionStatus = document.getElementById('connectionStatus');
+        const connectionIndicator = document.getElementById('connectionIndicator');
+        const emailForm = document.getElementById('emailForm');
+        const emailInput = document.getElementById('emailInput');
+        const fileUpload = document.getElementById('fileUpload');
+        const clearBtn = document.getElementById('clearBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const progressSection = document.getElementById('progressSection');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const progressPercentage = document.getElementById('progressPercentage');
+        const statsSection = document.getElementById('statsSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const totalEmails = document.getElementById('totalEmails');
+        const validEmails = document.getElementById('validEmails');
+        const invalidEmails = document.getElementById('invalidEmails');
+        const catchallEmails = document.getElementById('catchallEmails');
+        const resultsTable = document.getElementById('resultsTable');
+        const resultCount = document.getElementById('resultCount');
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterSelect');
+        const exportCsvBtn = document.getElementById('exportCsvBtn');
+        
+        // Connect to WebSocket when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            connect();
+            
+            // Setup event listeners
+            emailForm.addEventListener('submit', handleFormSubmit);
+            clearBtn.addEventListener('click', clearEmailInput);
+            fileUpload.addEventListener('change', handleFileUpload);
+            searchInput.addEventListener('input', filterResults);
+            filterSelect.addEventListener('change', filterResults);
+            exportCsvBtn.addEventListener('click', exportResultsToCsv);
+            
+            // Initialize filter options
+            if (filterSelect) {
+                filterSelect.innerHTML = `
+                    <option value="all">All Results</option>
+                    <option value="valid">Valid Only</option>
+                    <option value="invalid">Invalid Only</option>
+                    <option value="catch-all">Catch-all Only</option>
+                    <option value="inconclusive">Inconclusive Only</option>
+                `;
+            }
+        });
+        
+        // Connect to WebSocket server
+        function connect() {
+            const socket = new SockJS('http://localhost:8081/ws-emailverifier');
+            stompClient = Stomp.over(socket);
+            
+            // Disable debug logging
+            stompClient.debug = null;
+            
+            // Add event handlers for connection state
+            socket.onopen = () => {
+                console.log('SockJS connection opened');
+            };
+            
+            socket.onclose = (event) => {
+                updateConnectionStatus(false);
+                console.log('SockJS connection closed', event);
+                
+                // Attempt to reconnect after delay
+                setTimeout(connect, 5000);
+            };
+            
+            stompClient.connect({}, frame => {
+                updateConnectionStatus(true);
+                console.log('STOMP connection successful');
+                
+                // Subscribe to verification status updates
+                stompClient.subscribe('/topic/verification-status/' + sessionId, message => {
+                    const statusUpdate = JSON.parse(message.body);
+                    console.log('Received status update:', statusUpdate);
+                    handleStatusUpdate(statusUpdate);
+                });
+                
+                // Subscribe to individual verification results
+                stompClient.subscribe('/topic/verification-result/' + sessionId, message => {
+                    const result = JSON.parse(message.body);
+                    console.log('Received result:', result);
+                    handleVerificationResult(result);
+                });
+            }, error => {
+                updateConnectionStatus(false);
+                console.error('STOMP connection error:', error);
+                
+                // Attempt to reconnect after delay
+                setTimeout(connect, 5000);
+            });
+        }
+        
+        // Update the connection status UI
+        function updateConnectionStatus(isConnected) {
+            if (isConnected) {
+                connectionStatus.textContent = 'Connected';
+                connectionIndicator.classList.remove('status-disconnected');
+                connectionIndicator.classList.add('status-connected');
+            } else {
+                connectionStatus.textContent = 'Disconnected';
+                connectionIndicator.classList.remove('status-connected');
+                connectionIndicator.classList.add('status-disconnected');
+                
+                if (isVerificationInProgress) {
+                    // Show reconnection message in progress
+                    progressText.textContent = 'Connection lost. Attempting to reconnect...';
+                }
+            }
+        }
+        
+        /**
+         * Handle status updates from the server
+         */
+        function handleStatusUpdate(update) {
+            console.log('Status update:', update);
+            
+            // Update the progress bar
+            if (update.total > 0) {
+                const progressPercent = Math.round((update.processed / update.total) * 100);
+                progressBar.style.width = progressPercent + '%';
+                progressPercentage.textContent = progressPercent + '%';
+            }
+            
+            // Handle different status types
+            switch (update.status) {
+                case 'STARTED':
+                    isVerificationInProgress = true;
+                    
+                    // Show progress section
+                    progressSection.style.display = 'block';
+                    progressBar.style.width = '0%';
+                    progressText.textContent = 'Starting verification...';
+                    progressPercentage.textContent = '0%';
+                    
+                    // Reset results
+                    allResults = [];
+                    resetStats();
+                    
+                    // Hide results section until we have results
+                    resultsSection.style.display = 'none';
+                    statsSection.style.display = 'none';
+                    
+                    // Disable the verify button
+                    verifyBtn.disabled = true;
+                    verifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verifying...';
+                    break;
+                    
+                case 'PROGRESS':
+                    // Update stats if provided
+                    if (update.stats) {
+                        // Display results section if not already visible and we have results
+                        if (resultsSection.style.display === 'none' && update.processed > 0) {
+                            resultsSection.style.display = 'block';
+                            statsSection.style.display = 'block';
+                        }
+                        
+                        // Update stats display
+                        if (update.stats.valid !== undefined) {
+                            validEmails.textContent = update.stats.valid;
+                        }
+                        
+                        if (update.stats.invalid !== undefined) {
+                            invalidEmails.textContent = update.stats.invalid;
+                        }
+                        
+                        if (update.stats.catchall !== undefined) {
+                            catchallEmails.textContent = update.stats.catchall;
+                        }
+                        
+                        if (update.stats.cached !== undefined) {
+                            // Could display cached count if needed
+                        }
+                        
+                        totalEmails.textContent = update.total;
+                    }
+                    
+                    progressText.textContent = `Processing ${update.processed} of ${update.total} emails`;
+                    break;
+                    
+                case 'COMPLETED':
+                    isVerificationInProgress = false;
+                    
+                    // Update progress to 100%
+                    progressBar.style.width = '100%';
+                    progressText.textContent = 'Verification completed';
+                    progressPercentage.textContent = '100%';
+                    
+                    // Enable the verify button
+                    verifyBtn.disabled = false;
+                    verifyBtn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Verify Emails';
+                    
+                    // Update result count
+                    updateResultCount();
+                    
+                    // Generate a new session ID for next verification
+                    sessionId = generateSessionId();
+                    break;
+                    
+                case 'ERROR':
+                    isVerificationInProgress = false;
+                    
+                    // Show error in progress section
+                    progressText.textContent = 'Error: ' + (update.error || 'Unknown error occurred');
+                    progressBar.style.width = '100%';
+                    progressBar.classList.remove('bg-success', 'bg-info');
+                    progressBar.classList.add('bg-danger');
+                    
+                    // Enable the verify button
+                    verifyBtn.disabled = false;
+                    verifyBtn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Verify Emails';
+                    
+                    // Generate a new session ID for next verification
+                    sessionId = generateSessionId();
+                    break;
+            }
+        }
+        
+        /**
+         * Add a result to the results table
+         */
+        function addResultToTable(result) {
+            const table = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            const row = table.insertRow();
+            
+            // Determine status class and text
+            let statusClass = '';
+            let statusText = '';
+            
+            if (result.status === 'catch-all' || isCatchAll(result)) {
+                statusClass = 'text-warning';
+                statusText = 'Catch-all';
+            } else if (result.status === 'valid' || result.valid === true) {
+                statusClass = 'text-success';
+                statusText = 'Valid';
+            } else if (result.status === 'invalid' || result.valid === false) {
+                statusClass = 'text-danger';
+                statusText = 'Invalid';
+            } else {
+                statusClass = 'text-secondary';
+                statusText = 'Inconclusive';
+            }
+            
+            // Determine reason text
+            let reasonText = result.message || (statusText === 'Valid' ? 'Email verified successfully' : 
+                                              (statusText === 'Invalid' ? 'Invalid email address' : 
+                                              (statusText === 'Catch-all' ? 'Catch-all domain' : 'Inconclusive verification')));
+            
+            // Format the row HTML
+            row.innerHTML = `
+                <td class="email-cell">${result.email}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>${reasonText}</td>
+                <td>${result.processingTime || 0} ms</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-secondary btn-icon view-details-btn" data-email="${result.email}">
+                        <i class="bi bi-info-circle"></i>
+                    </button>
+                </td>
+            `;
+            
+            // Add event listener for details button
+            const detailsBtn = row.querySelector('.view-details-btn');
+            detailsBtn.addEventListener('click', function() {
+                const email = this.getAttribute('data-email');
+                const resultData = allResults.find(r => r.email === email);
+                showResultDetails(resultData);
+            });
+        }
+        
+        /**
+         * Show detailed result information
+         */
+        function showResultDetails(result) {
+            const detailsModal = new bootstrap.Modal(document.getElementById('resultDetailsModal'));
+            document.getElementById('detailsModalTitle').textContent = result.email;
+            
+            let detailsContent = '<div class="table-responsive"><table class="table table-sm">';
+            
+            // Add all result properties to the modal
+            for (const [key, value] of Object.entries(result)) {
+                if (key !== 'email') {
+                    if (typeof value === 'object' && value !== null) {
+                        detailsContent += `<tr><td><strong>${key}</strong></td><td><pre>${JSON.stringify(value, null, 2)}</pre></td></tr>`;
+                    } else {
+                        detailsContent += `<tr><td><strong>${key}</strong></td><td>${value}</td></tr>`;
+                    }
+                }
+            }
+            
+            detailsContent += '</table></div>';
+            document.getElementById('resultDetailsContent').innerHTML = detailsContent;
+            
+            detailsModal.show();
+        }
+        
+        // Update statistics
+        function updateStatistics() {
+            // Deduplicate emails first (keep only the latest result for each email)
+            const uniqueEmails = {};
+            
+            // Process in reverse order so we get the latest result for each email
+            for (let i = allResults.length - 1; i >= 0; i--) {
+                const result = allResults[i];
+                const email = result.email.toLowerCase();
+                if (!uniqueEmails[email]) {
+                    uniqueEmails[email] = result;
+                }
+            }
+            
+            // Convert back to array
+            const uniqueResults = Object.values(uniqueEmails);
+            
+            // Now count each category
+            const stats = {
+                valid: 0,
+                invalid: 0,
+                catchall: 0
+            };
+            
+            uniqueResults.forEach(result => {
+                if (isCatchAll(result)) {
+                    stats.catchall++;
+                } else if (result.valid === true) {
+                    stats.valid++;
+                } else {
+                    stats.invalid++;
+                }
+            });
+            
+            // Update the UI
+            document.getElementById('totalEmails').textContent = uniqueResults.length;
+            document.getElementById('validEmails').textContent = stats.valid;
+            document.getElementById('invalidEmails').textContent = stats.invalid;
+            document.getElementById('catchallEmails').textContent = stats.catchall;
+            
+            // Update the global stats for future use
+            processingStats = {
+                valid: stats.valid,
+                invalid: stats.invalid,
+                catchall: stats.catchall,
+                total: uniqueResults.length
+            };
+            
+            // Update exportable stats for debugging
+            console.log(`Statistics updated: ${uniqueResults.length} total emails (${stats.valid} valid, ${stats.invalid} invalid, ${stats.catchall} inconclusive)`);
+        }
+        
+        // Reset statistics
+        function resetStats() {
+            allResults = [];
+            
+            const totalEmails = document.getElementById('totalEmails');
+            const validEmails = document.getElementById('validEmails');
+            const invalidEmails = document.getElementById('invalidEmails');
+            const catchallEmails = document.getElementById('catchallEmails');
+            
+            if (totalEmails) totalEmails.textContent = '0';
+            if (validEmails) validEmails.textContent = '0';
+            if (invalidEmails) invalidEmails.textContent = '0';
+            if (catchallEmails) catchallEmails.textContent = '0';
+            
+            // Clear results table
+            const tbody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            if (tbody) {
+                tbody.innerHTML = '';
+            }
+            
+            // Reset result count
+            const resultCount = document.getElementById('resultCount');
+            if (resultCount) {
+                resultCount.textContent = 'No results';
+            }
+        }
+        
+        /**
+         * Update result count display
+         */
+        function updateResultCount() {
+            const table = document.getElementById('resultsTable');
+            const rows = table.querySelectorAll('tbody tr:not(.detail-row)');
+            const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+            
+            const count = document.getElementById('resultCount');
+            count.textContent = `Showing ${visibleRows.length} of ${rows.length} results`;
+        }
+        
+        /**
+         * Filter results based on search and filter criteria
+         */
+        function filterResults() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filterValue = document.getElementById('filterSelect').value;
+            
+            const rows = document.getElementById('resultsTable').querySelectorAll('tbody tr:not(.detail-row)');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const email = row.querySelector('.email-cell').textContent.toLowerCase();
+                const statusBadge = row.querySelector('.status-badge');
+                const statusText = statusBadge ? statusBadge.textContent : '';
+                
+                // Determine if row matches filter
+                let matchesFilter = true;
+                if (filterValue === 'valid') {
+                    matchesFilter = (statusText === 'Valid');
+                } else if (filterValue === 'invalid') {
+                    matchesFilter = (statusText === 'Invalid');
+                } else if (filterValue === 'catch-all') {
+                    matchesFilter = (statusText === 'Catch-all');
+                } else if (filterValue === 'inconclusive') {
+                    matchesFilter = (statusText === 'Inconclusive');
+                }
+                
+                // Check if matches search
+                const matchesSearch = email.includes(searchTerm);
+                
+                // Show/hide based on both criteria
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Update the result count
+            const count = document.getElementById('resultCount');
+            count.textContent = `Showing ${visibleCount} of ${rows.length} results`;
+        }
+        
+        // Handle form submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            if (!stompClient || !stompClient.connected) {
+                alert('WebSocket connection is not established. Please wait while we reconnect...');
+                connect();
+                return;
+            }
+            
+            const emails = parseEmails(emailInput.value);
+            if (emails.length === 0) {
+                alert('Please enter at least one email address');
+                return;
+            }
+            
+            console.log(`Starting verification of ${emails.length} emails with session ${sessionId}`);
+            
+            // Send request to verify emails
+            const request = {
+                sessionId: sessionId,
+                emails: emails
+            };
+            
+            stompClient.send('/app/verify', {}, JSON.stringify(request));
+        }
+        
+        // Parse emails from input text
+        function parseEmails(text) {
+            return text.split(/[\n,;]/)
+                .map(email => email.trim())
+                .filter(email => email && isValidEmailFormat(email));
+        }
+        
+        // Check if string is a valid email format
+        function isValidEmailFormat(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        
+        // Clear email input
+        function clearEmailInput() {
+            emailInput.value = '';
+        }
+        
+        // Handle file upload
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const content = event.target.result;
+                
+                // Detect CSV vs TXT
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    // Extract emails from CSV - assuming simple format with email in first column
+                    const emails = content.split('\n')
+                        .map(line => line.split(',')[0].trim())
+                        .filter(email => email && isValidEmailFormat(email))
+                        .join('\n');
+                    
+                    emailInput.value = emails;
+                } else {
+                    // Assume plain text with one email per line
+                    emailInput.value = content;
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Export results to CSV
+        function exportResultsToCsv() {
+            if (allResults.length === 0) {
+                alert('No results to export');
+                return;
+            }
+            
+            // Determine which fields to include
+            const fields = ['email', 'valid', 'status', 'message', 'responseTime', 'smtp-server', 'catch-all', 'has-mx', 'event'];
+            
+            // Create CSV header row
+            let csv = fields.map(field => `"${field}"`).join(',') + '\n';
+            
+            // Add data rows
+            allResults.forEach(result => {
+                const row = fields.map(field => {
+                    let value = result[field] || '';
+                    
+                    // Handle nested fields
+                    if (!value && field.includes('-')) {
+                        const nestedField = field.replace('-', '_');
+                        value = result[nestedField] || '';
+                    }
+                    
+                    // Format for CSV (escape quotes)
+                    if (typeof value === 'string') {
+                        return `"${value.replace(/"/g, '""')}"`;
+                    } else if (typeof value === 'object' && value !== null) {
+                        return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+                    } else {
+                        return `"${value}"`;
+                    }
+                }).join(',');
+                
+                csv += row + '\n';
+            });
+            
+            // Download the CSV file
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'email_verification_results.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Generate a unique session ID
+        function generateSessionId() {
+            return 'session-' + Math.random().toString(36).substring(2, 15);
+        }
+
+        /**
+         * Export emails by category
+         */
+        function exportEmails(category) {
+            // First deduplicate emails (keep only the latest result for each email)
+            const uniqueEmails = {};
+            
+            // Process in reverse order so we get the latest result for each email
+            for (let i = allResults.length - 1; i >= 0; i--) {
+                const result = allResults[i];
+                const email = result.email.toLowerCase();
+                if (!uniqueEmails[email]) {
+                    uniqueEmails[email] = result;
+                }
+            }
+            
+            // Convert back to array
+            const uniqueResults = Object.values(uniqueEmails);
+            
+            // Filter results by category
+            let emailsToExport = [];
+            
+            if (category === 'all') {
+                // Export all emails
+                emailsToExport = uniqueResults.map(result => result.email);
+            } else if (category === 'valid') {
+                // Export valid emails
+                emailsToExport = uniqueResults
+                    .filter(result => result.valid && !isCatchAll(result))
+                    .map(result => result.email);
+            } else if (category === 'invalid') {
+                // Export invalid emails
+                emailsToExport = uniqueResults
+                    .filter(result => !result.valid)
+                    .map(result => result.email);
+            } else if (category === 'catchall') {
+                // Export catch-all/inconclusive emails
+                emailsToExport = uniqueResults
+                    .filter(result => isCatchAll(result))
+                    .map(result => result.email);
+            }
+            
+            if (emailsToExport.length === 0) {
+                showNotification("No emails to export in this category", "warning");
+                return;
+            }
+            
+            // Log the export for debugging
+            console.log(`Exporting ${emailsToExport.length} ${category} emails`);
+            
+            // Create CSV content
+            const csvContent = emailsToExport.join('\n');
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const link = document.createElement('a');
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${category}-emails-${timestamp}.csv`);
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification(`Exported ${emailsToExport.length} ${category} emails`, "success");
+        }
+
+        /**
+         * Display a notification message
+         */
+        function showNotification(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed bottom-0 end-0 m-3`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', function () {
+                document.body.removeChild(toast);
+            });
+        }
+
+        /**
+         * Check if a result is for a catch-all domain
+         */
+        function isCatchAll(result) {
+            // Check for explicit catch-all status
+            if (result.status === 'catch-all') {
+                return true;
+            }
+            
+            // Check explicit catch-all indicator
+            if (result['catch-all'] && (result['catch-all'] === true || result['catch-all'] === 1 || 
+                result['catch-all'] === '1' || parseFloat(result['catch-all']) === 1.0)) {
+                return true;
+            }
+            
+            // Check for event type
+            if (result.event && (result.event === 'is_catchall' || result.event === 'catchall')) {
+                return true;
+            }
+            
+            // Check reason/message
+            if (result.message) {
+                if (result.message.includes('Catch-all domain')) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        /**
+         * Handle a verification result
+         */
+        function handleVerificationResult(result) {
+            console.log("Received result:", result);
+            
+            // Add to all results array
+            allResults.push(result);
+            
+            // Deduplicate emails in the UI
+            updateResultsTable();
+            
+            // Update statistics with deduplicated results
+            updateStatistics();
+        }
+
+        /**
+         * Update the results table with deduplicated results
+         */
+        function updateResultsTable() {
+            // Clear the table first
+            const tbody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            
+            // Deduplicate emails (keep only the latest result for each email)
+            const uniqueEmails = {};
+            
+            // Process in reverse order so we get the latest result for each email
+            for (let i = allResults.length - 1; i >= 0; i--) {
+                const result = allResults[i];
+                const email = result.email.toLowerCase();
+                if (!uniqueEmails[email]) {
+                    uniqueEmails[email] = result;
+                }
+            }
+            
+            // Convert back to array and sort alphabetically by email
+            const uniqueResults = Object.values(uniqueEmails).sort((a, b) => 
+                a.email.toLowerCase().localeCompare(b.email.toLowerCase())
+            );
+            
+            // Add each unique result to the table
+            uniqueResults.forEach(result => {
+                addResultToTable(result);
+            });
+            
+            // Update result count
+            updateResultCount();
+        }
+    </script>
+
+    <!-- Add the Result Details Modal -->
+    <div class="modal fade" id="resultDetailsModal" tabindex="-1" aria-labelledby="resultDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalTitle">Email Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="resultDetailsContent">
+                    <!-- Result details will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

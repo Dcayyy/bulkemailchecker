@@ -1,193 +1,215 @@
 package com.mikov.bulkemailchecker.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
- * Response model for email verification that matches BulkEmailChecker format
- * 
- * @author zahari.mikov
+ * Response model for email verification API
  */
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmailVerificationResponse {
 
-    private final long id;
     private final String email;
+    private final Boolean valid;
     private final String status;
-    private final boolean valid;
-    private final String domain;
-    private final String localPart;
     private final String resultCode;
     private final String message;
-    private final String additionalInfo;
-    private final boolean subAddressing;
-    private final boolean disposable;
-    private final boolean role;
-    private final boolean free;
-    private final boolean spam;
-    private final boolean hasMx;
+    private final Boolean hasMx;
+    private final Boolean disposable;
+    private final Boolean role;
+    private final Boolean subAddressing;
+    private final Boolean free;
+    private final Boolean spam;
+    private final String country;
     private final String smtpServer;
     private final String ipAddress;
-    private final String country;
-    private final String checkedAt;
-    private final long responseTime;
-    private final String createdAt;
-    private final int retries;
+    private final String additionalInfo;
     private final String event;
-    private final String details;
+    private final String createdAt;
+    private final Long responseTime;
     
-    private EmailVerificationResponse(final Builder builder) {
-        this.id = builder.id;
+    // New fields for retry mechanism
+    private final String verificationId;
+    private final String retryStatus;
+    private final Long retryAfter;
+
+    private EmailVerificationResponse(Builder builder) {
         this.email = builder.email;
-        this.status = builder.status;
         this.valid = builder.valid;
-        this.domain = builder.domain;
-        this.localPart = builder.localPart;
+        this.status = builder.status;
         this.resultCode = builder.resultCode;
         this.message = builder.message;
-        this.additionalInfo = builder.additionalInfo;
-        this.subAddressing = builder.subAddressing;
+        this.hasMx = builder.hasMx;
         this.disposable = builder.disposable;
         this.role = builder.role;
+        this.subAddressing = builder.subAddressing;
         this.free = builder.free;
         this.spam = builder.spam;
-        this.hasMx = builder.hasMx;
+        this.country = builder.country;
         this.smtpServer = builder.smtpServer;
         this.ipAddress = builder.ipAddress;
-        this.country = builder.country;
-        this.checkedAt = builder.checkedAt;
-        this.responseTime = builder.responseTime;
-        this.createdAt = builder.createdAt;
-        this.retries = builder.retries;
+        this.additionalInfo = builder.additionalInfo;
         this.event = builder.event;
-        this.details = builder.details;
+        this.createdAt = builder.createdAt;
+        this.responseTime = builder.responseTime;
+        this.verificationId = builder.verificationId;
+        this.retryStatus = builder.retryStatus;
+        this.retryAfter = builder.retryAfter;
     }
     
+    /**
+     * Create a response for a rate-limited email that is pending verification
+     * @param email The email address
+     * @param message Message explaining the pending status
+     * @return EmailVerificationResponse with pending status
+     */
+    public static EmailVerificationResponse createPendingResponse(String email, String message) {
+        return new Builder(email)
+                .withStatus("pending")
+                .withResultCode("pending")
+                .withMessage(message)
+                .withValid(null)
+                .withVerificationId(UUID.randomUUID().toString())
+                .withRetryStatus("queued")
+                .withRetryAfter(System.currentTimeMillis() + 10000) // 10 seconds
+                .build();
+    }
+
     public static class Builder {
-        private long id = System.currentTimeMillis();
-        private String email;
-        private String status = "unknown";
-        private boolean valid = false;
-        private String domain;
-        private String localPart;
-        private String resultCode = "verification_failed";
-        private String message = "Failed to verify email";
-        private String additionalInfo = "";
-        private boolean subAddressing = false;
-        private boolean disposable = false;
-        private boolean role = false;
-        private boolean free = false;
-        private boolean spam = false;
-        private boolean hasMx = false;
-        private String smtpServer = "";
-        private String ipAddress = "";
-        private String country = "";
-        private String checkedAt = OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        private long responseTime = 0;
-        private String createdAt = OffsetDateTime.now().toString();
-        private int retries = 0;
-        private String event = null;
-        private String details = null;
-        
-        public Builder(final String email) {
+        private final String email;
+        private Boolean valid;
+        private String status;
+        private String resultCode;
+        private String message;
+        private Boolean hasMx;
+        private Boolean disposable;
+        private Boolean role;
+        private Boolean subAddressing;
+        private Boolean free;
+        private Boolean spam;
+        private String country;
+        private String smtpServer;
+        private String ipAddress;
+        private String additionalInfo;
+        private String event;
+        private String createdAt;
+        private Long responseTime;
+        private String verificationId;
+        private String retryStatus;
+        private Long retryAfter;
+
+        public Builder(String email) {
             this.email = email;
-            if (email != null && email.contains("@")) {
-                final var parts = email.split("@", 2);
-                this.localPart = parts[0];
-                this.domain = parts[1];
-            }
         }
-        
-        public Builder withStatus(final String status) {
-            this.status = status;
-            return this;
-        }
-        
-        public Builder withValid(final boolean valid) {
+
+        public Builder withValid(Boolean valid) {
             this.valid = valid;
             return this;
         }
-        
-        public Builder withResultCode(final String resultCode) {
+
+        public Builder withStatus(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder withResultCode(String resultCode) {
             this.resultCode = resultCode;
             return this;
         }
-        
-        public Builder withMessage(final String message) {
+
+        public Builder withMessage(String message) {
             this.message = message;
             return this;
         }
-        
-        public Builder withHasMx(final boolean hasMx) {
+
+        public Builder withHasMx(Boolean hasMx) {
             this.hasMx = hasMx;
             return this;
         }
-        
-        public Builder withSmtpServer(final String smtpServer) {
+
+        public Builder withDisposable(Boolean disposable) {
+            this.disposable = disposable;
+            return this;
+        }
+
+        public Builder withRole(Boolean role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder withSubAddressing(Boolean subAddressing) {
+            this.subAddressing = subAddressing;
+            return this;
+        }
+
+        public Builder withFree(Boolean free) {
+            this.free = free;
+            return this;
+        }
+
+        public Builder withSpam(Boolean spam) {
+            this.spam = spam;
+            return this;
+        }
+
+        public Builder withCountry(String country) {
+            this.country = country;
+            return this;
+        }
+
+        public Builder withSmtpServer(String smtpServer) {
             this.smtpServer = smtpServer;
             return this;
         }
-        
-        public Builder withIpAddress(final String ipAddress) {
+
+        public Builder withIpAddress(String ipAddress) {
             this.ipAddress = ipAddress;
             return this;
         }
-        
-        public Builder withResponseTime(final long responseTime) {
+
+        public Builder withAdditionalInfo(String additionalInfo) {
+            this.additionalInfo = additionalInfo;
+            return this;
+        }
+
+        public Builder withEvent(String event) {
+            this.event = event;
+            return this;
+        }
+
+        public Builder withCreatedAt(String createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder withResponseTime(Long responseTime) {
             this.responseTime = responseTime;
             return this;
         }
         
-        public Builder withDisposable(final boolean disposable) {
-            this.disposable = disposable;
+        public Builder withVerificationId(String verificationId) {
+            this.verificationId = verificationId;
             return this;
         }
         
-        public Builder withRole(final boolean role) {
-            this.role = role;
+        public Builder withRetryStatus(String retryStatus) {
+            this.retryStatus = retryStatus;
             return this;
         }
         
-        public Builder withSubAddressing(final boolean subAddressing) {
-            this.subAddressing = subAddressing;
+        public Builder withRetryAfter(Long retryAfter) {
+            this.retryAfter = retryAfter;
             return this;
         }
-        
-        public Builder withFree(final boolean free) {
-            this.free = free;
-            return this;
-        }
-        
-        public Builder withSpam(final boolean spam) {
-            this.spam = spam;
-            return this;
-        }
-        
-        public Builder withAdditionalInfo(final String additionalInfo) {
-            this.additionalInfo = additionalInfo;
-            return this;
-        }
-        
-        public Builder withCountry(final String country) {
-            this.country = country;
-            return this;
-        }
-        
-        public Builder withCreatedAt(final String createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-        
-        public Builder withEvent(final String event) {
-            this.event = event;
-            return this;
-        }
-        
+
         public EmailVerificationResponse build() {
             return new EmailVerificationResponse(this);
         }
     }
-
 } 

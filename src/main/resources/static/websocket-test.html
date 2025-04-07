@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Connection Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        #log {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    <div>
+        <button id="connect">Connect WebSocket</button>
+        <button id="send">Send Test Message</button>
+        <button id="clear">Clear Log</button>
+    </div>
+    <div>
+        <label for="serverUrl">Server URL:</label>
+        <input type="text" id="serverUrl" value="http://localhost:8081/ws-emailverifier" style="width: 300px;">
+    </div>
+    <h3>Connection Log:</h3>
+    <div id="log"></div>
+    
+    <!-- Include SockJS and STOMP client -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    
+    <script>
+        let socket = null;
+        let stompClient = null;
+        let sessionId = 'test-' + Math.random().toString(36).substring(2, 9);
+        const logElement = document.getElementById('log');
+        
+        function log(message, type = 'info') {
+            const logItem = document.createElement('div');
+            logItem.className = type;
+            logItem.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            logElement.appendChild(logItem);
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${type}] ${message}`);
+        }
+        
+        function connect() {
+            if (socket) {
+                log('Closing existing connection first', 'info');
+                socket.close();
+            }
+            
+            const serverUrl = document.getElementById('serverUrl').value;
+            log(`Attempting to connect to ${serverUrl}`, 'info');
+            
+            try {
+                // Create SockJS connection
+                socket = new SockJS(serverUrl);
+                
+                // Log SockJS events
+                socket.onopen = function() {
+                    log('SockJS connection established', 'success');
+                };
+                
+                socket.onclose = function(event) {
+                    log(`SockJS connection closed with code: ${event.code}, reason: ${event.reason}`, 
+                        event.code === 1000 ? 'info' : 'error');
+                };
+                
+                socket.onerror = function(error) {
+                    log(`SockJS error: ${error}`, 'error');
+                };
+                
+                // Create STOMP client over SockJS
+                stompClient = Stomp.over(socket);
+                
+                // Set debug function to log all STOMP messages
+                stompClient.debug = function(str) {
+                    log(`STOMP: ${str}`, 'info');
+                };
+                
+                // Connect to STOMP endpoint
+                stompClient.connect({}, 
+                    // Success callback
+                    function(frame) {
+                        log(`STOMP connection successful: ${frame}`, 'success');
+                        log(`Subscribing to /queue/verification/${sessionId}`, 'info');
+                        
+                        // Subscribe to personal verification queue
+                        stompClient.subscribe(`/queue/verification/${sessionId}`, function(message) {
+                            log(`Received message: ${message.body}`, 'success');
+                        });
+                    },
+                    // Error callback
+                    function(error) {
+                        log(`STOMP connection error: ${error}`, 'error');
+                    }
+                );
+            } catch (e) {
+                log(`Exception during connection setup: ${e.message}`, 'error');
+            }
+        }
+        
+        function sendTestMessage() {
+            if (!stompClient || !stompClient.connected) {
+                log('Not connected! Please connect first.', 'error');
+                return;
+            }
+            
+            try {
+                const testRequest = {
+                    sessionId: sessionId,
+                    email: 'test@example.com'
+                };
+                
+                log(`Sending test verification request for test@example.com with session ${sessionId}`, 'info');
+                stompClient.send('/app/verify-email', {}, JSON.stringify(testRequest));
+            } catch (e) {
+                log(`Error sending message: ${e.message}`, 'error');
+            }
+        }
+        
+        function clearLog() {
+            logElement.innerHTML = '';
+            log('Log cleared', 'info');
+        }
+        
+        // Set up event listeners
+        document.getElementById('connect').addEventListener('click', connect);
+        document.getElementById('send').addEventListener('click', sendTestMessage);
+        document.getElementById('clear').addEventListener('click', clearLog);
+        
+        // Initial log
+        log('WebSocket test page loaded. Click "Connect WebSocket" to begin.', 'info');
+    </script>
+</body>
+</html> 

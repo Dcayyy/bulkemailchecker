@@ -55,4 +55,22 @@ public class ValidationResult {
                 .details(details)
                 .build();
     }
+
+    /**
+     * Creates a result for a catch-all domain
+     * Catch-all domains are considered valid for delivery, but marked specially
+     * 
+     * @param validatorName Name of the validator
+     * @param reason Reason for the result
+     * @param details Additional details
+     * @return A validation result with catch-all information
+     */
+    public static ValidationResult catchAll(final String validatorName, final String reason, final Map<String, Object> details) {
+        return ValidationResult.builder()
+                .valid(true) // Catch-all domains are technically valid
+                .validatorName(validatorName)
+                .reason(reason)
+                .details(details)
+                .build();
+    }
 } 

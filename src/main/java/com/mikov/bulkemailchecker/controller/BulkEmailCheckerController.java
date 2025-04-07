@@ -13,7 +13,9 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,11 +31,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class BulkEmailCheckerController {
 
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerController.class);
-    private static final long RESPONSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(120);
+    private static final long RESPONSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(300);
     
     private static final int MAX_CONCURRENT_BATCH_REQUESTS = 5;
     private static final int MAX_CONCURRENT_SINGLE_REQUESTS = 15;
-    private static final int MAX_EMAILS_PER_BATCH = 25;
+    private static final int MAX_EMAILS_PER_BATCH = 1000;
     private static final int QUEUE_CAPACITY = 50;
     
     private final Semaphore batchRequestThrottler = new Semaphore(MAX_CONCURRENT_BATCH_REQUESTS, true);
@@ -41,6 +43,9 @@ public class BulkEmailCheckerController {
     
     private final ConcurrentLinkedQueue<PendingRequest> requestQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean queueProcessorRunning = new AtomicBoolean(false);
+    
+    // Store for tracking in-progress verifications by ID
+    private final Map<String, CompletableFuture<EmailVerificationResponse>> pendingVerifications = new ConcurrentHashMap<>();
     
     private final BulkEmailCheckerService bulkEmailCheckerService;
     
@@ -69,6 +74,37 @@ public class BulkEmailCheckerController {
         }
         
         return deferredResult;
+    }
+    
+    /**
+     * Check the status of a pending verification
+     */
+    @GetMapping("/status/{verificationId}")
+    public ResponseEntity<EmailVerificationResponse> checkVerificationStatus(
+            @PathVariable final String verificationId) {
+        
+        CompletableFuture<EmailVerificationResponse> pendingFuture = pendingVerifications.get(verificationId);
+        
+        if (pendingFuture == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        if (pendingFuture.isDone()) {
+            try {
+                EmailVerificationResponse result = pendingFuture.get();
+                // Once retrieved, we can remove it from pending tracking
+                pendingVerifications.remove(verificationId);
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                logger.error("Error retrieving verification result for ID {}: {}", verificationId, e.getMessage());
+                return ResponseEntity.internalServerError().build();
+            }
+        } else {
+            // Still processing - create a "still pending" response
+            EmailVerificationResponse response = EmailVerificationResponse.createPendingResponse(
+                    "pending", "Verification still in progress, please check back later");
+            return ResponseEntity.accepted().body(response);
+        }
     }
 
     @PostMapping(value = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -116,8 +152,23 @@ public class BulkEmailCheckerController {
     
     private void processEmailVerification(final String email, 
             final DeferredResult<ResponseEntity<EmailVerificationResponse>> deferredResult) {
-        CompletableFuture.supplyAsync(() -> bulkEmailCheckerService.verifyEmail(email))
-            .thenAccept(response -> deferredResult.setResult(ResponseEntity.ok(response)))
+        CompletableFuture<EmailVerificationResponse> future = CompletableFuture.supplyAsync(
+                () -> bulkEmailCheckerService.verifyEmail(email))
+            .thenApply(response -> {
+                // Check if this is a pending verification that needs tracking
+                if (response.getRetryStatus() != null && response.getVerificationId() != null) {
+                    // Create a new completable future to track the pending verification
+                    CompletableFuture<EmailVerificationResponse> pendingFuture = new CompletableFuture<>();
+                    pendingVerifications.put(response.getVerificationId(), pendingFuture);
+                    
+                    // Schedule a cleanup of this pending verification if it's never completed
+                    schedulePendingVerificationCleanup(response.getVerificationId(), 
+                            TimeUnit.MINUTES.toMillis(10)); // Expire after 10 minutes
+                }
+                return response;
+            });
+            
+        future.thenAccept(response -> deferredResult.setResult(ResponseEntity.ok(response)))
             .exceptionally(ex -> {
                 logger.error("Error verifying email {}: {}", email, ex.getMessage());
                 deferredResult.setErrorResult(
@@ -132,8 +183,25 @@ public class BulkEmailCheckerController {
     
     private void processBatchVerification(final List<String> emails,
             final DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> deferredResult) {
-        CompletableFuture.supplyAsync(() -> bulkEmailCheckerService.verifyEmails(emails))
-            .thenAccept(responses -> deferredResult.setResult(ResponseEntity.ok(responses)))
+        CompletableFuture<List<EmailVerificationResponse>> future = CompletableFuture.supplyAsync(
+                () -> bulkEmailCheckerService.verifyEmails(emails))
+            .thenApply(responses -> {
+                // Check all responses for pending verifications that need tracking
+                for (EmailVerificationResponse response : responses) {
+                    if (response.getRetryStatus() != null && response.getVerificationId() != null) {
+                        // Create a new completable future to track the pending verification
+                        CompletableFuture<EmailVerificationResponse> pendingFuture = new CompletableFuture<>();
+                        pendingVerifications.put(response.getVerificationId(), pendingFuture);
+                        
+                        // Schedule a cleanup of this pending verification if it's never completed
+                        schedulePendingVerificationCleanup(response.getVerificationId(), 
+                                TimeUnit.MINUTES.toMillis(10)); // Expire after 10 minutes
+                    }
+                }
+                return responses;
+            });
+            
+        future.thenAccept(responses -> deferredResult.setResult(ResponseEntity.ok(responses)))
             .exceptionally(ex -> {
                 logger.error("Error verifying emails: {}", ex.getMessage());
                 deferredResult.setErrorResult(ResponseEntity.internalServerError().build());
@@ -143,6 +211,33 @@ public class BulkEmailCheckerController {
                 batchRequestThrottler.release();
                 processNextQueuedRequest();
             });
+    }
+    
+    /**
+     * Schedule a cleanup task for pending verifications that are never completed
+     */
+    private void schedulePendingVerificationCleanup(String verificationId, long expiryMillis) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(expiryMillis);
+                CompletableFuture<EmailVerificationResponse> future = pendingVerifications.remove(verificationId);
+                if (future != null && !future.isDone()) {
+                    logger.info("Cleaning up expired verification ID: {}", verificationId);
+                    // Complete with timeout response
+                    EmailVerificationResponse timeoutResponse = new EmailVerificationResponse.Builder("unknown")
+                            .withStatus("failed")
+                            .withValid(false)
+                            .withResultCode("timeout")
+                            .withMessage("Verification timed out")
+                            .withEvent("verification_timeout")
+                            .withResponseTime(0L)
+                            .build();
+                    future.complete(timeoutResponse);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
     }
     
     private synchronized void startQueueProcessor() {
@@ -193,7 +288,7 @@ public class BulkEmailCheckerController {
                 .withValid(false)
                 .withResultCode("error")
                 .withMessage("Server error: " + message)
-                .withResponseTime(0)
+                .withResponseTime(0L)
                 .withDisposable(false)
                 .withRole(false)
                 .withSubAddressing(false)

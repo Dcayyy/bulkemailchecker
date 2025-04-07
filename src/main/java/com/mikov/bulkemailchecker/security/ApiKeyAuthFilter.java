@@ -16,7 +16,7 @@ import java.util.Collections;
 
 /**
  * Filter for API key authentication.
- * Validates the X-API-Key header against a configured secret.
+ * TESTING MODE: Authentication is completely disabled - all requests are accepted.
  * 
  * @author zahari.mikov
  */
@@ -35,34 +35,19 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
                                   final FilterChain filterChain)
             throws ServletException, IOException {
         
-        try {
-            final String requestApiKey = request.getHeader(API_KEY_HEADER);
-            
-            if (requestApiKey == null || !validateApiKey(requestApiKey)) {
-                throw new BadCredentialsException("Invalid API Key");
-            }
-
-            final Authentication auth = new CustomAuthenticationToken(
-                "api-client",
-                null,
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_API_CLIENT"))
-            );
-            
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            filterChain.doFilter(request, response);
-        } catch (BadCredentialsException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: " + e.getMessage());
-        }
+        // TESTING MODE: Always authenticate the request, regardless of API key
+        final Authentication auth = new CustomAuthenticationToken(
+            "api-client",
+            null,
+            Collections.singletonList(new SimpleGrantedAuthority("ROLE_API_CLIENT"))
+        );
+        
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        filterChain.doFilter(request, response);
     }
 
     private boolean validateApiKey(final String requestApiKey) {
-        try {
-            final String decodedRequestKey = new String(Base64.getDecoder().decode(requestApiKey));
-            final String decodedStoredKey = new String(Base64.getDecoder().decode(apiKey));
-            return decodedRequestKey.equals(decodedStoredKey);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        // TESTING MODE: Always return true to allow all requests
+        return true;
     }
 } 
