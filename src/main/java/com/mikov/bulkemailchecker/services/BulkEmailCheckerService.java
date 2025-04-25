@@ -44,6 +44,7 @@ public class BulkEmailCheckerService {
     private final SyntaxValidator syntaxValidator;
     private final MXRecordValidator mxRecordValidator;
     private final TaskExecutor taskExecutor;
+    private final NeverBounceService neverBounceService;
 
     // Map to store pending verification results that clients can query later
     private final Map<String, CompletableFuture<EmailVerificationResponse>> pendingVerifications = new ConcurrentHashMap<>();
@@ -52,11 +53,13 @@ public class BulkEmailCheckerService {
     public BulkEmailCheckerService(final SMTPValidator smtpValidator,
                                    final SyntaxValidator syntaxValidator,
                                    final MXRecordValidator mxRecordValidator,
-                                   final TaskExecutor taskExecutor) {
+                                   final TaskExecutor taskExecutor,
+                                   final NeverBounceService neverBounceService) {
         this.smtpValidator = smtpValidator;
         this.syntaxValidator = syntaxValidator;
         this.mxRecordValidator = mxRecordValidator;
         this.taskExecutor = taskExecutor;
+        this.neverBounceService = neverBounceService;
     }
 
     /**
@@ -88,7 +91,7 @@ public class BulkEmailCheckerService {
             // Check for specific cases in the result details
             Map<String, Object> details = result.getDetails();
             
-            // Check for catch-all domains
+            // Check for catch-all domains - ensure they are always marked as catch-all
             if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
                 status = "catch-all";
             } 
@@ -167,63 +170,6 @@ public class BulkEmailCheckerService {
         return responseBuilder.build();
     }
 
-    /**
-     * Schedule a task to complete a pending verification
-     */
-    private void schedulePendingVerificationCompletion(String email, String verificationId) {
-        // Poll the SMTP validator every 10 seconds to check for completion
-        CompletableFuture.runAsync(() -> {
-            int maxAttempts = 30; // Try for 5 minutes (30 * 10s)
-            for (int i = 0; i < maxAttempts; i++) {
-                try {
-                    // Wait between polls
-                    Thread.sleep(10000);
-                    
-                    // Check if we have a result for this email
-                    EmailVerificationResponse completedResult = checkForCompletedVerification(email);
-                    
-                    if (completedResult != null) {
-                        // Complete the future with the result
-                        CompletableFuture<EmailVerificationResponse> future = pendingVerifications.get(verificationId);
-                        if (future != null && !future.isDone()) {
-                            future.complete(completedResult);
-                            logger.info("Pending verification {} completed for email {}", verificationId, email);
-                            
-                            // Once completed, we can remove it from tracking
-                            pendingVerifications.remove(verificationId);
-                        }
-                        return;
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                } catch (Exception e) {
-                    logger.error("Error checking pending verification for {}: {}", email, e.getMessage());
-                }
-            }
-            
-            // If we get here, verification timed out
-            CompletableFuture<EmailVerificationResponse> future = pendingVerifications.get(verificationId);
-            if (future != null && !future.isDone()) {
-                // Complete with timeout error
-                EmailVerificationResponse timeoutResult = new EmailVerificationResponse.Builder(email)
-                        .withStatus("failed")
-                        .withValid(false)
-                        .withResultCode("timeout")
-                        .withMessage("Verification timed out after 5 minutes")
-                        .withEvent("verification_timeout")
-                        .build();
-                
-                future.complete(timeoutResult);
-                pendingVerifications.remove(verificationId);
-                logger.warn("Pending verification {} timed out for email {}", verificationId, email);
-            }
-        });
-    }
-    
-    /**
-     * Check if a previously rate-limited email has now been validated
-     */
     private EmailVerificationResponse checkForCompletedVerification(String email) {
         // Re-do validation to see if retry queue has completed it
         final var startTime = Instant.now();
@@ -306,43 +252,80 @@ public class BulkEmailCheckerService {
         return results;
     }
 
+    /**
+     * Execute validation pipeline
+     */
     private ValidationResult executeValidationPipeline(final String email) {
-        // Initialize combined result
-        ValidationResult result = null;
-        
-        // Process each validator individually to avoid type issues
-        try {
-            ValidationResult syntaxResult = syntaxValidator.validate(email);
-            result = syntaxResult;
-            
-            // Short-circuit if syntax validation fails
-            if (!syntaxResult.isValid()) {
-                logger.debug("Short-circuiting validation for {} after syntax validator returned invalid", email);
-                return result;
-            }
-            
-            ValidationResult mxResult = mxRecordValidator.validate(email);
-            result = combineResults(result, mxResult);
-            
-            // Short-circuit if MX validation fails
-            if (!mxResult.isValid()) {
-                logger.debug("Short-circuiting validation for {} after mx-record validator returned invalid", email);
-                return result;
-            }
-            
-            ValidationResult smtpResult = smtpValidator.validate(email);
-            result = combineResults(result, smtpResult);
-            
-        } catch (final Exception e) {
-            logger.error("Error in validation pipeline: {}", e.getMessage());
+        // Validate syntax first - this is the fastest check
+        ValidationResult syntaxResult = syntaxValidator.validate(email);
+        if (!syntaxResult.isValid()) {
+            logger.debug("Email {} failed syntax validation: {}", email, syntaxResult.getReason());
+            return syntaxResult;
         }
         
-        // If we somehow got no result, create a default invalid one
-        if (result == null) {
-            result = ValidationResult.invalid("pipeline", "Validation pipeline failed");
+        // Validate MX record - also relatively fast
+        ValidationResult mxResult = mxRecordValidator.validate(email);
+        if (!mxResult.isValid()) {
+            logger.debug("Email {} failed MX record validation: {}", email, mxResult.getReason());
+            return mxResult;
         }
         
-        return result;
+        // Finally validate via SMTP - this is the most time-consuming check
+        ValidationResult smtpResult = smtpValidator.validate(email);
+        
+        if (!smtpResult.isValid()) {
+            logger.debug("Email {} failed SMTP validation: {}", email, smtpResult.getReason());
+            return smtpResult;
+        }
+        
+        // Check if the result indicates a catch-all domain
+        if (smtpResult.getDetails() != null) {
+            Map<String, Object> details = smtpResult.getDetails();
+            if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
+                logger.info("Catch-all domain detected for email {}. Performing additional verification with NeverBounce.", email);
+                
+                // For catch-all domains, perform an additional verification with NeverBounce
+                ValidationResult neverBounceResult = neverBounceService.verifyEmail(email);
+                
+                // If NeverBounce gave a definitive result (valid or invalid), use that
+                if (neverBounceResult.getDetails().containsKey("formatted_result")) {
+                    // Extract formatted result from NeverBounce
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> formattedResult = 
+                        (Map<String, Object>) neverBounceResult.getDetails().get("formatted_result");
+                    
+                    String nbResult = (String) formattedResult.get("result");
+                    logger.info("NeverBounce gave definitive result for catch-all domain email {}: {}", email, nbResult);
+                    
+                    // If NeverBounce says the email is valid, return it as valid 
+                    if ("valid".equals(nbResult)) {
+                        // Copy event from NeverBounce result to SMTP result
+                        if (neverBounceResult.getDetails().containsKey("event")) {
+                            details.put("event", neverBounceResult.getDetails().get("event"));
+                        }
+                        return smtpResult; // Return as valid but keep the original SMTP details
+                    } 
+                    // If NeverBounce confirms it's a catch-all, keep the catch-all status
+                    else if ("catchall".equals(nbResult)) {
+                        // Make sure the event is marked as catch-all
+                        details.put("event", "is_catchall");
+                        return smtpResult; // Keep the catch-all status
+                    }
+                    // If NeverBounce says it's invalid, return the NeverBounce result
+                    else if ("invalid".equals(nbResult)) {
+                        return neverBounceResult;
+                    }
+                }
+                
+                // If NeverBounce didn't give a definitive result, fall back to SMTP result
+                // But ensure it has the catch-all event set
+                details.put("event", "is_catchall");
+                return smtpResult;
+            }
+        }
+        
+        // Return the SMTP result if no catch-all issues
+        return smtpResult;
     }
     
     /**

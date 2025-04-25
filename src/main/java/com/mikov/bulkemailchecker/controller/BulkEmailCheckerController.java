@@ -2,6 +2,7 @@ package com.mikov.bulkemailchecker.controller;
 
 import com.mikov.bulkemailchecker.model.BulkEmailVerificationRequest;
 import com.mikov.bulkemailchecker.model.EmailVerificationResponse;
+import com.mikov.bulkemailchecker.model.SimplifiedEmailResponse;
 import com.mikov.bulkemailchecker.services.BulkEmailCheckerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for email verification
@@ -55,12 +57,12 @@ public class BulkEmailCheckerController {
     }
 
     @GetMapping("/verify/{email}")
-    public DeferredResult<ResponseEntity<EmailVerificationResponse>> verifyEmail(@PathVariable final String email) {
-        final var deferredResult = new DeferredResult<ResponseEntity<EmailVerificationResponse>>(RESPONSE_TIMEOUT_MS);
+    public DeferredResult<ResponseEntity<SimplifiedEmailResponse>> verifyEmail(@PathVariable final String email) {
+        final var deferredResult = new DeferredResult<ResponseEntity<SimplifiedEmailResponse>>(RESPONSE_TIMEOUT_MS);
         
         boolean permitAcquired = singleRequestThrottler.tryAcquire();
         if (permitAcquired) {
-            processEmailVerification(email, deferredResult);
+            processSimplifiedEmailVerification(email, deferredResult);
         } else {
             if (requestQueue.size() < QUEUE_CAPACITY) {
                 logger.info("Queuing email verification request for: {}", email);
@@ -68,8 +70,10 @@ public class BulkEmailCheckerController {
                 startQueueProcessor(); // Ensure the queue processor is running
             } else {
                 logger.warn("Request queue full, rejecting verification request for email: {}", email);
+                // Create a simplified error response
+                EmailVerificationResponse errorResponse = createErrorResponse(email, "Too many requests. Please try again later.");
                 deferredResult.setResult(ResponseEntity.status(429)
-                    .body(createErrorResponse(email, "Too many requests. Please try again later.")));
+                    .body(SimplifiedEmailResponse.from(errorResponse)));
             }
         }
         
@@ -80,7 +84,7 @@ public class BulkEmailCheckerController {
      * Check the status of a pending verification
      */
     @GetMapping("/status/{verificationId}")
-    public ResponseEntity<EmailVerificationResponse> checkVerificationStatus(
+    public ResponseEntity<SimplifiedEmailResponse> checkVerificationStatus(
             @PathVariable final String verificationId) {
         
         CompletableFuture<EmailVerificationResponse> pendingFuture = pendingVerifications.get(verificationId);
@@ -94,7 +98,7 @@ public class BulkEmailCheckerController {
                 EmailVerificationResponse result = pendingFuture.get();
                 // Once retrieved, we can remove it from pending tracking
                 pendingVerifications.remove(verificationId);
-                return ResponseEntity.ok(result);
+                return ResponseEntity.ok(SimplifiedEmailResponse.from(result));
             } catch (Exception e) {
                 logger.error("Error retrieving verification result for ID {}: {}", verificationId, e.getMessage());
                 return ResponseEntity.internalServerError().build();
@@ -103,55 +107,57 @@ public class BulkEmailCheckerController {
             // Still processing - create a "still pending" response
             EmailVerificationResponse response = EmailVerificationResponse.createPendingResponse(
                     "pending", "Verification still in progress, please check back later");
-            return ResponseEntity.accepted().body(response);
+            return ResponseEntity.accepted().body(SimplifiedEmailResponse.from(response));
         }
     }
 
     @PostMapping(value = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> verifyEmails(
+    public DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>> verifyEmails(
             @RequestBody final BulkEmailVerificationRequest request) {
         if (request == null || request.emails() == null || request.emails().isEmpty()) {
             logger.warn("Received empty request for bulk email verification");
             
-            final var emptyResult = new DeferredResult<ResponseEntity<List<EmailVerificationResponse>>>(RESPONSE_TIMEOUT_MS);
+            final var emptyResult = new DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>>(RESPONSE_TIMEOUT_MS);
             emptyResult.setResult(ResponseEntity.badRequest().body(Collections.emptyList()));
             return emptyResult;
         }
         
         if (request.emails().size() > MAX_EMAILS_PER_BATCH) {
             logger.warn("Batch email verification request exceeds maximum allowed size: {} emails", request.emails().size());
-            final var errorResult = new DeferredResult<ResponseEntity<List<EmailVerificationResponse>>>(RESPONSE_TIMEOUT_MS);
+            final var errorResult = new DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>>(RESPONSE_TIMEOUT_MS);
+            EmailVerificationResponse errorResponse = createErrorResponse("batch", 
+                   "Batch size exceeds maximum allowed (" + MAX_EMAILS_PER_BATCH + " emails)");
             errorResult.setResult(ResponseEntity.badRequest()
-                .body(Collections.singletonList(createErrorResponse("batch", 
-                       "Batch size exceeds maximum allowed (" + MAX_EMAILS_PER_BATCH + " emails)"))));
+                .body(Collections.singletonList(SimplifiedEmailResponse.from(errorResponse))));
             return errorResult;
         }
         
         logger.info("Received request to verify {} emails", request.emails().size());
         
-        final var deferredResult = new DeferredResult<ResponseEntity<List<EmailVerificationResponse>>>(RESPONSE_TIMEOUT_MS);
+        final var deferredResult = new DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>>(RESPONSE_TIMEOUT_MS);
         
         boolean permitAcquired = batchRequestThrottler.tryAcquire();
         if (permitAcquired) {
-            processBatchVerification(request.emails(), deferredResult);
+            processSimplifiedBatchVerification(request.emails(), deferredResult);
         } else {
             if (requestQueue.size() < QUEUE_CAPACITY) {
                 logger.info("Queuing batch verification request for {} emails", request.emails().size());
-                requestQueue.add(new PendingRequest(null, null, new BatchRequest(request.emails(), deferredResult)));
+                requestQueue.add(new PendingRequest(null, null, new SimplifiedBatchRequest(request.emails(), deferredResult)));
                 startQueueProcessor(); // Ensure the queue processor is running
             } else {
                 logger.warn("Request queue full, rejecting batch verification of {} emails", request.emails().size());
+                EmailVerificationResponse errorResponse = createErrorResponse("batch", 
+                    "Too many requests. Please try again later.");
                 deferredResult.setResult(ResponseEntity.status(429)
-                    .body(Collections.singletonList(createErrorResponse("batch", 
-                        "Too many requests. Please try again later."))));
+                    .body(Collections.singletonList(SimplifiedEmailResponse.from(errorResponse))));
             }
         }
         
         return deferredResult;
     }
     
-    private void processEmailVerification(final String email, 
-            final DeferredResult<ResponseEntity<EmailVerificationResponse>> deferredResult) {
+    private void processSimplifiedEmailVerification(final String email, 
+            final DeferredResult<ResponseEntity<SimplifiedEmailResponse>> deferredResult) {
         CompletableFuture<EmailVerificationResponse> future = CompletableFuture.supplyAsync(
                 () -> bulkEmailCheckerService.verifyEmail(email))
             .thenApply(response -> {
@@ -168,11 +174,12 @@ public class BulkEmailCheckerController {
                 return response;
             });
             
-        future.thenAccept(response -> deferredResult.setResult(ResponseEntity.ok(response)))
+        future.thenAccept(response -> deferredResult.setResult(ResponseEntity.ok(SimplifiedEmailResponse.from(response))))
             .exceptionally(ex -> {
                 logger.error("Error verifying email {}: {}", email, ex.getMessage());
+                EmailVerificationResponse errorResponse = createErrorResponse(email, ex.getMessage());
                 deferredResult.setErrorResult(
-                    ResponseEntity.internalServerError().body(createErrorResponse(email, ex.getMessage())));
+                    ResponseEntity.internalServerError().body(SimplifiedEmailResponse.from(errorResponse)));
                 return null;
             })
             .whenComplete((r, e) -> {
@@ -181,8 +188,8 @@ public class BulkEmailCheckerController {
             });
     }
     
-    private void processBatchVerification(final List<String> emails,
-            final DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> deferredResult) {
+    private void processSimplifiedBatchVerification(final List<String> emails,
+            final DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>> deferredResult) {
         CompletableFuture<List<EmailVerificationResponse>> future = CompletableFuture.supplyAsync(
                 () -> bulkEmailCheckerService.verifyEmails(emails))
             .thenApply(responses -> {
@@ -200,11 +207,20 @@ public class BulkEmailCheckerController {
                 }
                 return responses;
             });
-            
-        future.thenAccept(responses -> deferredResult.setResult(ResponseEntity.ok(responses)))
+        
+        future.thenAccept(responses -> {
+                // Convert to simplified responses
+                List<SimplifiedEmailResponse> simplifiedResponses = responses.stream()
+                    .map(SimplifiedEmailResponse::from)
+                    .collect(Collectors.toList());
+                
+                deferredResult.setResult(ResponseEntity.ok(simplifiedResponses));
+            })
             .exceptionally(ex -> {
-                logger.error("Error verifying emails: {}", ex.getMessage());
-                deferredResult.setErrorResult(ResponseEntity.internalServerError().build());
+                logger.error("Error verifying batch emails: {}", ex.getMessage());
+                EmailVerificationResponse errorResponse = createErrorResponse("batch", ex.getMessage());
+                deferredResult.setErrorResult(ResponseEntity.internalServerError()
+                    .body(Collections.singletonList(SimplifiedEmailResponse.from(errorResponse))));
                 return null;
             })
             .whenComplete((r, e) -> {
@@ -213,101 +229,93 @@ public class BulkEmailCheckerController {
             });
     }
     
-    /**
-     * Schedule a cleanup task for pending verifications that are never completed
-     */
     private void schedulePendingVerificationCleanup(String verificationId, long expiryMillis) {
+        // Schedule a task to clean up pending verifications that are never completed
         CompletableFuture.runAsync(() -> {
             try {
                 Thread.sleep(expiryMillis);
-                CompletableFuture<EmailVerificationResponse> future = pendingVerifications.remove(verificationId);
-                if (future != null && !future.isDone()) {
-                    logger.info("Cleaning up expired verification ID: {}", verificationId);
-                    // Complete with timeout response
-                    EmailVerificationResponse timeoutResponse = new EmailVerificationResponse.Builder("unknown")
-                            .withStatus("failed")
-                            .withValid(false)
-                            .withResultCode("timeout")
-                            .withMessage("Verification timed out")
-                            .withEvent("verification_timeout")
-                            .withResponseTime(0L)
-                            .build();
-                    future.complete(timeoutResponse);
+                CompletableFuture<EmailVerificationResponse> pendingFuture = pendingVerifications.get(verificationId);
+                if (pendingFuture != null && !pendingFuture.isDone()) {
+                    // Attempt to complete with a timeout error
+                    pendingFuture.complete(createErrorResponse("expired", 
+                        "Verification timeout after " + (expiryMillis / 60000) + " minutes"));
+                    pendingVerifications.remove(verificationId);
+                    logger.warn("Expired pending verification: {}", verificationId);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         });
     }
-    
+
     private synchronized void startQueueProcessor() {
-        if (queueProcessorRunning.compareAndSet(false, true)) {
-            CompletableFuture.runAsync(this::processNextQueuedRequest);
+        if (!queueProcessorRunning.getAndSet(true)) {
+            processNextQueuedRequest();
         }
     }
     
     private void processNextQueuedRequest() {
-        PendingRequest request = requestQueue.poll();
-        if (request == null) {
+        PendingRequest pendingRequest = requestQueue.poll();
+        if (pendingRequest == null) {
             queueProcessorRunning.set(false);
             return;
         }
         
-        queueProcessorRunning.set(true);
-        
-        if (request.email != null) {
-            if (singleRequestThrottler.tryAcquire()) {
-                logger.debug("Processing queued single email request: {}", request.email);
-                processEmailVerification(request.email, request.singleResult);
-            } else {
-                requestQueue.add(request);
-                CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
-                    .execute(this::processNextQueuedRequest);
+        try {
+            // Process single email verification
+            if (pendingRequest.email() != null && pendingRequest.singleResult() != null) {
+                if (singleRequestThrottler.tryAcquire()) {
+                    @SuppressWarnings("unchecked")
+                    DeferredResult<ResponseEntity<SimplifiedEmailResponse>> deferredResult = 
+                        (DeferredResult<ResponseEntity<SimplifiedEmailResponse>>) pendingRequest.singleResult();
+                    processSimplifiedEmailVerification(pendingRequest.email(), deferredResult);
+                } else {
+                    // If we can't acquire a permit, put it back in the queue and try later
+                    requestQueue.add(pendingRequest);
+                    Thread.sleep(100); // Short delay before retrying
+                    startQueueProcessor();
+                }
+            } 
+            // Process batch verification
+            else if (pendingRequest.batchRequest() != null) {
+                if (batchRequestThrottler.tryAcquire()) {
+                    SimplifiedBatchRequest batchRequest = (SimplifiedBatchRequest) pendingRequest.batchRequest();
+                    processSimplifiedBatchVerification(batchRequest.emails(), batchRequest.deferredResult());
+                } else {
+                    // If we can't acquire a permit, put it back in the queue and try later
+                    requestQueue.add(pendingRequest);
+                    Thread.sleep(100); // Short delay before retrying
+                    startQueueProcessor();
+                }
             }
-        } else if (request.batchRequest != null) {
-            if (batchRequestThrottler.tryAcquire()) {
-                logger.debug("Processing queued batch request with {} emails", request.batchRequest.emails.size());
-                processBatchVerification(request.batchRequest.emails, request.batchRequest.deferredResult);
-            } else {
-                requestQueue.add(request);
-                CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
-                    .execute(this::processNextQueuedRequest);
-            }
+        } catch (Exception e) {
+            logger.error("Error processing queued request: {}", e.getMessage());
         }
+        
+        // Process next request in queue
+        processNextQueuedRequest();
     }
-
-    private DeferredResult<ResponseEntity<EmailVerificationResponse>> createErrorDeferredResult(String email, String message) {
-        final var result = new DeferredResult<ResponseEntity<EmailVerificationResponse>>(RESPONSE_TIMEOUT_MS);
-        result.setResult(ResponseEntity.status(429).body(createErrorResponse(email, message)));
+    
+    private DeferredResult<ResponseEntity<SimplifiedEmailResponse>> createErrorDeferredResult(String email, String message) {
+        final var result = new DeferredResult<ResponseEntity<SimplifiedEmailResponse>>();
+        result.setResult(ResponseEntity.status(400).body(SimplifiedEmailResponse.from(createErrorResponse(email, message))));
         return result;
     }
-
+    
     private EmailVerificationResponse createErrorResponse(final String email, final String message) {
-        return new EmailVerificationResponse.Builder(email)
-                .withStatus("failed")
+        final var builder = new EmailVerificationResponse.Builder(email)
                 .withValid(false)
+                .withStatus("error")
                 .withResultCode("error")
-                .withMessage("Server error: " + message)
-                .withResponseTime(0L)
-                .withDisposable(false)
-                .withRole(false)
-                .withSubAddressing(false)
-                .withFree(false)
-                .withSpam(false)
-                .withHasMx(false)
-                .withCountry("")
-                .withSmtpServer("")
-                .withIpAddress("")
-                .withAdditionalInfo("")
-                .withEvent("inconclusive")
-                .build();
+                .withMessage(message);
+                
+        return builder.build();
     }
-
-    private record PendingRequest(String email, DeferredResult<ResponseEntity<EmailVerificationResponse>> singleResult,
-                                  BatchRequest batchRequest) {
+    
+    private record PendingRequest(String email, Object singleResult, Object batchRequest) {
     }
-
-    private record BatchRequest(List<String> emails,
-                                DeferredResult<ResponseEntity<List<EmailVerificationResponse>>> deferredResult) {
+    
+    private record SimplifiedBatchRequest(List<String> emails,
+                                DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>> deferredResult) {
     }
 }
