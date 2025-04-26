@@ -17,19 +17,11 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.net.SocketTimeoutException;
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -49,18 +41,16 @@ import java.util.stream.Collectors;
 public class SMTPValidator implements EmailValidator {
     private static final Logger logger = LoggerFactory.getLogger(SMTPValidator.class);
     
-    // Basic settings - all waiting times set to zero
     private static final boolean ENABLE_FAST_MODE = false;
     private static final boolean ENABLE_AGGRESSIVE_VERIFICATION = true;
     private static final int SOCKET_TIMEOUT_MS = 5000;
     private static final int CONNECTION_TIMEOUT_MS = 5000;
     private static final int VERIFICATION_ATTEMPTS = 2;
     private static final int SMTP_PORT = 25;
-    private static final int GREYLISTING_RETRY_DELAY_MS = 3000; // 3 seconds between retries
-    private static final int GREYLISTING_MAX_RETRIES = 2; // Try up to 3 times total (initial + 2 retries)
-    private static final int MAX_CONNECTIONS_PER_DOMAIN = 3; // Limit connections to a domain
+    private static final int GREYLISTING_RETRY_DELAY_MS = 3000;
+    private static final int GREYLISTING_MAX_RETRIES = 2;
+    private static final int MAX_CONNECTIONS_PER_DOMAIN = 3;
     
-    // Response parsing
     private static final String[] INVALID_RESPONSE_SUBSTRINGS = {
         "does not exist", "no such user", "user unknown", "invalid recipient", 
         "recipient rejected", "address rejected", "not found", "mailbox unavailable",
@@ -68,16 +58,12 @@ public class SMTPValidator implements EmailValidator {
         "no such recipient", "bad address", "delivery failed", "recipient address rejected"
     };
     
-    // Basic cache
     private final Map<String, CachedValidationResult> resultCache = new HashMap<>();
-    
+
     private static final Random random = new Random();
     
-    // Add at the top with other constants
-    private static final int DNS_THREAD_POOL_SIZE = 4;
-    private static final ExecutorService dnsExecutor = Executors.newFixedThreadPool(DNS_THREAD_POOL_SIZE);
-    private static final int SMTP_THREAD_POOL_SIZE = 10;
-    private static final ExecutorService smtpExecutor = Executors.newFixedThreadPool(SMTP_THREAD_POOL_SIZE);
+    private static final ExecutorService dnsExecutor = Executors.newVirtualThreadPerTaskExecutor();
+    private static final ExecutorService smtpExecutor = Executors.newVirtualThreadPerTaskExecutor();
     
     @Override
     public ValidationResult validate(final String email) {
@@ -106,7 +92,6 @@ public class SMTPValidator implements EmailValidator {
         }
         
         try {
-            // Get all MX records with their weights
             long mxStartTime = System.currentTimeMillis();
             final var mxRecordsWithWeights = getMxRecordsWithWeights(domain);
             logger.info("MX records lookup for {} took {}ms", domain, System.currentTimeMillis() - mxStartTime);
@@ -120,38 +105,28 @@ public class SMTPValidator implements EmailValidator {
             
             logger.debug("Found {} MX records for domain {}", mxRecordsWithWeights.size(), domain);
             
-            // Check DNS records for domain health
             long dnsStartTime = System.currentTimeMillis();
             Map<String, Object> dnsDetails = checkDomainDnsRecords(domain);
             logger.info("DNS checks for {} took {}ms", domain, System.currentTimeMillis() - dnsStartTime);
-            boolean hasDnsIssues = Boolean.TRUE.equals(dnsDetails.get("has_dns_issues"));
+
+            mxRecordsWithWeights.sort(Comparator.comparingInt(a -> a.priority));
             
-            // Sort MX records by priority (lowest value first)
-            mxRecordsWithWeights.sort((a, b) -> Integer.compare(a.priority, b.priority));
-            
-            // Create a list of just the hostnames
             final var mxHosts = mxRecordsWithWeights.stream()
                 .map(record -> record.hostname)
                 .toArray(String[]::new);
             
             final var provider = identifyProvider(mxHosts);
             
-            // Primary MX (lowest priority value)
             final var primaryMxRecord = mxRecordsWithWeights.get(0);
             final var primaryMxHost = primaryMxRecord.hostname;
             
             logger.debug("Checking primary MX host {} (priority {}) for domain {}", 
                 primaryMxHost, primaryMxRecord.priority, domain);
                 
-            // Get more detailed server info
             final var serverInfo = new SmtpServerInfo(primaryMxHost, getIpAddress(primaryMxHost), provider);
-            
-            // Test for catch-all domain status
             boolean isCatchAll = false;
             
-            // Skip catch-all detection in fast mode
             if (!ENABLE_FAST_MODE) {
-                // Try all MX servers for catch-all detection, stopping at first positive
                 for (int i = 0; i < mxRecordsWithWeights.size(); i++) {
                     MxRecord mxRecord = mxRecordsWithWeights.get(i);
                     logger.debug("Testing MX server {} (priority {}) for catch-all detection", 
@@ -159,20 +134,17 @@ public class SMTPValidator implements EmailValidator {
                     
                     boolean currentMxIsCatchAll = detectCatchAll(email, domain, mxRecord.hostname);
                     
-                    // If we found a catch-all, no need to check more servers
                     if (currentMxIsCatchAll) {
                         isCatchAll = true;
                         break;
                     }
                     
-                    // Only check up to 3 MX servers for catch-all to avoid excessive testing
                     if (i >= 2) break;
                 }
                 
                 if (isCatchAll) {
                     logger.info("Domain {} detected as catch-all", domain);
                     
-                    // For catch-all domains, include DNS health information
                     final var details = createDetailsMap(true, "Catch-all domain",
                             serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
                     details.put("event", "is_catchall");
@@ -180,7 +152,6 @@ public class SMTPValidator implements EmailValidator {
                     details.put("mx_count", mxRecordsWithWeights.size());
                     details.put("primary_mx", primaryMxHost);
                     
-                    // Add DNS check details
                     details.putAll(dnsDetails);
                     
                     final var result = ValidationResult.valid(getName(), details);
@@ -191,11 +162,9 @@ public class SMTPValidator implements EmailValidator {
             
             logger.debug("Performing SMTP verification for {} using MX host {}", email, primaryMxHost);
             
-            // Try greylisting test if aggressive verification is enabled
             if (ENABLE_AGGRESSIVE_VERIFICATION) {
                 SmtpValidationResult greylistResult = performGreylistTest(localPart, domain, primaryMxHost);
                 
-                // If greylisting test gave us a definitive result, use it
                 if (greylistResult != null && !greylistResult.isTempError()) {
                     final var details = createDetailsMap(greylistResult.isCatchAll(), 
                         greylistResult.isDeliverable() ? null : "Email not deliverable",
@@ -219,10 +188,8 @@ public class SMTPValidator implements EmailValidator {
                 }
             }
             
-            // Standard verification if greylisting didn't give conclusive results
             List<SmtpValidationResult> allResults = new ArrayList<>();
             
-            // Try each MX server in priority order until we get a conclusive result
             for (int i = 0; i < mxRecordsWithWeights.size(); i++) {
                 MxRecord mxRecord = mxRecordsWithWeights.get(i);
                 String mxHost = mxRecord.hostname;
@@ -233,10 +200,8 @@ public class SMTPValidator implements EmailValidator {
                 List<SmtpValidationResult> currentMxResults = performDirectVerification(localPart, domain, mxHost);
                 allResults.addAll(currentMxResults);
                 
-                // Check if we have a conclusive result (deliverable)
                 boolean hasDeliverableResult = currentMxResults.stream().anyMatch(SmtpValidationResult::isDeliverable);
                 
-                // If we found a deliverable result, or we've checked at least 3 servers, stop checking
                 if (hasDeliverableResult || i >= 2) {
                     logger.debug("Found conclusive result after checking {} MX servers", i + 1);
                     break;
@@ -356,7 +321,6 @@ public class SMTPValidator implements EmailValidator {
         try {
             logger.debug("Testing if domain {} is catch-all using server {}", domain, mxHost);
             
-            // Use 3 different probe addresses with very random formats
             final String randomId1 = getRandomString(10);
             final String randomId2 = getRandomString(12);
             final String randomId3 = getRandomString(8);
@@ -369,7 +333,6 @@ public class SMTPValidator implements EmailValidator {
             
             logger.debug("Catch-all test for domain {} using multiple probe addresses", domain);
             
-            // Create futures for each probe
             List<CompletableFuture<SmtpValidationResult>> probeFutures = Arrays.stream(probeLocalParts)
                 .map(probeLocalPart -> CompletableFuture.supplyAsync(() -> {
                     logger.debug("Starting SMTP verification for {}@{} on MX host {}", 
@@ -378,14 +341,12 @@ public class SMTPValidator implements EmailValidator {
                 }, smtpExecutor))
                 .collect(Collectors.toList());
             
-            // Wait for all probes to complete with timeout
             CompletableFuture.allOf(probeFutures.toArray(new CompletableFuture[0]))
                 .get(5, TimeUnit.SECONDS);
             
             int acceptedCount = 0;
             boolean anyRejected = false;
             
-            // Process results
             for (int i = 0; i < probeFutures.size(); i++) {
                 SmtpValidationResult result = probeFutures.get(i).get();
                 String probeLocalPart = probeLocalParts[i];
@@ -400,9 +361,6 @@ public class SMTPValidator implements EmailValidator {
                 }
             }
             
-            // Logic for determining catch-all status:
-            // 1. If 2 or more probes are accepted, it's likely a catch-all
-            // 2. If any are explicitly rejected with 5xx code, it's not a catch-all
             if (acceptedCount >= 2) {
                 logger.debug("Domain {} IS catch-all: accepted {} of 3 probe emails", domain, acceptedCount);
                 return true;
@@ -448,10 +406,8 @@ public class SMTPValidator implements EmailValidator {
         final var results = new ArrayList<SmtpValidationResult>();
         logger.debug("Starting SMTP verification for {}@{} on MX host {}", localPart, domain, mxHost);
         
-        // Apply throttling before verification
         applyThrottling(domain);
         
-        // Create futures for each verification attempt
         List<CompletableFuture<SmtpValidationResult>> verificationFutures = new ArrayList<>();
         
         for (int i = 0; i < VERIFICATION_ATTEMPTS; i++) {
@@ -465,7 +421,6 @@ public class SMTPValidator implements EmailValidator {
                     logger.debug("SMTP verification attempt #{} for {}@{} resulted in error: {}", 
                         attempt + 1, localPart, domain, e.getMessage());
                     
-                    // Check if we should queue for retry
                     if (shouldQueueForRetry(e)) {
                         queueForRetry(localPart, domain, mxHost);
                     }
@@ -474,12 +429,10 @@ public class SMTPValidator implements EmailValidator {
             }, smtpExecutor));
         }
         
-        // Wait for all verifications to complete
         try {
             CompletableFuture.allOf(verificationFutures.toArray(new CompletableFuture[0]))
                 .get(10, TimeUnit.SECONDS);
             
-            // Collect results
             for (CompletableFuture<SmtpValidationResult> future : verificationFutures) {
                 results.add(future.get());
             }
@@ -505,14 +458,13 @@ public class SMTPValidator implements EmailValidator {
             final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             final var out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             
-            final var response = in.readLine(); // Read greeting
+            final var response = in.readLine();
             
             if (getResponseCode(response) != 220) {
                 logger.debug("Unexpected greeting from {}: {}", mxHost, response);
                 return new SmtpValidationResult(false, false, getResponseCode(response), true);
             }
             
-            // HELO command
             final var heloCmd = "HELO fake.com\r\n";
             out.print(heloCmd);
             out.flush();
@@ -523,7 +475,6 @@ public class SMTPValidator implements EmailValidator {
                 return new SmtpValidationResult(false, false, getResponseCode(heloResponse), true);
             }
             
-            // MAIL FROM command
             final var mailFromCmd = "MAIL FROM:<verify@fake.com>\r\n";
             out.print(mailFromCmd);
             out.flush();
@@ -534,7 +485,6 @@ public class SMTPValidator implements EmailValidator {
                 return new SmtpValidationResult(false, false, getResponseCode(mailFromResponse), true);
             }
             
-            // RCPT TO command
             final var rcptToCmd = "RCPT TO:<" + localPart + "@" + domain + ">\r\n";
             out.print(rcptToCmd);
             out.flush();
@@ -543,41 +493,31 @@ public class SMTPValidator implements EmailValidator {
             int responseCode = getResponseCode(rcptToResponse);
             boolean isTempError = false;
             
-            // Check if this is a 4xx temporary error
             if (responseCode >= 400 && responseCode < 500) {
                 isTempError = true;
             }
             
-            // Send QUIT command to be nice to the server
             out.print("QUIT\r\n");
             out.flush();
             
-            // Read the QUIT response if possible
             try {
                 in.readLine();
             } catch (Exception e) {
-                // Ignore errors reading QUIT response
             }
             
-            // Close the socket
             try {
                 socket.close();
             } catch (Exception e) {
-                // Ignore close errors
             }
             
             final var fullResponse = rcptToResponse != null ? rcptToResponse : "";
             
-            // Determine deliverability
             boolean isDeliverable = false;
             boolean isCatchAll = false;
             
-            // Enhanced response code analysis
             if (responseCode >= 200 && responseCode < 300) {
-                // Good sign, likely deliverable
                 isDeliverable = true;
                 
-                // Check for catch-all indicators in 2xx responses
                 String fullResponseLower = fullResponse.toLowerCase();
                 if (fullResponseLower.contains("catch-all") || 
                     fullResponseLower.contains("catchall") ||
@@ -590,8 +530,6 @@ public class SMTPValidator implements EmailValidator {
                     logger.debug("Catch-all indicator found in server response: {}", fullResponse);
                 }
                 
-                // Some servers have specific response formats for real vs. accepted-but-invalid emails
-                // Look for "accepted" without "user" or "recipient" which may indicate generic acceptance
                 if (!fullResponseLower.contains("user") && 
                     !fullResponseLower.contains("recipient") &&
                     !fullResponseLower.contains("mailbox") &&
@@ -601,26 +539,21 @@ public class SMTPValidator implements EmailValidator {
                     isCatchAll = true;
                 }
             }
-            // For 4xx errors (temporary), generally not deliverable but need to be careful
             else if (responseCode >= 400 && responseCode < 500) {
                 isDeliverable = false;
                 isTempError = true;
                 
-                // Check for recognized 4xx errors that indicate invalid user
-                // rather than temporary server issues
                 for (String invalidPattern : INVALID_RESPONSE_SUBSTRINGS) {
                     if (fullResponse.toLowerCase().contains(invalidPattern.toLowerCase())) {
                         isDeliverable = false;
-                        isTempError = false; // Not temporary if user doesn't exist
+                        isTempError = false;
                         break;
                     }
                 }
             }
-            // For 5xx errors, always undeliverable
             else if (responseCode >= 500) {
                 isDeliverable = false;
                 
-                // But 550 can be temporary in some cases
                 isTempError = responseCode != 550 || 
                               fullResponse.toLowerCase().contains("try again") ||
                               fullResponse.toLowerCase().contains("try later") ||
@@ -628,7 +561,6 @@ public class SMTPValidator implements EmailValidator {
                               fullResponse.toLowerCase().contains("temporarily");
             }
             
-            // Create a more detailed result
             return new SmtpValidationResult(isDeliverable, isCatchAll, responseCode, isTempError, fullResponse, mxHost);
             
         } catch (final Exception e) {
@@ -643,7 +575,11 @@ public class SMTPValidator implements EmailValidator {
     private List<MxRecord> getMxRecordsWithWeights(final String domain) throws Exception {
         long startTime = System.currentTimeMillis();
         try {
-            final var ctx = new javax.naming.directory.InitialDirContext();
+            final var env = new java.util.Hashtable<String, String>();
+            env.put("com.sun.jndi.dns.timeout.initial", "2000");  // 2 second initial timeout 
+            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            final var ctx = new javax.naming.directory.InitialDirContext(env);
+            
             final var attrs = ctx.getAttributes("dns:/" + domain, new String[] {"MX"});
             final var attr = attrs.get("MX");
             
@@ -696,7 +632,6 @@ public class SMTPValidator implements EmailValidator {
         
         final var primaryMx = mxHosts[0].toLowerCase();
 
-        // Create a map of patterns to provider names
         HashMap<Pattern, String> providerPatterns = new HashMap<>();
         providerPatterns.put(Pattern.compile(".*\\.google\\.com", Pattern.CASE_INSENSITIVE), "Google");
         providerPatterns.put(Pattern.compile(".*\\.outlook\\.com", Pattern.CASE_INSENSITIVE), "Microsoft");
@@ -795,7 +730,7 @@ public class SMTPValidator implements EmailValidator {
         }
         
         public boolean isExpired() {
-            return false; // Never expires
+            return false;
         }
     }
 
@@ -804,7 +739,6 @@ public class SMTPValidator implements EmailValidator {
      */
     private void applyThrottling(String domain) {
         try {
-            // Small delay to reduce server load
             Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -822,42 +756,66 @@ public class SMTPValidator implements EmailValidator {
         long startTime = System.currentTimeMillis();
         
         try {
-            // Create CompletableFuture for each DNS check using our dedicated executor
             CompletableFuture<String> spfFuture = CompletableFuture.supplyAsync(() -> {
                 logger.debug("Starting SPF check for domain: {}", domain);
                 return getSpfRecord(domain);
-            }, dnsExecutor);
+            }, dnsExecutor).orTimeout(2, TimeUnit.SECONDS);
             
             CompletableFuture<String> dmarcFuture = CompletableFuture.supplyAsync(() -> {
                 logger.debug("Starting DMARC check for domain: {}", domain);
                 return getDmarcRecord(domain);
-            }, dnsExecutor);
+            }, dnsExecutor).orTimeout(2, TimeUnit.SECONDS);
             
             CompletableFuture<String> dkimDefaultFuture = CompletableFuture.supplyAsync(() -> {
                 logger.debug("Starting DKIM check (default) for domain: {}", domain);
                 return getDkimRecord("default", domain);
-            }, dnsExecutor);
+            }, dnsExecutor).orTimeout(2, TimeUnit.SECONDS);
             
             CompletableFuture<String> dkimSelector1Future = CompletableFuture.supplyAsync(() -> {
                 logger.debug("Starting DKIM check (selector1) for domain: {}", domain);
                 return getDkimRecord("selector1", domain);
-            }, dnsExecutor);
+            }, dnsExecutor).orTimeout(2, TimeUnit.SECONDS);
             
-            // Wait for all futures to complete with timeout
-            CompletableFuture.allOf(spfFuture, dmarcFuture, dkimDefaultFuture, dkimSelector1Future)
-                .get(5, TimeUnit.SECONDS); // 5 second timeout for all DNS checks
+            // Process the futures independently to prevent one failure from affecting others
+            String spfRecord = null;
+            try {
+                spfRecord = spfFuture.get(3, TimeUnit.SECONDS);
+                logger.debug("SPF check completed for domain {}: {}", domain, spfRecord != null ? "found" : "not found");
+            } catch (Exception e) {
+                logger.debug("SPF lookup failed for domain {}: {}", domain, e.getMessage());
+            }
+            
+            String dmarcRecord = null;
+            try {
+                dmarcRecord = dmarcFuture.get(3, TimeUnit.SECONDS);
+                logger.debug("DMARC check completed for domain {}: {}", domain, dmarcRecord != null ? "found" : "not found");
+            } catch (Exception e) {
+                logger.debug("DMARC lookup failed for domain {}: {}", domain, e.getMessage());
+            }
+            
+            String dkimDefaultRecord = null;
+            try {
+                dkimDefaultRecord = dkimDefaultFuture.get(3, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                logger.debug("DKIM default lookup failed for domain {}: {}", domain, e.getMessage());
+            }
+            
+            String dkimSelector1Record = null;
+            try {
+                dkimSelector1Record = dkimSelector1Future.get(3, TimeUnit.SECONDS);
+                logger.debug("DKIM checks completed for domain {}: default={}, selector1={}", 
+                    domain, dkimDefaultRecord != null, dkimSelector1Record != null);
+            } catch (Exception e) {
+                logger.debug("DKIM selector1 lookup failed for domain {}: {}", domain, e.getMessage());
+            }
             
             // Process SPF results
-            String spfRecord = spfFuture.get();
-            logger.debug("SPF check completed for domain {}: {}", domain, spfRecord != null ? "found" : "not found");
-            
             if (spfRecord == null || spfRecord.isEmpty()) {
                 details.put("spf_record", "missing");
                 hasDnsIssues = true;
             } else {
                 details.put("spf_record", "present");
                 
-                // Analyze SPF strictness
                 if (spfRecord.contains("-all")) {
                     details.put("spf_policy", "strict");
                 } else if (spfRecord.contains("~all")) {
@@ -871,16 +829,12 @@ public class SMTPValidator implements EmailValidator {
             }
             
             // Process DMARC results
-            String dmarcRecord = dmarcFuture.get();
-            logger.debug("DMARC check completed for domain {}: {}", domain, dmarcRecord != null ? "found" : "not found");
-            
             if (dmarcRecord == null || dmarcRecord.isEmpty()) {
                 details.put("dmarc_record", "missing");
                 hasDnsIssues = true;
             } else {
                 details.put("dmarc_record", "present");
                 
-                // Analyze DMARC policy
                 if (dmarcRecord.contains("p=reject")) {
                     details.put("dmarc_policy", "reject");
                 } else if (dmarcRecord.contains("p=quarantine")) {
@@ -892,11 +846,6 @@ public class SMTPValidator implements EmailValidator {
             }
             
             // Process DKIM results
-            String dkimDefaultRecord = dkimDefaultFuture.get();
-            String dkimSelector1Record = dkimSelector1Future.get();
-            logger.debug("DKIM checks completed for domain {}: default={}, selector1={}", 
-                domain, dkimDefaultRecord != null, dkimSelector1Record != null);
-            
             if (dkimDefaultRecord != null && !dkimDefaultRecord.isEmpty()) {
                 details.put("dkim_record", "present");
             } else if (dkimSelector1Record != null && !dkimSelector1Record.isEmpty()) {
@@ -905,11 +854,8 @@ public class SMTPValidator implements EmailValidator {
                 details.put("dkim_record", "not_found");
             }
             
-        } catch (TimeoutException e) {
-            logger.warn("DNS checks timed out for domain {} after 5 seconds", domain);
-            details.put("dns_check_error", "timeout");
         } catch (Exception e) {
-            logger.warn("Error checking DNS records for domain {}: {}", domain, e.getMessage());
+            logger.warn("Error during DNS checks for domain {}: {}", domain, e.getMessage());
             details.put("dns_check_error", e.getMessage());
         }
         
@@ -925,7 +871,11 @@ public class SMTPValidator implements EmailValidator {
      */
     private String getSpfRecord(String domain) {
         try {
-            final var ctx = new javax.naming.directory.InitialDirContext();
+            final var env = new java.util.Hashtable<String, String>();
+            env.put("com.sun.jndi.dns.timeout.initial", "1000");  // 1 second initial timeout
+            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            final var ctx = new javax.naming.directory.InitialDirContext(env);
+            
             final var attrs = ctx.getAttributes("dns:/" + domain, new String[] {"TXT"});
             final var attr = attrs.get("TXT");
             
@@ -949,7 +899,11 @@ public class SMTPValidator implements EmailValidator {
      */
     private String getDmarcRecord(String domain) {
         try {
-            final var ctx = new javax.naming.directory.InitialDirContext();
+            final var env = new java.util.Hashtable<String, String>();
+            env.put("com.sun.jndi.dns.timeout.initial", "1000");  // 1 second initial timeout
+            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            final var ctx = new javax.naming.directory.InitialDirContext(env);
+            
             final var attrs = ctx.getAttributes("dns:/_dmarc." + domain, new String[] {"TXT"});
             final var attr = attrs.get("TXT");
             
@@ -971,7 +925,11 @@ public class SMTPValidator implements EmailValidator {
      */
     private String getDkimRecord(String selector, String domain) {
         try {
-            final var ctx = new javax.naming.directory.InitialDirContext();
+            final var env = new java.util.Hashtable<String, String>();
+            env.put("com.sun.jndi.dns.timeout.initial", "1000");  // 1 second initial timeout
+            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            final var ctx = new javax.naming.directory.InitialDirContext(env);
+            
             final var attrs = ctx.getAttributes("dns:/" + selector + "._domainkey." + domain, new String[] {"TXT"});
             final var attr = attrs.get("TXT");
             
@@ -997,43 +955,34 @@ public class SMTPValidator implements EmailValidator {
         logger.debug("Starting greylisting test for {}@{} on MX host {}", localPart, domain, mxHost);
         String email = localPart + "@" + domain;
         
-        // First attempt
         applyThrottling(domain);
         SmtpValidationResult firstAttempt = performOneSmtpVerification(localPart, domain, mxHost);
         logger.debug("Greylisting test - first attempt for {}: deliverable={}, response={}", 
             email, firstAttempt.isDeliverable(), firstAttempt.getFullResponse());
             
-        // If we got a definitive result (not temporary error), no need for greylisting
         if (!firstAttempt.isTempError()) {
             return firstAttempt;
         }
         
-        // Try again after a delay for greylisting servers
         for (int i = 0; i < GREYLISTING_MAX_RETRIES; i++) {
             try {
-                // Wait between retries
                 Thread.sleep(GREYLISTING_RETRY_DELAY_MS);
                 
-                // Apply throttling before each retry
                 applyThrottling(domain);
                 
-                // Next attempt
                 SmtpValidationResult nextAttempt = performOneSmtpVerification(localPart, domain, mxHost);
                 logger.debug("Greylisting test - attempt #{} for {}: deliverable={}, response={}", 
                     i+2, email, nextAttempt.isDeliverable(), nextAttempt.getFullResponse());
                 
-                // If we get a non-temporary response, return it
                 if (!nextAttempt.isTempError()) {
                     return nextAttempt;
                 }
                 
-                // If the response is different from the first attempt, that's significant
                 if (nextAttempt.getResponseCode() != firstAttempt.getResponseCode() ||
                     !nextAttempt.getFullResponse().equals(firstAttempt.getFullResponse())) {
                     
                     logger.debug("Greylisting detected - different responses between attempts");
                     
-                    // If we get a different result code, prefer whichever one is more likely deliverable
                     if (nextAttempt.isDeliverable() != firstAttempt.isDeliverable()) {
                         return nextAttempt.isDeliverable() ? nextAttempt : firstAttempt;
                     }
@@ -1047,23 +996,17 @@ public class SMTPValidator implements EmailValidator {
             }
         }
         
-        // If we get here, greylisting test was inconclusive
         logger.debug("Greylisting test inconclusive for {}", email);
         return null;
     }
 
-    /**
-     * Determine if an exception should trigger a retry
-     */
     private boolean shouldQueueForRetry(Exception e) {
-        // Retry for connection issues
         if (e instanceof SocketTimeoutException || 
             e instanceof ConnectException ||
             e instanceof SocketException) {
             return true;
         }
         
-        // Also retry for certain types of error messages
         String message = e.getMessage();
         if (message != null && (
             message.contains("timeout") ||
@@ -1077,18 +1020,10 @@ public class SMTPValidator implements EmailValidator {
         return false;
     }
     
-    /**
-     * Queue email for retry later
-     */
     private void queueForRetry(String localPart, String domain, String mxHost) {
-        // Log that we're queuing this email
         logger.debug("Queuing {}@{} for retry later", localPart, domain);
-        
-        // In a real implementation, this would add to a persistent queue
-        // Here we just log it
     }
 
-    // Add shutdown hook for the executor
     @PreDestroy
     public void cleanup() {
         dnsExecutor.shutdown();

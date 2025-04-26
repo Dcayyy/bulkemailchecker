@@ -252,25 +252,19 @@ public class BulkEmailCheckerService {
         return results;
     }
 
-    /**
-     * Execute validation pipeline
-     */
     private ValidationResult executeValidationPipeline(final String email) {
-        // Validate syntax first - this is the fastest check
         ValidationResult syntaxResult = syntaxValidator.validate(email);
         if (!syntaxResult.isValid()) {
             logger.debug("Email {} failed syntax validation: {}", email, syntaxResult.getReason());
             return syntaxResult;
         }
         
-        // Validate MX record - also relatively fast
         ValidationResult mxResult = mxRecordValidator.validate(email);
         if (!mxResult.isValid()) {
             logger.debug("Email {} failed MX record validation: {}", email, mxResult.getReason());
             return mxResult;
         }
         
-        // Finally validate via SMTP - this is the most time-consuming check
         ValidationResult smtpResult = smtpValidator.validate(email);
         
         if (!smtpResult.isValid()) {
