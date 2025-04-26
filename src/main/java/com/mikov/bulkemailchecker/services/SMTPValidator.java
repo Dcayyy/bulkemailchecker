@@ -33,6 +33,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.net.SocketTimeoutException;
 import java.net.ConnectException;
 import java.net.SocketException;
+import java.util.concurrent.ExecutorService;
+import jakarta.annotation.PreDestroy;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 /**
  * Validator that checks SMTP servers for email validity.
@@ -69,9 +73,16 @@ public class SMTPValidator implements EmailValidator {
     
     private static final Random random = new Random();
     
+    // Add at the top with other constants
+    private static final int DNS_THREAD_POOL_SIZE = 4;
+    private static final ExecutorService dnsExecutor = Executors.newFixedThreadPool(DNS_THREAD_POOL_SIZE);
+    private static final int SMTP_THREAD_POOL_SIZE = 10;
+    private static final ExecutorService smtpExecutor = Executors.newFixedThreadPool(SMTP_THREAD_POOL_SIZE);
+    
     @Override
     public ValidationResult validate(final String email) {
         logger.info("Starting SMTP validation for email: {}", email);
+        long totalStartTime = System.currentTimeMillis();
         
         if (email == null || email.isBlank()) {
             logger.info("Email is null or empty: {}", email);
@@ -96,7 +107,10 @@ public class SMTPValidator implements EmailValidator {
         
         try {
             // Get all MX records with their weights
+            long mxStartTime = System.currentTimeMillis();
             final var mxRecordsWithWeights = getMxRecordsWithWeights(domain);
+            logger.info("MX records lookup for {} took {}ms", domain, System.currentTimeMillis() - mxStartTime);
+            
             if (mxRecordsWithWeights.isEmpty()) {
                 logger.info("No MX records found for domain: {}", domain);
                 final var result = ValidationResult.invalid(getName(), "No MX records found");
@@ -107,7 +121,9 @@ public class SMTPValidator implements EmailValidator {
             logger.debug("Found {} MX records for domain {}", mxRecordsWithWeights.size(), domain);
             
             // Check DNS records for domain health
+            long dnsStartTime = System.currentTimeMillis();
             Map<String, Object> dnsDetails = checkDomainDnsRecords(domain);
+            logger.info("DNS checks for {} took {}ms", domain, System.currentTimeMillis() - dnsStartTime);
             boolean hasDnsIssues = Boolean.TRUE.equals(dnsDetails.get("has_dns_issues"));
             
             // Sort MX records by priority (lowest value first)
@@ -331,6 +347,8 @@ public class SMTPValidator implements EmailValidator {
             details.put("event", "inconclusive");
             details.put("status", "unknown");
             return ValidationResult.valid(getName(), details);
+        } finally {
+            logger.info("Total validation time for {}: {}ms", email, System.currentTimeMillis() - totalStartTime);
         }
     }
 
@@ -351,12 +369,26 @@ public class SMTPValidator implements EmailValidator {
             
             logger.debug("Catch-all test for domain {} using multiple probe addresses", domain);
             
+            // Create futures for each probe
+            List<CompletableFuture<SmtpValidationResult>> probeFutures = Arrays.stream(probeLocalParts)
+                .map(probeLocalPart -> CompletableFuture.supplyAsync(() -> {
+                    logger.debug("Starting SMTP verification for {}@{} on MX host {}", 
+                        probeLocalPart, domain, mxHost);
+                    return performOneSmtpVerification(probeLocalPart, domain, mxHost);
+                }, smtpExecutor))
+                .collect(Collectors.toList());
+            
+            // Wait for all probes to complete with timeout
+            CompletableFuture.allOf(probeFutures.toArray(new CompletableFuture[0]))
+                .get(5, TimeUnit.SECONDS);
+            
             int acceptedCount = 0;
             boolean anyRejected = false;
             
-            // Test each probe email
-            for (String probeLocalPart : probeLocalParts) {
-                final var result = performOneSmtpVerification(probeLocalPart, domain, mxHost);
+            // Process results
+            for (int i = 0; i < probeFutures.size(); i++) {
+                SmtpValidationResult result = probeFutures.get(i).get();
+                String probeLocalPart = probeLocalParts[i];
                 
                 logger.debug("Catch-all test result for probe {}: deliverable={}, response code={}, response={}", 
                     probeLocalPart, result.isDeliverable(), result.getResponseCode(), result.getFullResponse());
@@ -419,25 +451,40 @@ public class SMTPValidator implements EmailValidator {
         // Apply throttling before verification
         applyThrottling(domain);
         
+        // Create futures for each verification attempt
+        List<CompletableFuture<SmtpValidationResult>> verificationFutures = new ArrayList<>();
+        
         for (int i = 0; i < VERIFICATION_ATTEMPTS; i++) {
-            logger.debug("SMTP verification attempt #{} for {}@{} on MX host {}", i+1, localPart, domain, mxHost);
-            try {
-                final var result = performOneSmtpVerification(localPart, domain, mxHost);
-                results.add(result);
-                
-                // Apply throttling between verification attempts
-                if (i < VERIFICATION_ATTEMPTS - 1) {
-                    applyThrottling(domain);
+            final int attempt = i;
+            verificationFutures.add(CompletableFuture.supplyAsync(() -> {
+                logger.debug("SMTP verification attempt #{} for {}@{} on MX host {}", 
+                    attempt + 1, localPart, domain, mxHost);
+                try {
+                    return performOneSmtpVerification(localPart, domain, mxHost);
+                } catch (Exception e) {
+                    logger.debug("SMTP verification attempt #{} for {}@{} resulted in error: {}", 
+                        attempt + 1, localPart, domain, e.getMessage());
+                    
+                    // Check if we should queue for retry
+                    if (shouldQueueForRetry(e)) {
+                        queueForRetry(localPart, domain, mxHost);
+                    }
+                    return new SmtpValidationResult(false, false, 0, true, e.getMessage(), mxHost);
                 }
-            } catch (Exception e) {
-                logger.debug("SMTP verification attempt #{} for {}@{} resulted in error: {}", 
-                    i+1, localPart, domain, e.getMessage());
-                
-                // Check if we should queue for retry
-                if (shouldQueueForRetry(e)) {
-                    queueForRetry(localPart, domain, mxHost);
-                }
+            }, smtpExecutor));
+        }
+        
+        // Wait for all verifications to complete
+        try {
+            CompletableFuture.allOf(verificationFutures.toArray(new CompletableFuture[0]))
+                .get(10, TimeUnit.SECONDS);
+            
+            // Collect results
+            for (CompletableFuture<SmtpValidationResult> future : verificationFutures) {
+                results.add(future.get());
             }
+        } catch (Exception e) {
+            logger.warn("Error during concurrent SMTP verification: {}", e.getMessage());
         }
         
         logger.debug("Completed SMTP verification for {}@{}: {} results collected", 
@@ -594,26 +641,31 @@ public class SMTPValidator implements EmailValidator {
      * Get MX records with their priority weights
      */
     private List<MxRecord> getMxRecordsWithWeights(final String domain) throws Exception {
-        final var ctx = new javax.naming.directory.InitialDirContext();
-        final var attrs = ctx.getAttributes("dns:/" + domain, new String[] {"MX"});
-        final var attr = attrs.get("MX");
-        
-        if (attr == null || attr.size() == 0) {
-            return new ArrayList<>();
-        }
-        
-        final var mxRecords = new ArrayList<MxRecord>();
-        for (var i = 0; i < attr.size(); i++) {
-            final var mxRecord = (String) attr.get(i);
-            String[] parts = mxRecord.split("\\s+");
-            if (parts.length >= 2) {
-                int priority = Integer.parseInt(parts[0]);
-                String hostname = parts[1];
-                mxRecords.add(new MxRecord(hostname, priority));
+        long startTime = System.currentTimeMillis();
+        try {
+            final var ctx = new javax.naming.directory.InitialDirContext();
+            final var attrs = ctx.getAttributes("dns:/" + domain, new String[] {"MX"});
+            final var attr = attrs.get("MX");
+            
+            if (attr == null || attr.size() == 0) {
+                return new ArrayList<>();
             }
+            
+            final var mxRecords = new ArrayList<MxRecord>();
+            for (var i = 0; i < attr.size(); i++) {
+                final var mxRecord = (String) attr.get(i);
+                String[] parts = mxRecord.split("\\s+");
+                if (parts.length >= 2) {
+                    int priority = Integer.parseInt(parts[0]);
+                    String hostname = parts[1];
+                    mxRecords.add(new MxRecord(hostname, priority));
+                }
+            }
+            
+            return mxRecords;
+        } finally {
+            logger.info("MX records lookup for {} took {}ms", domain, System.currentTimeMillis() - startTime);
         }
-        
-        return mxRecords;
     }
     
     private String[] getMxRecords(final String domain) throws Exception {
@@ -766,9 +818,39 @@ public class SMTPValidator implements EmailValidator {
         Map<String, Object> details = new HashMap<>();
         boolean hasDnsIssues = false;
         
+        logger.debug("Starting concurrent DNS checks for domain: {}", domain);
+        long startTime = System.currentTimeMillis();
+        
         try {
-            // Check SPF record
-            String spfRecord = getSpfRecord(domain);
+            // Create CompletableFuture for each DNS check using our dedicated executor
+            CompletableFuture<String> spfFuture = CompletableFuture.supplyAsync(() -> {
+                logger.debug("Starting SPF check for domain: {}", domain);
+                return getSpfRecord(domain);
+            }, dnsExecutor);
+            
+            CompletableFuture<String> dmarcFuture = CompletableFuture.supplyAsync(() -> {
+                logger.debug("Starting DMARC check for domain: {}", domain);
+                return getDmarcRecord(domain);
+            }, dnsExecutor);
+            
+            CompletableFuture<String> dkimDefaultFuture = CompletableFuture.supplyAsync(() -> {
+                logger.debug("Starting DKIM check (default) for domain: {}", domain);
+                return getDkimRecord("default", domain);
+            }, dnsExecutor);
+            
+            CompletableFuture<String> dkimSelector1Future = CompletableFuture.supplyAsync(() -> {
+                logger.debug("Starting DKIM check (selector1) for domain: {}", domain);
+                return getDkimRecord("selector1", domain);
+            }, dnsExecutor);
+            
+            // Wait for all futures to complete with timeout
+            CompletableFuture.allOf(spfFuture, dmarcFuture, dkimDefaultFuture, dkimSelector1Future)
+                .get(5, TimeUnit.SECONDS); // 5 second timeout for all DNS checks
+            
+            // Process SPF results
+            String spfRecord = spfFuture.get();
+            logger.debug("SPF check completed for domain {}: {}", domain, spfRecord != null ? "found" : "not found");
+            
             if (spfRecord == null || spfRecord.isEmpty()) {
                 details.put("spf_record", "missing");
                 hasDnsIssues = true;
@@ -784,12 +866,14 @@ public class SMTPValidator implements EmailValidator {
                     details.put("spf_policy", "neutral");
                 } else if (spfRecord.contains("+all")) {
                     details.put("spf_policy", "allow_all");
-                    hasDnsIssues = true; // Allowing all is considered poor practice
+                    hasDnsIssues = true;
                 }
             }
             
-            // Check DMARC record
-            String dmarcRecord = getDmarcRecord(domain);
+            // Process DMARC results
+            String dmarcRecord = dmarcFuture.get();
+            logger.debug("DMARC check completed for domain {}: {}", domain, dmarcRecord != null ? "found" : "not found");
+            
             if (dmarcRecord == null || dmarcRecord.isEmpty()) {
                 details.put("dmarc_record", "missing");
                 hasDnsIssues = true;
@@ -803,30 +887,34 @@ public class SMTPValidator implements EmailValidator {
                     details.put("dmarc_policy", "quarantine");
                 } else if (dmarcRecord.contains("p=none")) {
                     details.put("dmarc_policy", "none");
-                    hasDnsIssues = true; // Monitoring-only policy is suboptimal
+                    hasDnsIssues = true;
                 }
             }
             
-            // Look for DKIM records - harder to verify without knowing selectors
-            // Just check for common default selector
-            String dkimRecord = getDkimRecord("default", domain);
-            if (dkimRecord != null && !dkimRecord.isEmpty()) {
+            // Process DKIM results
+            String dkimDefaultRecord = dkimDefaultFuture.get();
+            String dkimSelector1Record = dkimSelector1Future.get();
+            logger.debug("DKIM checks completed for domain {}: default={}, selector1={}", 
+                domain, dkimDefaultRecord != null, dkimSelector1Record != null);
+            
+            if (dkimDefaultRecord != null && !dkimDefaultRecord.isEmpty()) {
+                details.put("dkim_record", "present");
+            } else if (dkimSelector1Record != null && !dkimSelector1Record.isEmpty()) {
                 details.put("dkim_record", "present");
             } else {
-                // Try another common selector
-                dkimRecord = getDkimRecord("selector1", domain);
-                if (dkimRecord != null && !dkimRecord.isEmpty()) {
-                    details.put("dkim_record", "present");
-                } else {
-                    // Not conclusive, but worth noting
-                    details.put("dkim_record", "not_found");
-                }
+                details.put("dkim_record", "not_found");
             }
             
+        } catch (TimeoutException e) {
+            logger.warn("DNS checks timed out for domain {} after 5 seconds", domain);
+            details.put("dns_check_error", "timeout");
         } catch (Exception e) {
             logger.warn("Error checking DNS records for domain {}: {}", domain, e.getMessage());
             details.put("dns_check_error", e.getMessage());
         }
+        
+        long endTime = System.currentTimeMillis();
+        logger.debug("Completed DNS checks for domain {} in {}ms", domain, (endTime - startTime));
         
         details.put("has_dns_issues", hasDnsIssues);
         return details;
@@ -998,5 +1086,24 @@ public class SMTPValidator implements EmailValidator {
         
         // In a real implementation, this would add to a persistent queue
         // Here we just log it
+    }
+
+    // Add shutdown hook for the executor
+    @PreDestroy
+    public void cleanup() {
+        dnsExecutor.shutdown();
+        smtpExecutor.shutdown();
+        try {
+            if (!dnsExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                dnsExecutor.shutdownNow();
+            }
+            if (!smtpExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                smtpExecutor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            dnsExecutor.shutdownNow();
+            smtpExecutor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 } 

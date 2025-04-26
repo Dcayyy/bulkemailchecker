@@ -13,7 +13,7 @@ spring:
   # Set reasonable connection timeouts
   mvc:
     async:
-      request-timeout: 30s
+      request-timeout: 60s
   # Disable default security
   security:
     user:
@@ -29,13 +29,13 @@ server:
   # Optimize connection handling
   tomcat:
     threads:
-      max: 20
-      min-spare: 5
-    max-connections: 200
-    accept-count: 100
-    connection-timeout: 5s
-    max-keep-alive-requests: 100
-    keep-alive-timeout: 30s
+      max: 40
+      min-spare: 10
+    max-connections: 400
+    accept-count: 200
+    connection-timeout: 3s
+    max-keep-alive-requests: 200
+    keep-alive-timeout: 60s
   # Enable response compression
   compression:
     enabled: true
@@ -46,9 +46,9 @@ server:
 logging:
   level:
     root: INFO
-    com.mikov.bulkemailchecker: DEBUG
-    com.mikov.bulkemailchecker.services: DEBUG
-    com.mikov.bulkemailchecker.validation: DEBUG
+    com.mikov.bulkemailchecker: INFO
+    com.mikov.bulkemailchecker.services: INFO
+    com.mikov.bulkemailchecker.validation: INFO
     com.mikov.bulkemailchecker.controller: INFO
     org.springframework.web: WARN
     org.springframework.security: INFO
@@ -63,4 +63,4 @@ security:
   
 # NeverBounce API configuration
 neverbounce:
-  api-key: ${NEVERBOUNCE_API_KEY}
+  api-key: ${NEVERBOUNCE_API_KEY:private_38d8e79e710ec3de1a918f3ff6badf11}
