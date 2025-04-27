@@ -59,7 +59,7 @@ logging:
 # -Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
 
 security:
-  api-key: ${API_KEY:ZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy} # Base64 encoded UUID
+  # Base64 encoded UUID
   
 # NeverBounce API configuration
 neverbounce:
