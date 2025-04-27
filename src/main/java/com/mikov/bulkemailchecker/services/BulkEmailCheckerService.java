@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.neverbounce.api.model.SingleCheckResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -253,27 +254,24 @@ public final class BulkEmailCheckerService {
                     throw new RuntimeException("Invalid NeverBounce API key. Please provide a valid API key.");
                 }
                 
-                if (neverBounceResult.getDetails().containsKey("formatted_result")) {
-                    @SuppressWarnings("unchecked")
-                    final var formattedResult = 
-                        (Map<String, Object>) neverBounceResult.getDetails().get("formatted_result");
-                    
-                    final var nbResult = (String) formattedResult.get("result");
+                final var responseObj = neverBounceResult.getDetails().get("response");
+                if (responseObj instanceof SingleCheckResponse response) {
+                    final var nbResult = response.getResult().name();
                     logger.info("NeverBounce gave definitive result for catch-all domain email {}: {}", email, nbResult);
-                    
-                    if ("valid".equals(nbResult)) {
-                        if (neverBounceResult.getDetails().containsKey("event")) {
-                            details.put("event", neverBounceResult.getDetails().get("event"));
-                        }
+
+                    if ("VALID".equalsIgnoreCase(nbResult)) {
+                        details.put("event", "mailbox_exists");
+                        details.put("neverbounce_result", "deliverable");
                         return smtpResult;
-                    } 
-
-                    if ("catchall".equals(nbResult)) {
-                        details.put("event", "is_catchall");
-                        return smtpResult; // Keep the catch-all status
                     }
-
-                    if ("invalid".equals(nbResult)) {
+                    if ("CATCHALL".equalsIgnoreCase(nbResult)) {
+                        details.put("event", "is_catchall");
+                        details.put("neverbounce_result", "catchall");
+                        return smtpResult;
+                    }
+                    if ("INVALID".equalsIgnoreCase(nbResult)) {
+                        details.put("event", "mailbox_does_not_exist");
+                        details.put("neverbounce_result", "undeliverable");
                         return neverBounceResult;
                     }
                 }

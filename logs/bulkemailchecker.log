@@ -5340,3 +5340,781 @@ Offending resource: class path resource [com/mikov/bulkemailchecker/config/Secur
 2025-04-27 22:25:53.053 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for aspmx.l.google.com.: DELIVERABLE
 2025-04-27 22:25:53.054 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for dan@reveri.com: 4667ms
 2025-04-27 22:25:53.063 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:37:27.639 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 22:37:27.649 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 22:37:27.652 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 22:37:27.652 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@55fb36de]]
+2025-04-27 22:37:27.652 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 22:37:33.850 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 71420 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 22:37:33.852 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 22:37:34.795 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-27 22:37:34.807 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 22:37:34.807 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 22:37:34.850 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 22:37:34.850 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 950 ms
+2025-04-27 22:37:34.995 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 22:37:35.098 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-27 22:37:35.212 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 22:37:35.220 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 22:37:35.241 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 22:37:35.255 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-27 22:37:35.480 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 22:37:35.482 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@55fb36de]]
+2025-04-27 22:37:35.482 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 22:37:35.498 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-27 22:37:35.504 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.191 seconds (process running for 2.768)
+2025-04-27 22:37:37.819 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 22:37:37.842 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:37:37.842 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:37:37.843 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:37:37.856 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:37:37.858 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:37:37.877 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: dan@reveri.com
+2025-04-27 22:37:37.877 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:37:37.877 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: dan@reveri.com with NeverBounce API key present: true
+2025-04-27 22:37:37.879 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: dan@reveri.com
+2025-04-27 22:37:37.905 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for reveri.com took 25ms
+2025-04-27 22:37:37.905 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for reveri.com took 25ms
+2025-04-27 22:37:37.905 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Found 5 MX records for domain reveri.com
+2025-04-27 22:37:37.905 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: reveri.com
+2025-04-27 22:37:37.908 [virtual-67] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: reveri.com
+2025-04-27 22:37:37.909 [virtual-74] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: reveri.com
+2025-04-27 22:37:37.909 [virtual-70] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: reveri.com
+2025-04-27 22:37:37.909 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: reveri.com
+2025-04-27 22:37:37.972 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector default at domain reveri.com: DNS name not found [response code 3]
+2025-04-27 22:37:37.974 [virtual-74] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain reveri.com: DNS name not found [response code 3]
+2025-04-27 22:37:38.928 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain reveri.com: not found
+2025-04-27 22:37:38.928 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain reveri.com: found
+2025-04-27 22:37:38.928 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain reveri.com: default=false, selector1=false
+2025-04-27 22:37:38.928 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain reveri.com in 1023ms
+2025-04-27 22:37:38.928 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for reveri.com took 1023ms
+2025-04-27 22:37:38.988 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing MX server aspmx.l.google.com. (priority 1) for catch-all detection
+2025-04-27 22:37:38.988 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing if domain reveri.com is catch-all using server aspmx.l.google.com.
+2025-04-27 22:37:38.988 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain reveri.com using multiple probe addresses
+2025-04-27 22:37:38.989 [virtual-85] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.gnaalrjornrt@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:38.989 [virtual-84] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-hnfjcxibuy@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:38.989 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_gyuggkto_test@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:38.990 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_gyuggkto_test@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:38.990 [virtual-84] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-hnfjcxibuy@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:38.990 [virtual-85] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.gnaalrjornrt@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:39.237 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-hnfjcxibuy: deliverable=false, response code=550, response=550-5.1.1 The email account that you tried to reach does not exist. Please try
+2025-04-27 22:37:39.237 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.gnaalrjornrt: deliverable=false, response code=550, response=550-5.1.1 The email account that you tried to reach does not exist. Please try
+2025-04-27 22:37:39.237 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_gyuggkto_test: deliverable=false, response code=550, response=550-5.1.1 The email account that you tried to reach does not exist. Please try
+2025-04-27 22:37:39.237 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Domain reveri.com is NOT catch-all: explicitly rejected invalid emails
+2025-04-27 22:37:39.237 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing MX server alt2.aspmx.l.google.com. (priority 5) for catch-all detection
+2025-04-27 22:37:39.237 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing if domain reveri.com is catch-all using server alt2.aspmx.l.google.com.
+2025-04-27 22:37:39.237 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain reveri.com using multiple probe addresses
+2025-04-27 22:37:39.238 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-kipmfzqalf@reveri.com on MX host alt2.aspmx.l.google.com.
+2025-04-27 22:37:39.238 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.fbzzjpgaggjm@reveri.com on MX host alt2.aspmx.l.google.com.
+2025-04-27 22:37:39.238 [virtual-89] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_jioqqpyn_test@reveri.com on MX host alt2.aspmx.l.google.com.
+2025-04-27 22:37:39.238 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-kipmfzqalf@reveri.com on MX host alt2.aspmx.l.google.com.
+2025-04-27 22:37:39.238 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.fbzzjpgaggjm@reveri.com on MX host alt2.aspmx.l.google.com.
+2025-04-27 22:37:39.238 [virtual-89] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_jioqqpyn_test@reveri.com on MX host alt2.aspmx.l.google.com.
+2025-04-27 22:37:41.573 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-kipmfzqalf: deliverable=false, response code=550, response=550-5.1.1 The email account that you tried to reach does not exist. Please try
+2025-04-27 22:37:41.573 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.fbzzjpgaggjm: deliverable=false, response code=550, response=550-5.1.1 The email account that you tried to reach does not exist. Please try
+2025-04-27 22:37:41.573 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_jioqqpyn_test: deliverable=false, response code=550, response=550-5.1.1 The email account that you tried to reach does not exist. Please try
+2025-04-27 22:37:41.573 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Domain reveri.com is NOT catch-all: explicitly rejected invalid emails
+2025-04-27 22:37:41.573 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for dan@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:41.685 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for dan@reveri.com on MX host aspmx.l.google.com.
+2025-04-27 22:37:42.111 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Potential catch-all pattern detected in response: 250 2.1.5 OK 4fb4d7f45d1cf-5f7012fb397si3942607a12.113 - gsmtp
+2025-04-27 22:37:42.111 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for dan@reveri.com: deliverable=true, response=250 2.1.5 OK 4fb4d7f45d1cf-5f7012fb397si3942607a12.113 - gsmtp
+2025-04-27 22:37:42.111 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for aspmx.l.google.com.: DELIVERABLE
+2025-04-27 22:37:42.112 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for dan@reveri.com: 4232ms
+2025-04-27 22:37:42.122 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:37:48.056 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:37:48.056 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:37:48.056 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:37:48.056 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:37:48.056 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:37:48.057 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona@noradent.bg
+2025-04-27 22:37:48.057 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:37:48.057 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:37:48.070 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona@noradent.bg
+2025-04-27 22:37:48.120 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 50ms
+2025-04-27 22:37:48.120 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 50ms
+2025-04-27 22:37:48.120 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:37:48.120 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:37:48.120 [virtual-90] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:37:48.120 [virtual-92] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:37:48.120 [virtual-91] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:37:48.121 [virtual-93] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:37:48.147 [virtual-93] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:37:48.155 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:37:48.162 [virtual-91] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:37:48.162 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:37:48.214 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:37:48.214 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 94ms
+2025-04-27 22:37:48.214 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 94ms
+2025-04-27 22:37:48.227 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:37:48.228 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:37:48.228 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:37:48.228 [virtual-98] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-nazrplxvyh@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.228 [virtual-100] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_eedasxqn_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.228 [virtual-98] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-nazrplxvyh@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.228 [virtual-99] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.vyqvfkqjmuhe@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.229 [virtual-100] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_eedasxqn_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.229 [virtual-99] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.vyqvfkqjmuhe@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.251 [virtual-98] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.252 [virtual-100] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.252 [virtual-99] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.252 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-nazrplxvyh: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.252 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.vyqvfkqjmuhe: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.253 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_eedasxqn_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.253 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:37:48.253 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.354 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:48.474 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.474 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:48.475 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:37:48.475 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Total validation time for nona@noradent.bg: 405ms
+2025-04-27 22:37:48.475 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:37:48.475 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:37:48.475 [ForkJoinPool.commonPool-worker-2] DEBUG c.m.b.services.NeverBounceService - Verifying email nona@noradent.bg with NeverBounce API
+2025-04-27 22:37:48.481 [ForkJoinPool.commonPool-worker-2] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:37:50.862 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona@noradent.bg: valid
+2025-04-27 22:37:50.863 [http-nio-8085-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:37:57.755 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:37:57.756 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:37:57.756 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:37:57.756 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:37:57.756 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:37:57.756 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.n@noradent.bg
+2025-04-27 22:37:57.756 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:37:57.757 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.n@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:37:57.757 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.n@noradent.bg
+2025-04-27 22:37:57.764 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 7ms
+2025-04-27 22:37:57.765 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 8ms
+2025-04-27 22:37:57.765 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:37:57.765 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:37:57.765 [virtual-102] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:37:57.765 [virtual-103] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:37:57.765 [virtual-107] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:37:57.765 [virtual-106] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:37:57.773 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:37:57.773 [virtual-103] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:37:57.773 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:37:57.773 [virtual-107] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:37:57.773 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:37:57.774 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 9ms
+2025-04-27 22:37:57.774 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 9ms
+2025-04-27 22:37:57.774 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:37:57.774 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:37:57.774 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:37:57.774 [virtual-115] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-qxwbzlmvpt@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.774 [virtual-117] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_jkfibyvl_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.774 [virtual-116] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.dgtenvcdhpop@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.774 [virtual-117] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_jkfibyvl_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.774 [virtual-115] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-qxwbzlmvpt@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.774 [virtual-116] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.dgtenvcdhpop@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.816 [virtual-117] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.847 [virtual-115] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.853 [virtual-116] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.854 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-qxwbzlmvpt: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.854 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.dgtenvcdhpop: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.854 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_jkfibyvl_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.854 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:37:57.854 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona.n@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.967 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona.n@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona.n@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.n@noradent.bg: 231ms
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona.n@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.NeverBounceService - Verifying email nona.n@noradent.bg with NeverBounce API
+2025-04-27 22:37:57.988 [ForkJoinPool.commonPool-worker-3] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:38:00.127 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona.n@noradent.bg: valid
+2025-04-27 22:38:00.128 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:38:06.554 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:38:06.554 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:38:06.554 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:38:06.554 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:38:06.554 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:38:06.555 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.ndasdasd@noradent.bg
+2025-04-27 22:38:06.555 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:38:06.555 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.ndasdasd@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:38:06.555 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:38:06.563 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 8ms
+2025-04-27 22:38:06.563 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 8ms
+2025-04-27 22:38:06.563 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:38:06.563 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:38:06.563 [virtual-120] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:38:06.563 [virtual-119] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:38:06.563 [virtual-121] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:38:06.563 [virtual-122] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:38:06.571 [virtual-120] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:38:06.571 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:38:06.571 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:38:06.573 [virtual-122] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:38:06.573 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:38:06.573 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 10ms
+2025-04-27 22:38:06.573 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 10ms
+2025-04-27 22:38:06.573 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:38:06.573 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:38:06.573 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:38:06.573 [virtual-127] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-eeqvnavnmt@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.573 [virtual-129] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_qncnpysz_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.573 [virtual-127] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-eeqvnavnmt@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.573 [virtual-129] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_qncnpysz_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.573 [virtual-128] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.bitdpnayfnzr@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.573 [virtual-128] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.bitdpnayfnzr@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.598 [virtual-128] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.600 [virtual-127] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.600 [virtual-129] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.600 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-eeqvnavnmt: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.600 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.bitdpnayfnzr: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.600 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_qncnpysz_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.600 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:38:06.600 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.701 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:06.753 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.753 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona.ndasdasd@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:06.754 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:38:06.754 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.ndasdasd@noradent.bg: 199ms
+2025-04-27 22:38:06.754 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona.ndasdasd@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:38:06.754 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:38:06.754 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.NeverBounceService - Verifying email nona.ndasdasd@noradent.bg with NeverBounce API
+2025-04-27 22:38:06.754 [ForkJoinPool.commonPool-worker-4] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:38:09.124 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona.ndasdasd@noradent.bg: valid
+2025-04-27 22:38:09.126 [http-nio-8085-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:38:28.164 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 22:38:28.176 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 22:38:28.178 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 22:38:28.179 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@55fb36de]]
+2025-04-27 22:38:28.179 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 22:38:30.845 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 77084 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 22:38:30.846 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 22:38:31.811 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-27 22:38:31.824 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 22:38:31.825 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 22:38:31.869 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 22:38:31.869 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 971 ms
+2025-04-27 22:38:32.028 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 22:38:32.134 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-27 22:38:32.267 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 22:38:32.276 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 22:38:32.298 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 22:38:32.311 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-27 22:38:32.549 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 22:38:32.551 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@cf10c92]]
+2025-04-27 22:38:32.552 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 22:38:32.568 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-27 22:38:32.574 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.278 seconds (process running for 3.132)
+2025-04-27 22:38:34.605 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 22:38:34.628 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:38:34.628 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:38:34.629 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:38:34.642 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:38:34.644 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:38:34.667 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.ndasdasd@noradent.bg
+2025-04-27 22:38:34.668 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:38:34.668 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.ndasdasd@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:38:34.669 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:38:34.697 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 27ms
+2025-04-27 22:38:34.697 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 27ms
+2025-04-27 22:38:34.697 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:38:34.697 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:38:34.701 [virtual-69] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:38:34.701 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:38:34.701 [virtual-79] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:38:34.701 [virtual-75] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:38:34.714 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:38:34.714 [virtual-79] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:38:34.714 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:38:34.715 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:38:34.715 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:38:34.715 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 18ms
+2025-04-27 22:38:34.715 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 18ms
+2025-04-27 22:38:34.716 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:38:34.716 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:38:34.716 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:38:34.717 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-zscibmuaps@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.717 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.zmohieltduxd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.717 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_lahrfdls_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.717 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.zmohieltduxd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.717 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_lahrfdls_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.717 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-zscibmuaps@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.744 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.818 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.845 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.845 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-zscibmuaps: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.845 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.zmohieltduxd: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.845 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_lahrfdls_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.845 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:38:34.845 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.953 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:38:34.981 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.981 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona.ndasdasd@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:38:34.981 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:38:34.982 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.ndasdasd@noradent.bg: 312ms
+2025-04-27 22:38:42.363 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona.ndasdasd@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:38:42.363 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:38:42.363 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email nona.ndasdasd@noradent.bg with NeverBounce API
+2025-04-27 22:38:42.369 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:42:47.274 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona.ndasdasd@noradent.bg: valid
+2025-04-27 22:45:15.084 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:45:15.098 [http-nio-8085-exec-4] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.context.request.async.AsyncRequestTimeoutException]
+2025-04-27 22:45:16.229 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 22:45:16.237 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 22:45:16.240 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 22:45:16.240 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@cf10c92]]
+2025-04-27 22:45:16.240 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 22:46:52.930 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 80536 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 22:46:52.932 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 22:46:53.953 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-27 22:46:54.008 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1023 ms
+2025-04-27 22:46:54.150 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 22:46:54.251 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-27 22:46:54.361 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 22:46:54.370 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 22:46:54.392 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 22:46:54.407 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-27 22:46:54.636 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 22:46:54.638 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@55fb36de]]
+2025-04-27 22:46:54.639 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 22:46:54.654 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-27 22:46:54.660 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.26 seconds (process running for 2.795)
+2025-04-27 22:46:54.662 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 22:46:54.669 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 22:46:54.671 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 22:46:54.672 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@55fb36de]]
+2025-04-27 22:46:54.672 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 22:46:57.603 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 79908 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 22:46:57.605 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 22:46:58.624 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-27 22:46:58.636 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 22:46:58.637 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 22:46:58.681 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 22:46:58.682 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1021 ms
+2025-04-27 22:46:58.845 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 22:46:58.952 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-27 22:46:59.075 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 22:46:59.083 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 22:46:59.110 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 22:46:59.124 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-27 22:46:59.375 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 22:46:59.377 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@cf10c92]]
+2025-04-27 22:46:59.378 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 22:46:59.396 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-27 22:46:59.403 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.368 seconds (process running for 3.111)
+2025-04-27 22:47:01.250 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 22:47:01.276 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:47:01.277 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:47:01.278 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:47:01.292 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:47:01.296 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:47:01.320 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.ndasdasd@noradent.bg
+2025-04-27 22:47:01.321 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:47:01.321 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.ndasdasd@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:47:01.354 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:47:01.407 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 53ms
+2025-04-27 22:47:01.407 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 53ms
+2025-04-27 22:47:01.407 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:47:01.407 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:47:01.411 [virtual-69] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:47:01.412 [virtual-74] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:47:01.411 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:47:01.412 [virtual-77] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:47:01.422 [virtual-77] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:47:01.422 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:47:01.463 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:47:01.463 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:47:01.463 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:47:01.463 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 56ms
+2025-04-27 22:47:01.463 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 56ms
+2025-04-27 22:47:01.501 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:47:01.501 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:47:01.501 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:47:01.502 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.tuklyhpivfao@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.502 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-sckeiumuqc@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.502 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_ypxdyibj_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.503 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.tuklyhpivfao@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.503 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-sckeiumuqc@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.503 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_ypxdyibj_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.529 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.529 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.546 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.546 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-sckeiumuqc: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.546 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.tuklyhpivfao: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.546 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_ypxdyibj_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.546 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:47:01.546 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.657 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:47:01.697 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.697 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona.ndasdasd@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:47:01.697 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:47:01.698 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.ndasdasd@noradent.bg: 344ms
+2025-04-27 22:47:01.699 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona.ndasdasd@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:47:01.699 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:47:01.699 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email nona.ndasdasd@noradent.bg with NeverBounce API
+2025-04-27 22:47:01.704 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:47:10.906 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona.ndasdasd@noradent.bg: INVALID
+2025-04-27 22:47:13.141 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:48:11.820 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 22:48:11.837 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 22:48:11.851 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 22:48:11.852 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@cf10c92]]
+2025-04-27 22:48:11.852 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 22:48:14.371 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 59540 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 22:48:14.374 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 22:48:15.408 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-27 22:48:15.420 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 22:48:15.421 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 22:48:15.465 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 22:48:15.466 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1039 ms
+2025-04-27 22:48:15.646 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 22:48:15.752 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-27 22:48:15.874 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 22:48:15.882 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 22:48:15.907 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 22:48:15.921 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-27 22:48:16.162 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 22:48:16.164 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@cf10c92]]
+2025-04-27 22:48:16.164 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 22:48:16.181 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-27 22:48:16.188 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.424 seconds (process running for 3.15)
+2025-04-27 22:48:17.087 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 22:48:17.109 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:48:17.109 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:48:17.110 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:48:17.123 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:48:17.126 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:48:17.162 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.ndasdasd@noradent.bg
+2025-04-27 22:48:17.162 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:48:17.163 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.ndasdasd@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:48:17.165 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:48:17.192 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 27ms
+2025-04-27 22:48:17.192 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 27ms
+2025-04-27 22:48:17.192 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:48:17.192 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:48:17.196 [virtual-69] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:48:17.197 [virtual-74] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:48:17.196 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:48:17.197 [virtual-77] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:48:17.211 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:48:17.211 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:48:17.211 [virtual-77] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:48:17.211 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:48:17.211 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:48:17.212 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 20ms
+2025-04-27 22:48:17.212 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 20ms
+2025-04-27 22:48:17.213 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:48:17.213 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:48:17.213 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:48:17.214 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-iqdbbtzbse@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.214 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.ptglytaopsfq@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.214 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_uwstmzlw_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.214 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.ptglytaopsfq@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.214 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_uwstmzlw_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.214 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-iqdbbtzbse@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.240 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.240 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.240 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.241 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-iqdbbtzbse: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.241 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.ptglytaopsfq: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.241 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_uwstmzlw_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.241 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:48:17.241 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.342 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:48:17.364 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.364 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona.ndasdasd@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:48:17.365 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:48:17.366 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.ndasdasd@noradent.bg: 201ms
+2025-04-27 22:48:17.366 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona.ndasdasd@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:48:17.366 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:48:17.366 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email nona.ndasdasd@noradent.bg with NeverBounce API
+2025-04-27 22:48:17.372 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:48:36.443 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona.ndasdasd@noradent.bg: INVALID
+2025-04-27 22:49:02.910 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:49:24.888 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:49:24.888 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:49:24.888 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:49:24.888 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:49:24.888 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:49:24.889 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.ndasdasd@noradent.bg
+2025-04-27 22:49:24.889 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:49:24.890 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.ndasdasd@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:49:24.890 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:49:24.890 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:49:24.890 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.ndasdasd@noradent.bg: 0ms
+2025-04-27 22:49:24.891 [http-nio-8085-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:49:26.491 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 22:49:26.498 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 22:49:26.563 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 22:49:26.563 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@cf10c92]]
+2025-04-27 22:49:26.564 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 22:49:28.999 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 82132 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 22:49:29.001 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 22:49:29.967 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-27 22:49:29.979 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 22:49:29.979 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 22:49:30.023 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 22:49:30.023 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 975 ms
+2025-04-27 22:49:30.184 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 22:49:30.290 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-27 22:49:30.412 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 22:49:30.420 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 22:49:30.443 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 22:49:30.456 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-27 22:49:30.702 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 22:49:30.704 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@269c7104]]
+2025-04-27 22:49:30.705 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 22:49:30.721 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-27 22:49:30.728 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.291 seconds (process running for 3.09)
+2025-04-27 22:49:32.656 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 22:49:32.681 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:49:32.681 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:49:32.682 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:49:32.695 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:49:32.698 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:49:32.720 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.ndasdasd@noradent.bg
+2025-04-27 22:49:32.721 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:49:32.721 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.ndasdasd@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:49:32.723 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:49:32.750 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 27ms
+2025-04-27 22:49:32.751 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 28ms
+2025-04-27 22:49:32.751 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:49:32.751 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:49:32.755 [virtual-69] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:49:32.756 [virtual-74] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:49:32.755 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:49:32.756 [virtual-77] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:49:32.765 [virtual-77] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:49:32.765 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:49:32.818 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:49:32.818 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:49:32.818 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:49:32.818 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 67ms
+2025-04-27 22:49:32.818 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 67ms
+2025-04-27 22:49:32.820 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:49:32.820 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:49:32.820 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:49:32.821 [virtual-85] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-cgrtsgajxw@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:32.821 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_pvtpulop_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:32.821 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.fpmvewdrdrol@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:32.821 [virtual-85] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-cgrtsgajxw@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:32.821 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_pvtpulop_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:32.821 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.fpmvewdrdrol@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:32.846 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:32.912 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:32.912 [virtual-85] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:32.912 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-cgrtsgajxw: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:32.912 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.fpmvewdrdrol: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:32.913 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_pvtpulop_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:32.913 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:49:32.913 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:33.027 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:49:33.052 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:33.052 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona.ndasdasd@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:49:33.052 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:49:33.053 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.ndasdasd@noradent.bg: 330ms
+2025-04-27 22:49:33.054 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona.ndasdasd@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:49:33.054 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:49:33.054 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email nona.ndasdasd@noradent.bg with NeverBounce API
+2025-04-27 22:49:33.059 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:49:38.718 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona.ndasdasd@noradent.bg: INVALID
+2025-04-27 22:51:37.530 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:51:37.554 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 22:51:37.704 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 22:51:37.707 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 22:51:37.707 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@269c7104]]
+2025-04-27 22:51:37.707 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 22:51:41.760 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 63992 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 22:51:41.762 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 22:51:42.775 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-27 22:51:42.788 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 22:51:42.788 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 22:51:42.833 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 22:51:42.833 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1018 ms
+2025-04-27 22:51:42.997 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 22:51:43.114 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-27 22:51:43.238 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 22:51:43.246 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 22:51:43.270 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 22:51:43.284 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-27 22:51:43.529 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 22:51:43.531 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6de84336]]
+2025-04-27 22:51:43.532 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 22:51:43.549 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-27 22:51:43.555 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.441 seconds (process running for 3.223)
+2025-04-27 22:51:44.712 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 22:51:44.731 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:51:44.731 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:51:44.732 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:51:44.745 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:51:44.748 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:51:44.779 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona.ndasdasd@noradent.bg
+2025-04-27 22:51:44.779 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:51:44.779 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona.ndasdasd@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:51:44.781 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona.ndasdasd@noradent.bg
+2025-04-27 22:51:44.817 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 36ms
+2025-04-27 22:51:44.818 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 37ms
+2025-04-27 22:51:44.818 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:51:44.818 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:51:44.822 [virtual-69] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:51:44.823 [virtual-76] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:51:44.822 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:51:44.822 [virtual-74] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:51:44.832 [virtual-76] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:51:44.833 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:51:44.832 [virtual-72] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:51:44.833 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:51:44.833 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:51:44.833 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 15ms
+2025-04-27 22:51:44.833 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 15ms
+2025-04-27 22:51:44.834 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:51:44.835 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:51:44.835 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:51:44.835 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.xtprepgopczg@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:44.835 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-ouuggjvdep@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:44.836 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.xtprepgopczg@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:44.835 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_maheiqof_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:44.836 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-ouuggjvdep@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:44.836 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_maheiqof_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:44.862 [virtual-87] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:44.887 [virtual-88] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:44.930 [virtual-86] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:44.931 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-ouuggjvdep: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:44.931 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.xtprepgopczg: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:44.931 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_maheiqof_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:44.931 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:51:44.931 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:45.042 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona.ndasdasd@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:51:45.096 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:45.096 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona.ndasdasd@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:51:45.096 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:51:45.098 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for nona.ndasdasd@noradent.bg: 317ms
+2025-04-27 22:51:45.098 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona.ndasdasd@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:51:45.098 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:51:45.098 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email nona.ndasdasd@noradent.bg with NeverBounce API
+2025-04-27 22:51:45.104 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:51:50.218 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona.ndasdasd@noradent.bg: INVALID
+2025-04-27 22:52:03.322 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:09.956 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:09.956 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:52:09.956 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:09.957 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:52:09.957 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:09.958 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nona@noradent.bg
+2025-04-27 22:52:09.958 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:52:09.958 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nona@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:52:09.958 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nona@noradent.bg
+2025-04-27 22:52:09.964 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 6ms
+2025-04-27 22:52:09.964 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 6ms
+2025-04-27 22:52:09.964 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:52:09.964 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:52:09.965 [virtual-92] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:52:09.965 [virtual-95] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:52:09.965 [virtual-94] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:52:09.965 [virtual-96] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:52:09.975 [virtual-96] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:52:09.976 [virtual-94] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 13ms
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 13ms
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:52:09.977 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:52:09.978 [virtual-104] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-wwcoyybltx@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:09.978 [virtual-106] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_asparobg_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:09.978 [virtual-104] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-wwcoyybltx@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:09.978 [virtual-105] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.hwkkfnngwgzg@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:09.978 [virtual-106] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_asparobg_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:09.978 [virtual-105] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.hwkkfnngwgzg@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:10.002 [virtual-106] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.021 [virtual-104] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.022 [virtual-105] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.022 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-wwcoyybltx: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.022 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.hwkkfnngwgzg: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.022 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_asparobg_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.022 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:52:10.022 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nona@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:10.130 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nona@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:10.154 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.154 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nona@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:10.155 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:52:10.155 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Total validation time for nona@noradent.bg: 197ms
+2025-04-27 22:52:10.155 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nona@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:52:10.155 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:52:10.155 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.NeverBounceService - Verifying email nona@noradent.bg with NeverBounce API
+2025-04-27 22:52:10.155 [ForkJoinPool.commonPool-worker-3] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:52:13.281 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nona@noradent.bg: INVALID
+2025-04-27 22:52:13.282 [http-nio-8085-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:41.713 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:41.713 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:52:41.713 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:41.713 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:52:41.713 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:41.715 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nora@noradent.bg
+2025-04-27 22:52:41.715 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:52:41.715 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nora@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:52:41.716 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nora@noradent.bg
+2025-04-27 22:52:41.724 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 8ms
+2025-04-27 22:52:41.725 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.services.SMTPValidator - MX records lookup for noradent.bg took 9ms
+2025-04-27 22:52:41.725 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Found 1 MX records for domain noradent.bg
+2025-04-27 22:52:41.725 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Starting concurrent DNS checks for domain: noradent.bg
+2025-04-27 22:52:41.725 [virtual-109] DEBUG c.m.b.services.SMTPValidator - Starting SPF check for domain: noradent.bg
+2025-04-27 22:52:41.726 [virtual-111] DEBUG c.m.b.services.SMTPValidator - Starting DMARC check for domain: noradent.bg
+2025-04-27 22:52:41.726 [virtual-113] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (selector1) for domain: noradent.bg
+2025-04-27 22:52:41.726 [virtual-112] DEBUG c.m.b.services.SMTPValidator - Starting DKIM check (default) for domain: noradent.bg
+2025-04-27 22:52:41.738 [virtual-113] DEBUG c.m.b.services.SMTPValidator - Error fetching DKIM record for selector selector1 at domain noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:52:41.738 [virtual-111] DEBUG c.m.b.services.SMTPValidator - Error fetching DMARC record for noradent.bg: DNS name not found [response code 3]
+2025-04-27 22:52:41.738 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - SPF check completed for domain noradent.bg: found
+2025-04-27 22:52:41.738 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - DMARC check completed for domain noradent.bg: not found
+2025-04-27 22:52:41.738 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - DKIM checks completed for domain noradent.bg: default=true, selector1=false
+2025-04-27 22:52:41.738 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Completed DNS checks for domain noradent.bg in 13ms
+2025-04-27 22:52:41.738 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.services.SMTPValidator - DNS checks for noradent.bg took 13ms
+2025-04-27 22:52:41.772 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Testing MX server mail.noradent.bg. (priority 1) for catch-all detection
+2025-04-27 22:52:41.773 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Testing if domain noradent.bg is catch-all using server mail.noradent.bg.
+2025-04-27 22:52:41.773 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg using multiple probe addresses
+2025-04-27 22:52:41.773 [virtual-122] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-hfwrbypsaw@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.773 [virtual-122] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nonexistent-user-hfwrbypsaw@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.773 [virtual-123] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.znkmydaorhee@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.773 [virtual-124] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_gcosnkjo_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.773 [virtual-123] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for invalid.email.znkmydaorhee@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.774 [virtual-124] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for probe_gcosnkjo_test@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.797 [virtual-122] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.797 [virtual-124] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.798 [virtual-123] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.798 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe nonexistent-user-hfwrbypsaw: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.798 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe invalid.email.znkmydaorhee: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.798 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Catch-all test result for probe probe_gcosnkjo_test: deliverable=false, response code=220, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.798 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Catch-all test for domain noradent.bg was inconclusive (0/3 accepted), assuming not catch-all
+2025-04-27 22:52:41.798 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Starting greylisting test for nora@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.905 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Starting SMTP verification for nora@noradent.bg on MX host mail.noradent.bg.
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Server mail.noradent.bg. restricts verification during HELO: 220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.SMTPValidator - Greylisting test - first attempt for nora@noradent.bg: deliverable=false, response=220-We do not authorize the use of this system to transport unsolicited, 
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.services.SMTPValidator - Greylisting test for mail.noradent.bg.: INCONCLUSIVE
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.services.SMTPValidator - Total validation time for nora@noradent.bg: 209ms
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email nora@noradent.bg. Performing additional verification with NeverBounce.
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] DEBUG c.m.b.services.NeverBounceService - Verifying email nora@noradent.bg with NeverBounce API
+2025-04-27 22:52:41.925 [ForkJoinPool.commonPool-worker-5] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 22:52:42.607 [ForkJoinPool.commonPool-worker-5] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email nora@noradent.bg: VALID
+2025-04-27 22:52:42.608 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:51.487 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:51.488 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:52:51.488 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:51.488 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:52:51.488 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:51.489 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nora@noradent.bg
+2025-04-27 22:52:51.489 [ForkJoinPool.commonPool-worker-7] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:52:51.489 [ForkJoinPool.commonPool-worker-7] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nora@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:52:51.489 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nora@noradent.bg
+2025-04-27 22:52:51.489 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: nora@noradent.bg
+2025-04-27 22:52:51.489 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.services.SMTPValidator - Total validation time for nora@noradent.bg: 0ms
+2025-04-27 22:52:51.490 [http-nio-8085-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:53.375 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:53.375 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 22:52:53.375 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 22:52:53.375 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 22:52:53.376 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 22:52:53.376 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: nora@noradent.bg
+2025-04-27 22:52:53.376 [ForkJoinPool.commonPool-worker-7] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-27 22:52:53.376 [ForkJoinPool.commonPool-worker-7] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: nora@noradent.bg with NeverBounce API key present: true
+2025-04-27 22:52:53.376 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: nora@noradent.bg
+2025-04-27 22:52:53.376 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: nora@noradent.bg
+2025-04-27 22:52:53.377 [ForkJoinPool.commonPool-worker-7] INFO  c.m.b.services.SMTPValidator - Total validation time for nora@noradent.bg: 1ms
+2025-04-27 22:52:53.377 [http-nio-8085-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]

@@ -3,6 +3,7 @@ package com.mikov.bulkemailchecker.services;
 import com.mikov.bulkemailchecker.dtos.ValidationResult;
 import com.neverbounce.api.client.NeverbounceClientFactory;
 import com.neverbounce.api.client.exception.NeverbounceApiException;
+import com.neverbounce.api.model.SingleCheckResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,12 +35,17 @@ public final class NeverBounceService {
             details.put("response", response);
             System.out.println(details.get("response"));
             
-            final var formattedResult = new HashMap<String, Object>();
-            formattedResult.put("result", "valid"); // Default to valid unless we detect otherwise
-            details.put("formatted_result", formattedResult);
+            // Use the actual result from the response
+            boolean isValid = true;
+            if (response instanceof SingleCheckResponse singleCheckResponse) {
+                final var nbResult = singleCheckResponse.getResult().name();
+                if ("INVALID".equalsIgnoreCase(nbResult)) {
+                    isValid = false;
+                }
+            }
             
             return ValidationResult.builder()
-                    .valid(true)
+                    .valid(isValid)
                     .validatorName("neverbounce")
                     .details(details)
                     .build();

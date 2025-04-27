@@ -37,7 +37,7 @@ import jakarta.annotation.PreDestroy;
  * @author zahari.mikov
  */
 @Component
-public class SMTPValidator implements EmailValidator {
+public final class SMTPValidator implements EmailValidator {
     private static final Logger logger = LoggerFactory.getLogger(SMTPValidator.class);
     
     private static final boolean ENABLE_FAST_MODE = false;
@@ -66,16 +66,14 @@ public class SMTPValidator implements EmailValidator {
     @Override
     public ValidationResult validate(final String email) {
         logger.info("Starting SMTP validation for email: {}", email);
-        long totalStartTime = System.currentTimeMillis();
+        final var totalStartTime = System.currentTimeMillis();
         
         try {
-            // 1. Basic validation
-            ValidationResult basicValidation = validateBasicEmailFormat(email);
+            final var basicValidation = validateBasicEmailFormat(email);
             if (!basicValidation.isValid()) {
                 return basicValidation;
             }
             
-            // 2. Check cache
             final var cacheKey = email.toLowerCase();
             final var cachedResult = resultCache.get(cacheKey);
             if (cachedResult != null && !cachedResult.isExpired()) {
@@ -83,21 +81,17 @@ public class SMTPValidator implements EmailValidator {
                 return cachedResult.getResult();
             }
             
-            // 3. Extract email parts
             final var parts = email.split("@", 2);
             final var localPart = parts[0];
             final var domain = parts[1].toLowerCase();
             
-            // 4. Get MX records and DNS info
             final var mxInfo = getMxAndDnsInfo(domain);
             if (!mxInfo.isValid()) {
                 return mxInfo.getValidationResult();
             }
             
-            // 5. Perform SMTP validation
             final var validationResult = performSmtpValidation(localPart, domain, mxInfo);
             
-            // 6. Cache and return result
             cacheResult(cacheKey, validationResult);
             return validationResult;
             
@@ -125,7 +119,7 @@ public class SMTPValidator implements EmailValidator {
     }
     
     private MxAndDnsInfo getMxAndDnsInfo(final String domain) throws Exception {
-        long mxStartTime = System.currentTimeMillis();
+        final var mxStartTime = System.currentTimeMillis();
         final var mxRecordsWithWeights = getMxRecordsWithWeights(domain);
         logger.info("MX records lookup for {} took {}ms", domain, System.currentTimeMillis() - mxStartTime);
         
@@ -136,8 +130,8 @@ public class SMTPValidator implements EmailValidator {
         
         logger.debug("Found {} MX records for domain {}", mxRecordsWithWeights.size(), domain);
         
-        long dnsStartTime = System.currentTimeMillis();
-        Map<String, Object> dnsDetails = checkDomainDnsRecords(domain);
+        final var dnsStartTime = System.currentTimeMillis();
+        final var dnsDetails = checkDomainDnsRecords(domain);
         logger.info("DNS checks for {} took {}ms", domain, System.currentTimeMillis() - dnsStartTime);
         
         mxRecordsWithWeights.sort(Comparator.comparingInt(a -> a.priority));
@@ -156,7 +150,6 @@ public class SMTPValidator implements EmailValidator {
         final var primaryMxHost = mxInfo.getPrimaryMxRecord().hostname;
         final var serverInfo = new SmtpServerInfo(primaryMxHost, getIpAddress(primaryMxHost), mxInfo.getProvider());
         
-        // 1. Check for catch-all if not in fast mode
         if (!ENABLE_FAST_MODE) {
             final var catchAllResult = checkForCatchAll(domain, mxInfo.getMxRecords());
             if (catchAllResult != null) {
@@ -164,7 +157,6 @@ public class SMTPValidator implements EmailValidator {
             }
         }
         
-        // 2. Perform greylisting test if enabled
         if (ENABLE_AGGRESSIVE_VERIFICATION) {
             final var greylistResult = performGreylistTest(localPart, domain, primaryMxHost);
             if (greylistResult != null && !greylistResult.isTempError()) {
@@ -172,7 +164,6 @@ public class SMTPValidator implements EmailValidator {
             }
         }
         
-        // 3. Perform direct verification
         final var verificationResults = performDirectVerification(localPart, domain, primaryMxHost);
         return analyzeVerificationResults(verificationResults, serverInfo, mxInfo);
     }
@@ -227,7 +218,6 @@ public class SMTPValidator implements EmailValidator {
             return createInconclusiveResult(serverInfo, mxInfo);
         }
         
-        // Check for server restrictions
         if (isServerRestricted(results)) {
             return createServerRestrictedResult(serverInfo, mxInfo);
         }
@@ -303,7 +293,6 @@ public class SMTPValidator implements EmailValidator {
         return ValidationResult.valid(getName(), details);
     }
     
-    // Helper class to hold MX and DNS information
     @Getter
     private static class MxAndDnsInfo {
         private final List<MxRecord> mxRecords;
@@ -474,7 +463,6 @@ public class SMTPValidator implements EmailValidator {
             final var response = in.readLine();
             final var responseCode = getResponseCode(response);
             
-            // Check for server restriction message in the initial response
             if (response != null && response.contains("We do not authorize the use of this system")) {
                 logger.debug("Server {} restricts verification: {}", mxHost, response);
                 return new SmtpValidationResult(false, false, responseCode, false, response, mxHost);
@@ -490,7 +478,6 @@ public class SMTPValidator implements EmailValidator {
             out.flush();
             final var heloResponse = in.readLine();
             
-            // Check for server restriction message in HELO response
             if (heloResponse != null && heloResponse.contains("We do not authorize the use of this system")) {
                 logger.debug("Server {} restricts verification during HELO: {}", mxHost, heloResponse);
                 return new SmtpValidationResult(false, false, getResponseCode(heloResponse), false, heloResponse, mxHost);
@@ -506,7 +493,6 @@ public class SMTPValidator implements EmailValidator {
             out.flush();
             final var mailFromResponse = in.readLine();
             
-            // Check for server restriction message in MAIL FROM response
             if (mailFromResponse != null && mailFromResponse.contains("We do not authorize the use of this system")) {
                 logger.debug("Server {} restricts verification during MAIL FROM: {}", mxHost, mailFromResponse);
                 return new SmtpValidationResult(false, false, getResponseCode(mailFromResponse), false, mailFromResponse, mxHost);
@@ -522,7 +508,6 @@ public class SMTPValidator implements EmailValidator {
             out.flush();
             final var rcptToResponse = in.readLine();
             
-            // Check for server restriction message in RCPT TO response
             if (rcptToResponse != null && rcptToResponse.contains("We do not authorize the use of this system")) {
                 logger.debug("Server {} restricts verification during RCPT TO: {}", mxHost, rcptToResponse);
                 return new SmtpValidationResult(false, false, getResponseCode(rcptToResponse), false, rcptToResponse, mxHost);
@@ -607,15 +592,12 @@ public class SMTPValidator implements EmailValidator {
         }
     }
 
-    /**
-     * Get MX records with their priority weights
-     */
     private List<MxRecord> getMxRecordsWithWeights(final String domain) throws Exception {
         long startTime = System.currentTimeMillis();
         try {
             final var env = new java.util.Hashtable<String, String>();
-            env.put("com.sun.jndi.dns.timeout.initial", "2000");  // 2 second initial timeout 
-            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            env.put("com.sun.jndi.dns.timeout.initial", "2000");
+            env.put("com.sun.jndi.dns.timeout.retries", "1");
             final var ctx = new javax.naming.directory.InitialDirContext(env);
             
             final var attrs = ctx.getAttributes("dns:/" + domain, new String[] {"MX"});
@@ -747,9 +729,6 @@ public class SMTPValidator implements EmailValidator {
         }
     }
 
-    /**
-     * Apply throttling between verification attempts
-     */
     private void applyThrottling() {
         try {
             Thread.sleep(100);
@@ -758,9 +737,6 @@ public class SMTPValidator implements EmailValidator {
         }
     }
 
-    /**
-     * Check DNS records for a domain to determine overall email health
-     */
     private Map<String, Object> checkDomainDnsRecords(String domain) {
         Map<String, Object> details = new HashMap<>();
         boolean hasDnsIssues = false;
@@ -789,7 +765,6 @@ public class SMTPValidator implements EmailValidator {
                 return getDkimRecord("selector1", domain);
             }, dnsExecutor).orTimeout(2, TimeUnit.SECONDS);
             
-            // Process the futures independently to prevent one failure from affecting others
             String spfRecord = null;
             try {
                 spfRecord = spfFuture.get(3, TimeUnit.SECONDS);
@@ -822,7 +797,6 @@ public class SMTPValidator implements EmailValidator {
                 logger.debug("DKIM selector1 lookup failed for domain {}: {}", domain, e.getMessage());
             }
             
-            // Process SPF results
             if (spfRecord == null || spfRecord.isEmpty()) {
                 details.put("spf_record", "missing");
                 hasDnsIssues = true;
@@ -841,7 +815,6 @@ public class SMTPValidator implements EmailValidator {
                 }
             }
             
-            // Process DMARC results
             if (dmarcRecord == null || dmarcRecord.isEmpty()) {
                 details.put("dmarc_record", "missing");
                 hasDnsIssues = true;
@@ -858,7 +831,6 @@ public class SMTPValidator implements EmailValidator {
                 }
             }
             
-            // Process DKIM results
             if (dkimDefaultRecord != null && !dkimDefaultRecord.isEmpty()) {
                 details.put("dkim_record", "present");
             } else if (dkimSelector1Record != null && !dkimSelector1Record.isEmpty()) {
@@ -878,15 +850,12 @@ public class SMTPValidator implements EmailValidator {
         details.put("has_dns_issues", hasDnsIssues);
         return details;
     }
-    
-    /**
-     * Get SPF record for a domain
-     */
+
     private String getSpfRecord(String domain) {
         try {
             final var env = new java.util.Hashtable<String, String>();
-            env.put("com.sun.jndi.dns.timeout.initial", "1000");  // 1 second initial timeout
-            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            env.put("com.sun.jndi.dns.timeout.initial", "1000");
+            env.put("com.sun.jndi.dns.timeout.retries", "1");
             final var ctx = new javax.naming.directory.InitialDirContext(env);
             
             final var attrs = ctx.getAttributes("dns:/" + domain, new String[] {"TXT"});
@@ -906,15 +875,12 @@ public class SMTPValidator implements EmailValidator {
         
         return null;
     }
-    
-    /**
-     * Get DMARC record for a domain
-     */
+
     private String getDmarcRecord(String domain) {
         try {
             final var env = new java.util.Hashtable<String, String>();
-            env.put("com.sun.jndi.dns.timeout.initial", "1000");  // 1 second initial timeout
-            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            env.put("com.sun.jndi.dns.timeout.initial", "1000");
+            env.put("com.sun.jndi.dns.timeout.retries", "1");
             final var ctx = new javax.naming.directory.InitialDirContext(env);
             
             final var attrs = ctx.getAttributes("dns:/_dmarc." + domain, new String[] {"TXT"});
@@ -932,15 +898,12 @@ public class SMTPValidator implements EmailValidator {
         
         return null;
     }
-    
-    /**
-     * Get DKIM record for a domain and selector
-     */
+
     private String getDkimRecord(String selector, String domain) {
         try {
             final var env = new java.util.Hashtable<String, String>();
-            env.put("com.sun.jndi.dns.timeout.initial", "1000");  // 1 second initial timeout
-            env.put("com.sun.jndi.dns.timeout.retries", "1");     // 1 retry
+            env.put("com.sun.jndi.dns.timeout.initial", "1000");
+            env.put("com.sun.jndi.dns.timeout.retries", "1");
             final var ctx = new javax.naming.directory.InitialDirContext(env);
             
             final var attrs = ctx.getAttributes("dns:/" + selector + "._domainkey." + domain, new String[] {"TXT"});
@@ -959,11 +922,7 @@ public class SMTPValidator implements EmailValidator {
         
         return null;
     }
-    
-    /**
-     * Perform greylisting test - some servers will initially reject unknown recipients
-     * but accept them on retry (or vice versa for real accounts)
-     */
+
     private SmtpValidationResult performGreylistTest(String localPart, String domain, String mxHost) {
         logger.debug("Starting greylisting test for {}@{} on MX host {}", localPart, domain, mxHost);
         String email = localPart + "@" + domain;
