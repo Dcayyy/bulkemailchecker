@@ -2191,3 +2191,708 @@ org.springframework.security.authentication.BadCredentialsException: Invalid API
 2025-04-27 15:01:10.333 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Greylisting test for dan@reveri.com: DELIVERABLE
 2025-04-27 15:01:10.334 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Total validation time for dan@reveri.com: 5093ms
 2025-04-27 15:01:10.335 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:09:15.991 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 68532 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:09:15.993 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:09:16.898 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:09:16.910 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:09:16.910 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:09:16.954 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:09:16.955 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 915 ms
+2025-04-27 15:09:17.052 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:09:17.246 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:09:17.253 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:09:17.273 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:09:17.496 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:09:17.498 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2084e65a]]
+2025-04-27 15:09:17.499 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:09:17.513 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:09:17.519 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.132 seconds (process running for 2.747)
+2025-04-27 15:09:18.726 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:09:18.745 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:09:18.746 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:09:18.747 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:09:18.758 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:09:18.760 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:09:18.779 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: dan@reveri.com
+2025-04-27 15:09:18.786 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: dan@reveri.com
+2025-04-27 15:09:18.818 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for reveri.com took 32ms
+2025-04-27 15:09:18.818 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for reveri.com took 32ms
+2025-04-27 15:09:19.849 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for reveri.com took 1031ms
+2025-04-27 15:09:25.232 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Greylisting test for dan@reveri.com: DELIVERABLE
+2025-04-27 15:09:25.234 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for dan@reveri.com: 6448ms
+2025-04-27 15:09:25.242 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:09:46.358 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:09:46.358 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:09:46.358 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:09:46.359 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:09:46.359 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:09:46.360 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia@impulsenotion.com
+2025-04-27 15:09:46.427 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia@impulsenotion.com
+2025-04-27 15:09:46.435 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 7ms
+2025-04-27 15:09:46.435 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 7ms
+2025-04-27 15:09:46.582 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 147ms
+2025-04-27 15:09:46.874 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:09:46.874 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia@impulsenotion.com: 446ms
+2025-04-27 15:09:46.875 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:09:46.875 [ForkJoinPool.commonPool-worker-3] WARN  c.m.b.services.NeverBounceService - No NeverBounce API key provided. Skipping verification for: sylia@impulsenotion.com
+2025-04-27 15:09:46.876 [http-nio-8081-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:14:26.885 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:14:26.897 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:14:26.899 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:14:26.900 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2084e65a]]
+2025-04-27 15:14:26.900 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:14:31.765 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 74392 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:14:31.768 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:14:32.729 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:14:32.740 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:14:32.741 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:14:32.783 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:14:32.784 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 961 ms
+2025-04-27 15:14:32.887 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:14:33.083 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:14:33.091 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:14:33.111 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:14:33.340 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:14:33.342 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4c2ab536]]
+2025-04-27 15:14:33.343 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:14:33.359 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:14:33.365 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.169 seconds (process running for 2.709)
+2025-04-27 15:14:34.377 [http-nio-8081-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:14:34.396 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:14:34.397 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:14:34.398 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:14:34.410 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:14:34.412 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:14:34.432 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia@impulsenotion.com
+2025-04-27 15:14:34.434 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia@impulsenotion.com
+2025-04-27 15:14:34.467 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 33ms
+2025-04-27 15:14:34.467 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 33ms
+2025-04-27 15:14:34.483 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 16ms
+2025-04-27 15:14:34.785 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:14:34.786 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia@impulsenotion.com: 352ms
+2025-04-27 15:14:34.786 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:14:34.793 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:14:34.793 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.NeverBounceService - Performing NeverBounce verification for catch-all domain email: sylia@impulsenotion.com
+2025-04-27 15:14:35.886 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email sylia@impulsenotion.com: catchall
+2025-04-27 15:14:35.895 [http-nio-8081-exec-4] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:14:44.492 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:14:44.492 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:14:44.492 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:14:44.494 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:14:44.494 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:14:44.495 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:14:44.495 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:14:44.502 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 7ms
+2025-04-27 15:14:44.503 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 8ms
+2025-04-27 15:14:44.513 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 10ms
+2025-04-27 15:14:44.813 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:14:44.813 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 318ms
+2025-04-27 15:14:44.813 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:14:44.813 [ForkJoinPool.commonPool-worker-3] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:14:44.813 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.NeverBounceService - Performing NeverBounce verification for catch-all domain email: sylia.h@impulsenotion.com
+2025-04-27 15:14:45.323 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email sylia.h@impulsenotion.com: catchall
+2025-04-27 15:14:45.324 [http-nio-8081-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:14:50.849 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:14:50.849 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:14:50.849 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:14:50.849 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:14:50.849 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:14:50.850 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:14:50.850 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:14:50.850 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: sylia.h@impulsenotion.com
+2025-04-27 15:14:50.850 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:14:50.850 [ForkJoinPool.commonPool-worker-4] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:14:50.850 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.services.NeverBounceService - Performing NeverBounce verification for catch-all domain email: sylia.h@impulsenotion.com
+2025-04-27 15:14:51.528 [ForkJoinPool.commonPool-worker-4] ERROR c.m.b.services.NeverBounceService - Error verifying email with NeverBounce: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+com.neverbounce.api.client.exception.NeverbounceApiException: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+	at com.neverbounce.api.internal.HttpClientImpl.execute(HttpClientImpl.java:128)
+	at com.neverbounce.api.internal.HttpClientImpl.getForObject(HttpClientImpl.java:95)
+	at com.neverbounce.api.model.SingleCheckRequest.execute(SingleCheckRequest.java:48)
+	at com.mikov.bulkemailchecker.services.NeverBounceService.verifyEmail(NeverBounceService.java:51)
+	at com.mikov.bulkemailchecker.services.BulkEmailCheckerService.executeValidationPipeline(BulkEmailCheckerService.java:289)
+	at com.mikov.bulkemailchecker.services.BulkEmailCheckerService.verifyEmail(BulkEmailCheckerService.java:85)
+	at com.mikov.bulkemailchecker.controller.BulkEmailCheckerController.lambda$processSimplifiedEmailVerification$0(BulkEmailCheckerController.java:168)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1768)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1760)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:507)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1491)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:2073)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:2035)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:187)
+2025-04-27 15:14:51.531 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:16:04.024 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:16:04.094 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:16:04.097 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:16:04.097 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4c2ab536]]
+2025-04-27 15:16:04.097 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:16:07.721 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 70476 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:16:07.723 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:16:08.628 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:16:08.641 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:16:08.641 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:16:08.685 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:16:08.685 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 918 ms
+2025-04-27 15:16:08.796 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:16:08.998 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:16:09.006 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:16:09.026 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:16:09.273 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:16:09.274 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@749baa0c]]
+2025-04-27 15:16:09.275 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:16:09.290 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:16:09.296 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.159 seconds (process running for 2.676)
+2025-04-27 15:16:10.994 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:16:11.013 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:16:11.015 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:16:11.015 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:16:11.027 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:16:11.030 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:16:11.049 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:16:11.051 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:16:11.078 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 26ms
+2025-04-27 15:16:11.078 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 26ms
+2025-04-27 15:16:11.092 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 14ms
+2025-04-27 15:16:11.386 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:16:11.387 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 335ms
+2025-04-27 15:16:11.391 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:16:11.396 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:16:12.459 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+2025-04-27 15:16:12.468 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:17:03.667 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:17:03.679 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:17:03.684 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:17:03.684 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@749baa0c]]
+2025-04-27 15:17:03.685 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:17:21.516 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 71932 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:17:21.517 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:17:22.379 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:17:22.391 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:17:22.391 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:17:22.432 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:17:22.432 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 867 ms
+2025-04-27 15:17:22.537 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:17:22.736 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:17:22.744 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:17:22.764 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:17:22.992 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:17:22.994 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 15:17:22.995 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:17:23.009 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:17:23.015 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.115 seconds (process running for 2.632)
+2025-04-27 15:17:23.888 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:17:23.907 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:17:23.908 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:17:23.909 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:17:23.920 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:17:23.922 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:17:23.943 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:17:23.945 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:17:23.976 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 31ms
+2025-04-27 15:17:23.976 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 31ms
+2025-04-27 15:17:23.993 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 17ms
+2025-04-27 15:17:24.282 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:17:24.283 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 338ms
+2025-04-27 15:17:24.283 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:17:24.289 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:17:25.331 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+2025-04-27 15:17:25.341 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:17:59.265 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:17:59.338 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:17:59.341 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:17:59.343 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 15:17:59.349 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:18:30.029 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 59024 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:18:30.030 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:18:30.935 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:18:30.946 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:18:30.947 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:18:30.990 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:18:30.990 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 912 ms
+2025-04-27 15:18:31.096 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:18:31.304 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:18:31.312 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:18:31.332 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:18:31.563 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:18:31.565 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7b7068d8]]
+2025-04-27 15:18:31.565 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:18:31.579 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:18:31.585 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.088 seconds (process running for 2.674)
+2025-04-27 15:18:33.811 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:18:33.831 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:18:33.832 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:18:33.833 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:18:33.845 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:18:33.848 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:18:33.868 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:18:33.870 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:18:33.923 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 53ms
+2025-04-27 15:18:33.923 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 53ms
+2025-04-27 15:18:33.940 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 17ms
+2025-04-27 15:18:34.253 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:18:34.254 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 384ms
+2025-04-27 15:18:34.254 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:18:34.260 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:18:35.301 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+2025-04-27 15:18:35.301 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Returning error response.
+2025-04-27 15:18:35.310 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:18:40.086 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:18:40.086 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:18:40.086 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:18:40.086 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:18:40.086 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:18:40.087 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:18:40.087 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:18:40.087 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: sylia.h@impulsenotion.com
+2025-04-27 15:18:40.087 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:18:40.087 [ForkJoinPool.commonPool-worker-2] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:18:40.752 [ForkJoinPool.commonPool-worker-2] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+2025-04-27 15:18:40.752 [ForkJoinPool.commonPool-worker-2] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Returning error response.
+2025-04-27 15:18:40.753 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:19:50.438 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:19:50.477 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:19:50.486 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:19:50.487 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7b7068d8]]
+2025-04-27 15:19:50.487 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:20:13.603 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 71388 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:20:13.604 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:20:14.678 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:20:14.691 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:20:14.692 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:20:14.818 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:20:14.818 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1165 ms
+2025-04-27 15:20:14.960 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:20:15.182 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:20:15.190 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:20:15.212 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:20:15.467 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:20:15.469 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@12365bd8]]
+2025-04-27 15:20:15.469 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:20:15.483 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:20:15.489 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.418 seconds (process running for 2.947)
+2025-04-27 15:20:16.353 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:20:16.362 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:20:16.364 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:20:16.365 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@12365bd8]]
+2025-04-27 15:20:16.365 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:20:21.567 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 71228 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:20:21.569 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:20:22.429 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:20:22.440 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:20:22.441 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:20:22.484 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:20:22.484 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 862 ms
+2025-04-27 15:20:22.592 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:20:22.790 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:20:22.798 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:20:22.819 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:20:23.045 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:20:23.046 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6ef037e4]]
+2025-04-27 15:20:23.047 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:20:23.061 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:20:23.067 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.053 seconds (process running for 2.553)
+2025-04-27 15:20:24.150 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:20:24.168 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:20:24.169 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:20:24.169 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:20:24.181 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:20:24.183 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:20:24.202 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:20:24.264 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:20:24.289 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 24ms
+2025-04-27 15:20:24.289 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 24ms
+2025-04-27 15:20:24.364 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 75ms
+2025-04-27 15:20:24.658 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:20:24.660 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 396ms
+2025-04-27 15:20:24.660 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:20:24.665 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:20:25.822 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+2025-04-27 15:20:25.822 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:20:25.822 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:20:25.831 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:21:16.966 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:21:16.994 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:21:16.997 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:21:16.998 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6ef037e4]]
+2025-04-27 15:21:16.998 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:21:21.144 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 68924 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:21:21.145 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:21:22.016 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:21:22.028 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:21:22.028 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:21:22.070 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:21:22.070 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 883 ms
+2025-04-27 15:21:22.171 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:21:22.371 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:21:22.378 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:21:22.399 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:21:22.636 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:21:22.638 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3dc82e6a]]
+2025-04-27 15:21:22.639 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:21:22.654 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:21:22.661 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 1.999 seconds (process running for 2.509)
+2025-04-27 15:21:24.735 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:21:24.754 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:21:24.755 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:21:24.755 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:21:24.767 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:21:24.769 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:21:24.790 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:21:24.793 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:21:24.818 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:21:24.818 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:21:24.832 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 14ms
+2025-04-27 15:21:25.117 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:21:25.118 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 325ms
+2025-04-27 15:21:25.119 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:21:25.123 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:21:26.192 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+2025-04-27 15:21:26.192 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:21:26.192 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:21:26.202 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:21:28.019 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:21:28.019 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:21:28.019 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:21:28.019 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:21:28.019 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:21:28.020 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:21:28.020 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:21:28.020 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: sylia.h@impulsenotion.com
+2025-04-27 15:21:28.020 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:21:28.020 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:21:28.705 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf112'
+2025-04-27 15:21:28.705 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:21:28.705 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:21:28.707 [http-nio-8081-exec-8] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:22:12.403 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:22:12.403 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:22:12.403 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:22:12.403 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:22:12.403 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:22:12.404 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:22:12.404 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:22:12.404 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: sylia.h@impulsenotion.com
+2025-04-27 15:22:12.404 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:22:12.404 [ForkJoinPool.commonPool-worker-3] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:22:12.917 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email sylia.h@impulsenotion.com: valid
+2025-04-27 15:22:12.919 [http-nio-8081-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:22:17.350 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:22:17.379 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:22:17.388 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:22:17.389 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3dc82e6a]]
+2025-04-27 15:22:17.389 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:22:21.712 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 59224 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:22:21.714 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:22:22.568 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:22:22.580 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:22:22.580 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:22:22.622 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:22:22.622 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 866 ms
+2025-04-27 15:22:22.744 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:22:22.972 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:22:22.981 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:22:23.005 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:22:23.252 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:22:23.253 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7b7068d8]]
+2025-04-27 15:22:23.254 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:22:23.269 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:22:23.276 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.128 seconds (process running for 2.695)
+2025-04-27 15:22:26.226 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:22:26.245 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:22:26.246 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:22:26.247 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:22:26.259 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:22:26.261 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:22:26.280 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:22:26.282 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:22:26.307 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:22:26.307 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:22:26.325 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 18ms
+2025-04-27 15:22:26.645 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:22:26.646 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 364ms
+2025-04-27 15:22:26.646 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:22:26.651 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:22:27.829 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:22:27.829 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:22:27.829 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:22:27.838 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:23:41.271 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:23:41.281 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:23:41.283 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:23:41.284 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7b7068d8]]
+2025-04-27 15:23:41.284 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:23:45.682 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 68812 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:23:45.684 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:23:46.547 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:23:46.566 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:23:46.566 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:23:46.608 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:23:46.608 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 872 ms
+2025-04-27 15:23:46.711 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:23:46.905 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:23:46.912 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:23:46.933 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:23:47.157 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:23:47.159 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 15:23:47.160 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:23:47.173 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:23:47.180 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.009 seconds (process running for 2.525)
+2025-04-27 15:23:48.689 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:23:48.708 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:23:48.709 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:23:48.710 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:23:48.721 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:23:48.723 [http-nio-8081-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:23:48.743 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:23:48.743 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:23:48.748 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:23:49.869 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:23:49.871 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:23:49.897 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:23:49.897 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:23:49.911 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 14ms
+2025-04-27 15:23:50.190 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:23:50.191 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 319ms
+2025-04-27 15:23:50.191 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:23:50.191 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:23:50.888 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:23:50.888 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:23:50.888 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:23:50.897 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:23:53.753 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:23:53.753 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:23:53.753 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:23:53.753 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:23:53.753 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:23:53.754 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:23:53.754 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:23:53.754 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:23:54.437 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:23:54.437 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:23:54.437 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: sylia.h@impulsenotion.com
+2025-04-27 15:23:54.437 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:23:54.438 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:23:55.113 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:23:55.113 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:23:55.113 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:23:55.114 [http-nio-8081-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:24:21.637 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:24:21.645 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:24:21.647 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:24:21.647 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 15:24:21.647 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:24:25.397 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 53812 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:24:25.399 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:24:26.373 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:24:26.386 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:24:26.387 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:24:26.430 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:24:26.430 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 978 ms
+2025-04-27 15:24:26.552 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:24:26.769 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:24:26.777 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:24:26.799 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:24:27.047 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:24:27.049 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@77c692b4]]
+2025-04-27 15:24:27.050 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:24:27.066 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:24:27.073 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.246 seconds (process running for 3.449)
+2025-04-27 15:24:28.181 [http-nio-8081-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:24:28.204 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:24:28.205 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:24:28.206 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:24:28.219 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:24:28.222 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:24:28.245 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:24:28.245 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:24:28.255 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:24:29.317 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:24:29.318 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:24:29.344 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:24:29.345 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 26ms
+2025-04-27 15:24:29.360 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 15ms
+2025-04-27 15:24:29.735 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:24:29.736 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 417ms
+2025-04-27 15:24:29.736 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:24:29.736 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:24:30.417 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:24:30.418 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:24:30.418 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:24:35.762 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:25:16.820 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:25:16.820 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:25:16.820 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:25:16.820 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:25:16.821 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:25:24.810 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:25:24.810 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:25:24.810 [ForkJoinPool.commonPool-worker-3] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:25:25.654 [ForkJoinPool.commonPool-worker-3] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:25:25.654 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:25:25.654 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: sylia.h@impulsenotion.com
+2025-04-27 15:25:25.654 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:25:25.654 [ForkJoinPool.commonPool-worker-3] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:25:26.353 [ForkJoinPool.commonPool-worker-3] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:25:26.353 [ForkJoinPool.commonPool-worker-3] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:25:26.353 [ForkJoinPool.commonPool-worker-3] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:25:28.943 [http-nio-8081-exec-8] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:26:48.140 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:26:48.147 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:26:48.149 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:26:48.149 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@77c692b4]]
+2025-04-27 15:26:48.150 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:26:55.013 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 18028 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:26:55.015 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:26:55.861 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:26:55.874 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:26:55.874 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:26:55.916 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:26:55.916 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 852 ms
+2025-04-27 15:26:56.020 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:26:56.218 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:26:56.225 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:26:56.245 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:26:56.465 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:26:56.467 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 15:26:56.468 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:26:56.482 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:26:56.488 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 1.975 seconds (process running for 2.469)
+2025-04-27 15:26:57.619 [http-nio-8081-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:26:57.638 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:26:57.639 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:26:57.640 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:26:57.651 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:26:57.654 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:26:57.673 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:26:57.673 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:26:57.678 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:26:58.805 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:26:58.807 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:26:58.831 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 24ms
+2025-04-27 15:26:58.832 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:26:58.848 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 16ms
+2025-04-27 15:26:59.150 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:26:59.151 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 344ms
+2025-04-27 15:26:59.151 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:26:59.151 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:26:59.993 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:26:59.993 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:26:59.994 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:27:00.003 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:27:40.647 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:27:40.655 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:27:40.657 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:27:40.657 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 15:27:40.657 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:27:44.404 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 34520 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:27:44.406 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:27:45.320 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:27:45.372 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 921 ms
+2025-04-27 15:27:45.473 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:27:45.670 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:27:45.678 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:27:45.698 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:27:45.945 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:27:45.947 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7b7068d8]]
+2025-04-27 15:27:45.948 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:27:45.964 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:27:45.971 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.101 seconds (process running for 2.677)
+2025-04-27 15:27:45.973 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:27:45.980 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:27:45.982 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:27:45.982 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7b7068d8]]
+2025-04-27 15:27:45.982 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:27:48.218 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 61616 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:27:48.220 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:27:49.146 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:27:49.158 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:27:49.158 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:27:49.202 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:27:49.202 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 930 ms
+2025-04-27 15:27:49.319 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:27:49.532 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:27:49.540 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:27:49.564 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:27:49.822 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:27:49.824 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@77c692b4]]
+2025-04-27 15:27:49.824 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:27:49.841 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:27:49.848 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.203 seconds (process running for 2.945)
+2025-04-27 15:27:50.602 [http-nio-8081-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:27:50.624 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:27:50.625 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:27:50.626 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:27:50.639 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:27:50.642 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:27:50.664 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:27:50.664 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:27:53.207 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:27:54.275 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:27:54.277 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:27:54.305 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 27ms
+2025-04-27 15:27:54.305 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 27ms
+2025-04-27 15:27:54.320 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 15ms
+2025-04-27 15:27:54.616 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:27:54.617 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 340ms
+2025-04-27 15:27:54.617 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:27:54.617 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:27:55.302 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:27:55.303 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:27:55.303 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:28:04.396 [http-nio-8081-exec-4] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:28:06.355 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 15:28:06.363 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 15:28:06.365 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 15:28:06.365 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@77c692b4]]
+2025-04-27 15:28:06.365 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 15:28:11.421 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 69512 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 15:28:11.423 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 15:28:12.314 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 15:28:12.325 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 15:28:12.325 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 15:28:12.366 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 15:28:12.367 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 893 ms
+2025-04-27 15:28:12.466 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 15:28:12.665 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 15:28:12.672 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 15:28:12.692 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 15:28:12.909 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 15:28:12.911 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7b7068d8]]
+2025-04-27 15:28:12.912 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 15:28:12.926 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 15:28:12.932 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.015 seconds (process running for 2.58)
+2025-04-27 15:28:13.961 [http-nio-8081-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 15:28:13.980 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:28:13.981 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:28:13.982 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:28:13.994 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:28:13.996 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:28:14.016 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:28:14.016 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:28:14.021 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:28:15.097 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:28:15.099 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:28:15.125 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:28:15.125 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - MX records lookup for impulsenotion.com took 25ms
+2025-04-27 15:28:15.140 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - DNS checks for impulsenotion.com took 15ms
+2025-04-27 15:28:15.428 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Domain impulsenotion.com detected as catch-all
+2025-04-27 15:28:15.429 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.SMTPValidator - Total validation time for sylia.h@impulsenotion.com: 330ms
+2025-04-27 15:28:15.429 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:28:15.429 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:28:16.121 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.NeverBounceService - NeverBounce API error: Invalid API key 'private_38d8e79e710ec3de1a918f3ff6badf11QUIT'
+2025-04-27 15:28:16.122 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.s.BulkEmailCheckerService - NeverBounce API key is invalid. Throwing exception.
+2025-04-27 15:28:16.122 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.c.BulkEmailCheckerController - Error verifying email sylia.h@impulsenotion.com: java.lang.RuntimeException: Invalid NeverBounce API key. Please provide a valid API key.
+2025-04-27 15:28:16.131 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:28:21.197 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:28:21.197 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 15:28:21.197 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 15:28:21.197 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 15:28:21.197 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 15:28:21.198 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: sylia.h@impulsenotion.com
+2025-04-27 15:28:21.198 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - Domain impulsenotion.com is likely catch-all, checking NeverBounce API key first
+2025-04-27 15:28:21.198 [ForkJoinPool.commonPool-worker-2] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:28:21.695 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Starting SMTP validation for email: sylia.h@impulsenotion.com
+2025-04-27 15:28:21.695 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Using cached validation result for email: sylia.h@impulsenotion.com
+2025-04-27 15:28:21.695 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email sylia.h@impulsenotion.com. Performing additional verification with NeverBounce.
+2025-04-27 15:28:21.695 [ForkJoinPool.commonPool-worker-2] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-27 15:28:22.210 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email sylia.h@impulsenotion.com: valid
+2025-04-27 15:28:22.211 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]

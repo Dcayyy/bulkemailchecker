@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.http.HttpHeaders;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,22 +52,26 @@ public class BulkEmailCheckerController {
     
     private final BulkEmailCheckerService bulkEmailCheckerService;
     
+    private static final String NEVERBOUNCE_API_KEY_HEADER = "neverbounce-api-key";
+    
     @Autowired
     public BulkEmailCheckerController(final BulkEmailCheckerService bulkEmailCheckerService) {
         this.bulkEmailCheckerService = bulkEmailCheckerService;
     }
 
     @GetMapping("/verify/{email}")
-    public DeferredResult<ResponseEntity<SimplifiedEmailResponse>> verifyEmail(@PathVariable final String email) {
+    public DeferredResult<ResponseEntity<SimplifiedEmailResponse>> verifyEmail(
+            @PathVariable final String email,
+            @RequestHeader(value = NEVERBOUNCE_API_KEY_HEADER, required = false) String neverbounceApiKey) {
         final var deferredResult = new DeferredResult<ResponseEntity<SimplifiedEmailResponse>>(RESPONSE_TIMEOUT_MS);
         
         boolean permitAcquired = singleRequestThrottler.tryAcquire();
         if (permitAcquired) {
-            processSimplifiedEmailVerification(email, deferredResult);
+            processSimplifiedEmailVerification(email, neverbounceApiKey, deferredResult);
         } else {
             if (requestQueue.size() < QUEUE_CAPACITY) {
                 logger.info("Queuing email verification request for: {}", email);
-                requestQueue.add(new PendingRequest(email, deferredResult, null));
+                requestQueue.add(new PendingRequest(email, deferredResult, null, neverbounceApiKey));
                 startQueueProcessor(); // Ensure the queue processor is running
             } else {
                 logger.warn("Request queue full, rejecting verification request for email: {}", email);
@@ -113,7 +118,8 @@ public class BulkEmailCheckerController {
 
     @PostMapping(value = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE)
     public DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>> verifyEmails(
-            @RequestBody final BulkEmailVerificationRequest request) {
+            @RequestBody final BulkEmailVerificationRequest request,
+            @RequestHeader(value = NEVERBOUNCE_API_KEY_HEADER, required = false) String neverbounceApiKey) {
         if (request == null || request.emails() == null || request.emails().isEmpty()) {
             logger.warn("Received empty request for bulk email verification");
             
@@ -138,11 +144,11 @@ public class BulkEmailCheckerController {
         
         boolean permitAcquired = batchRequestThrottler.tryAcquire();
         if (permitAcquired) {
-            processSimplifiedBatchVerification(request.emails(), deferredResult);
+            processSimplifiedBatchVerification(request.emails(), neverbounceApiKey, deferredResult);
         } else {
             if (requestQueue.size() < QUEUE_CAPACITY) {
                 logger.info("Queuing batch verification request for {} emails", request.emails().size());
-                requestQueue.add(new PendingRequest(null, null, new SimplifiedBatchRequest(request.emails(), deferredResult)));
+                requestQueue.add(new PendingRequest(null, null, new SimplifiedBatchRequest(request.emails(), deferredResult), neverbounceApiKey));
                 startQueueProcessor(); // Ensure the queue processor is running
             } else {
                 logger.warn("Request queue full, rejecting batch verification of {} emails", request.emails().size());
@@ -156,10 +162,10 @@ public class BulkEmailCheckerController {
         return deferredResult;
     }
     
-    private void processSimplifiedEmailVerification(final String email, 
+    private void processSimplifiedEmailVerification(final String email, final String neverbounceApiKey,
             final DeferredResult<ResponseEntity<SimplifiedEmailResponse>> deferredResult) {
         CompletableFuture<EmailVerificationResponse> future = CompletableFuture.supplyAsync(
-                () -> bulkEmailCheckerService.verifyEmail(email))
+                () -> bulkEmailCheckerService.verifyEmail(email, neverbounceApiKey))
             .thenApply(response -> {
                 // Check if this is a pending verification that needs tracking
                 if (response.getRetryStatus() != null && response.getVerificationId() != null) {
@@ -174,12 +180,25 @@ public class BulkEmailCheckerController {
                 return response;
             });
             
-        future.thenAccept(response -> deferredResult.setResult(ResponseEntity.ok(SimplifiedEmailResponse.from(response))))
+        future.thenAccept(response -> {
+                deferredResult.setResult(ResponseEntity.ok(SimplifiedEmailResponse.from(response)));
+            })
             .exceptionally(ex -> {
                 logger.error("Error verifying email {}: {}", email, ex.getMessage());
-                EmailVerificationResponse errorResponse = createErrorResponse(email, ex.getMessage());
-                deferredResult.setErrorResult(
-                    ResponseEntity.internalServerError().body(SimplifiedEmailResponse.from(errorResponse)));
+                if (ex.getCause() != null && ex.getCause().getMessage().contains("Invalid NeverBounce API key")) {
+                    EmailVerificationResponse errorResponse = new EmailVerificationResponse.Builder(email)
+                        .withValid(false)
+                        .withStatus("error")
+                        .withResultCode("invalid_api_key")
+                        .withMessage("Invalid NeverBounce API key. Please provide a valid API key.")
+                        .build();
+                    deferredResult.setErrorResult(
+                        ResponseEntity.status(400).body(SimplifiedEmailResponse.from(errorResponse)));
+                } else {
+                    deferredResult.setErrorResult(
+                        ResponseEntity.internalServerError().body(SimplifiedEmailResponse.from(
+                            createErrorResponse(email, ex.getMessage()))));
+                }
                 return null;
             })
             .whenComplete((r, e) -> {
@@ -188,10 +207,10 @@ public class BulkEmailCheckerController {
             });
     }
     
-    private void processSimplifiedBatchVerification(final List<String> emails,
+    private void processSimplifiedBatchVerification(final List<String> emails, final String neverbounceApiKey,
             final DeferredResult<ResponseEntity<List<SimplifiedEmailResponse>>> deferredResult) {
         CompletableFuture<List<EmailVerificationResponse>> future = CompletableFuture.supplyAsync(
-                () -> bulkEmailCheckerService.verifyEmails(emails))
+                () -> bulkEmailCheckerService.verifyEmails(emails, neverbounceApiKey))
             .thenApply(responses -> {
                 // Check all responses for pending verifications that need tracking
                 for (EmailVerificationResponse response : responses) {
@@ -268,7 +287,7 @@ public class BulkEmailCheckerController {
                     @SuppressWarnings("unchecked")
                     DeferredResult<ResponseEntity<SimplifiedEmailResponse>> deferredResult = 
                         (DeferredResult<ResponseEntity<SimplifiedEmailResponse>>) pendingRequest.singleResult();
-                    processSimplifiedEmailVerification(pendingRequest.email(), deferredResult);
+                    processSimplifiedEmailVerification(pendingRequest.email(), pendingRequest.neverbounceApiKey(), deferredResult);
                 } else {
                     // If we can't acquire a permit, put it back in the queue and try later
                     requestQueue.add(pendingRequest);
@@ -280,7 +299,7 @@ public class BulkEmailCheckerController {
             else if (pendingRequest.batchRequest() != null) {
                 if (batchRequestThrottler.tryAcquire()) {
                     SimplifiedBatchRequest batchRequest = (SimplifiedBatchRequest) pendingRequest.batchRequest();
-                    processSimplifiedBatchVerification(batchRequest.emails(), batchRequest.deferredResult());
+                    processSimplifiedBatchVerification(batchRequest.emails(), pendingRequest.neverbounceApiKey(), batchRequest.deferredResult());
                 } else {
                     // If we can't acquire a permit, put it back in the queue and try later
                     requestQueue.add(pendingRequest);
@@ -304,15 +323,23 @@ public class BulkEmailCheckerController {
     
     private EmailVerificationResponse createErrorResponse(final String email, final String message) {
         final var builder = new EmailVerificationResponse.Builder(email)
-                .withValid(false)
-                .withStatus("error")
-                .withResultCode("error")
-                .withMessage(message);
+                .withValid(false);
+                
+        // Check if this is a NeverBounce API key error
+        if (message != null && message.contains("Invalid NeverBounce API key")) {
+            builder.withStatus("error")
+                   .withResultCode("invalid_api_key")
+                   .withMessage(message);
+        } else {
+            builder.withStatus("undeliverable")
+                   .withResultCode("error")
+                   .withMessage(message);
+        }
                 
         return builder.build();
     }
     
-    private record PendingRequest(String email, Object singleResult, Object batchRequest) {
+    private record PendingRequest(String email, Object singleResult, Object batchRequest, String neverbounceApiKey) {
     }
     
     private record SimplifiedBatchRequest(List<String> emails,

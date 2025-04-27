@@ -29,4 +29,9 @@ public class EmailVerificationRequest {
      * List of emails for batch verification
      */
     private List<String> emails;
+    
+    /**
+     * Neverbounce API key
+     */
+    private String neverbounceApiKey;
 } 

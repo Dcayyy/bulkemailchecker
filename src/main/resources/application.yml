@@ -60,7 +60,3 @@ logging:
 
 security:
   # Base64 encoded UUID
-  
-# NeverBounce API configuration
-neverbounce:
-  api-key: ${NEVERBOUNCE_API_KEY:private_38d8e79e710ec3de1a918f3ff6badf11}

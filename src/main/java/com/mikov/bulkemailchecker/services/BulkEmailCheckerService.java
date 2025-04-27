@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.UUID;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 /**
  * Service for bulk email verification.
@@ -65,8 +66,10 @@ public class BulkEmailCheckerService {
     /**
      * Verify a single email address
      */
-    public EmailVerificationResponse verifyEmail(String email) {
+    public EmailVerificationResponse verifyEmail(String email, String neverbounceApiKey) {
         logger.info("Starting email verification for: {}", email);
+        logger.debug("NeverBounce API key in verifyEmail: {}", 
+            neverbounceApiKey != null && !neverbounceApiKey.isBlank() ? "provided" : "missing");
         
         if (email == null || email.isBlank()) {
             logger.info("Email is null or empty: {}", email);
@@ -79,8 +82,25 @@ public class BulkEmailCheckerService {
         // Clean email (trim, lowercase)
         email = email.trim().toLowerCase();
 
+        // First check if this is a catch-all domain that would require NeverBounce
+        String domain = extractDomain(email);
+        if (isLikelyCatchAllDomain(domain)) {
+            logger.info("Domain {} is likely catch-all, checking NeverBounce API key first", domain);
+            // Test NeverBounce API key by making a simple request
+            try {
+                ValidationResult neverBounceTest = neverBounceService.verifyEmail(email, neverbounceApiKey);
+                // If we get here, the API key is valid
+            } catch (Exception e) {
+                if (e.getMessage().contains("Invalid API key")) {
+                    logger.error("NeverBounce API key is invalid. Throwing exception.");
+                    throw new RuntimeException("Invalid NeverBounce API key. Please provide a valid API key.");
+                }
+                throw e;
+            }
+        }
+
         // Execute validation pipeline
-        ValidationResult result = executeValidationPipeline(email);
+        ValidationResult result = executeValidationPipeline(email, neverbounceApiKey);
         
         // Determine email status based on the validity of the result
         String status;
@@ -170,10 +190,10 @@ public class BulkEmailCheckerService {
         return responseBuilder.build();
     }
 
-    private EmailVerificationResponse checkForCompletedVerification(String email) {
+    private EmailVerificationResponse checkForCompletedVerification(String email, String neverbounceApiKey) {
         // Re-do validation to see if retry queue has completed it
         final var startTime = Instant.now();
-        final var result = executeValidationPipeline(email);
+        final var result = executeValidationPipeline(email, neverbounceApiKey);
         final var detailsByValidator = getDetailsByValidator(result);
         
         // Check if we still get a pending/retry status
@@ -230,13 +250,13 @@ public class BulkEmailCheckerService {
     /**
      * Verify multiple email addresses in batch
      */
-    public List<EmailVerificationResponse> verifyEmails(final List<String> emails) {
+    public List<EmailVerificationResponse> verifyEmails(final List<String> emails, String neverbounceApiKey) {
         logger.info("Starting batch verification for {} emails", emails.size());
         final var results = new ArrayList<EmailVerificationResponse>(emails.size());
         
         for (final var email : emails) {
             try {
-                results.add(verifyEmail(email));
+                results.add(verifyEmail(email, neverbounceApiKey));
             } catch (final Exception e) {
                 logger.error("Error verifying email {}: {}", email, e.getMessage());
                 final var errorResponseBuilder = new EmailVerificationResponse.Builder(email)
@@ -252,7 +272,10 @@ public class BulkEmailCheckerService {
         return results;
     }
 
-    private ValidationResult executeValidationPipeline(final String email) {
+    private ValidationResult executeValidationPipeline(final String email, String neverbounceApiKey) {
+        logger.debug("Executing validation pipeline for email: {} with NeverBounce API key present: {}", 
+            email, neverbounceApiKey != null && !neverbounceApiKey.isBlank());
+            
         ValidationResult syntaxResult = syntaxValidator.validate(email);
         if (!syntaxResult.isValid()) {
             logger.debug("Email {} failed syntax validation: {}", email, syntaxResult.getReason());
@@ -277,9 +300,19 @@ public class BulkEmailCheckerService {
             Map<String, Object> details = smtpResult.getDetails();
             if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
                 logger.info("Catch-all domain detected for email {}. Performing additional verification with NeverBounce.", email);
+                logger.debug("NeverBounce API key before calling service: {}", 
+                    neverbounceApiKey != null ? "present" : "null");
                 
                 // For catch-all domains, perform an additional verification with NeverBounce
-                ValidationResult neverBounceResult = neverBounceService.verifyEmail(email);
+                ValidationResult neverBounceResult = neverBounceService.verifyEmail(email, neverbounceApiKey);
+                
+                // Check if NeverBounce returned an invalid API key error
+                if (neverBounceResult.getDetails() != null && 
+                    neverBounceResult.getDetails().containsKey("error_code") && 
+                    "invalid_api_key".equals(neverBounceResult.getDetails().get("error_code"))) {
+                    logger.error("NeverBounce API key is invalid. Throwing exception.");
+                    throw new RuntimeException("Invalid NeverBounce API key. Please provide a valid API key.");
+                }
                 
                 // If NeverBounce gave a definitive result (valid or invalid), use that
                 if (neverBounceResult.getDetails().containsKey("formatted_result")) {
@@ -488,15 +521,19 @@ public class BulkEmailCheckerService {
     /**
      * Verify a single email address with retry and advanced catch-all analysis
      */
-    public EmailVerificationResponse validateEmailWithRetry(final String email) {
+    public EmailVerificationResponse validateEmailWithRetry(final String email, String neverbounceApiKey) {
+        logger.debug("validateEmailWithRetry called for email {} with NeverBounce API key: {}", 
+            email, neverbounceApiKey != null && !neverbounceApiKey.isBlank() ? "provided" : "missing");
+            
+        // First check if we have a completed verification
+        EmailVerificationResponse completedResponse = checkForCompletedVerification(email, neverbounceApiKey);
+        if (completedResponse != null) {
+            return completedResponse;
+        }
+        
+        // If no completed verification, start a new one
         final var startTime = Instant.now();
-        logger.info("Starting email verification for: {}", email);
-        
-        // Clean the email
-        String cleanEmail = email.trim().toLowerCase();
-        
-        // Execute validation pipeline
-        final var result = executeValidationPipeline(cleanEmail);
+        final var result = executeValidationPipeline(email, neverbounceApiKey);
         final var detailsByValidator = getDetailsByValidator(result);
         
         // Extract properties from validation results
@@ -510,7 +547,7 @@ public class BulkEmailCheckerService {
         }
         
         // Build response
-        final var responseBuilder = new EmailVerificationResponse.Builder(cleanEmail)
+        final var responseBuilder = new EmailVerificationResponse.Builder(email)
                 .withValid(result.isValid())
                 .withResponseTime(Duration.between(startTime, Instant.now()).toMillis())
                 .withHasMx(hasMx);
@@ -518,39 +555,27 @@ public class BulkEmailCheckerService {
         // Set flags based on validation results
         setEmailVerificationFlags(responseBuilder, detailMap);
         
-        // Determine status for catch-all domains with improved heuristics
+        // Set status and result code
         String status;
-        String resultCode;
-        
         if (!result.isValid()) {
             status = "invalid";
-            resultCode = "undeliverable";
         } else if (detailMap.containsKey("catch-all") && detailMap.get("catch-all").toString().equals("1.0")) {
-            // For catch-all domains, apply heuristics
-            if (analyzeEmailInCatchAllDomain(cleanEmail)) {
-                status = "valid";
-                resultCode = "deliverable";
-                logger.info("Email {} in catch-all domain assessed as likely deliverable", cleanEmail);
-            } else {
-                status = "catch-all";
-                resultCode = "catch_all";
-                logger.info("Email {} in catch-all domain without additional confidence", cleanEmail);
-            }
+            status = "catch-all";
         } else if (detailMap.containsKey("event") && 
                   ("inconclusive".equals(detailMap.get("event")) || detailMap.get("event").toString().contains("inconclusive"))) {
             status = "inconclusive";
-            resultCode = "inconclusive";
         } else {
             status = "valid";
-            resultCode = "deliverable";
         }
+        
+        final var resultCode = getResultCode(result);
         
         responseBuilder.withStatus(status)
                 .withResultCode(resultCode);
                 
         final var response = responseBuilder.build();
         
-        logger.info("Email verification result for {}: {}", cleanEmail, response.getResultCode());
+        logger.info("Completed verification for {}: {}", email, response.getResultCode());
         return response;
     }
     
@@ -696,5 +721,16 @@ public class BulkEmailCheckerService {
             }
         }
         return false;
+    }
+
+    private boolean isLikelyCatchAllDomain(String domain) {
+        // List of domains that are commonly catch-all
+        String[] commonCatchAllDomains = {
+            "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", 
+            "aol.com", "icloud.com", "protonmail.com", "mail.com"
+        };
+        
+        // If it's not a common public domain, it might be catch-all
+        return !Arrays.asList(commonCatchAllDomains).contains(domain);
     }
 }

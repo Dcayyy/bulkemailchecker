@@ -29,11 +29,13 @@ public class SimplifiedEmailResponse {
      * @return A simplified response with only essential fields
      */
     public static SimplifiedEmailResponse from(EmailVerificationResponse response) {
-        // Convert status to one of: "deliverable", "undeliverable", or "catch-all"
+        // Convert status to one of: "deliverable", "undeliverable", "catch-all", or "error"
         String simplifiedStatus;
         
         if (response.getStatus() != null && response.getStatus().equals("catch-all")) {
             simplifiedStatus = "catch-all";
+        } else if (response.getStatus() != null && response.getStatus().equals("error")) {
+            simplifiedStatus = response.getMessage();
         } else if (response.getValid() != null && response.getValid()) {
             simplifiedStatus = "deliverable";
         } else {

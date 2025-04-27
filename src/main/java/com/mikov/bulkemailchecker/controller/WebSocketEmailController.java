@@ -49,24 +49,29 @@ public class WebSocketEmailController {
     public void verifyEmails(@Payload EmailVerificationRequest request) {
         final String sessionId = request.getSessionId();
         final List<String> emails = request.getEmails();
+        final String neverbounceApiKey = request.getNeverbounceApiKey();
         
         logger.info("Received verification request for {} emails, session: {}", 
             emails.size(), sessionId);
+        logger.debug("NeverBounce API key present: {}", neverbounceApiKey != null && !neverbounceApiKey.isBlank());
         
         // Process emails directly in this thread - completely sequential
-        processEmails(sessionId, emails);
+        processEmails(sessionId, emails, neverbounceApiKey);
     }
     
     /**
      * Process emails one at a time, sequentially
      */
-    private void processEmails(String sessionId, List<String> emails) {
+    private void processEmails(String sessionId, List<String> emails, String neverbounceApiKey) {
         final int totalEmails = emails.size();
         final Map<String, Object> stats = new HashMap<>();
         stats.put("valid", 0);
         stats.put("invalid", 0);
         stats.put("catchall", 0);
         stats.put("inconclusive", 0);
+        
+        logger.debug("Starting email processing with NeverBounce API key: {}", 
+            neverbounceApiKey != null ? "provided" : "not provided");
         
         try {
             // Send initial status update
@@ -90,7 +95,7 @@ public class WebSocketEmailController {
                 for (String email : domainEmails) {
                     // Verify email using the enhanced method with catch-all heuristics
                     long startTime = System.currentTimeMillis();
-                    EmailVerificationResponse response = bulkEmailCheckerService.validateEmailWithRetry(email);
+                    EmailVerificationResponse response = bulkEmailCheckerService.validateEmailWithRetry(email, neverbounceApiKey);
                     ValidationResult result = convertToValidationResult(response);
                     long processingTime = System.currentTimeMillis() - startTime;
                     
