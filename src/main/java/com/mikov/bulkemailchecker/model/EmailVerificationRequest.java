@@ -14,24 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmailVerificationRequest {
-    
-    /**
-     * Unique session ID to track this websocket verification session
-     */
+
     private String sessionId = UUID.randomUUID().toString();
-    
-    /**
-     * Single email to verify
-     */
     private String email;
-    
-    /**
-     * List of emails for batch verification
-     */
     private List<String> emails;
-    
-    /**
-     * Neverbounce API key
-     */
     private String neverbounceApiKey;
 } 

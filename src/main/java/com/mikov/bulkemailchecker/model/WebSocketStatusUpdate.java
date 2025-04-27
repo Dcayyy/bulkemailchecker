@@ -15,54 +15,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WebSocketStatusUpdate {
-    
-    /**
-     * The session ID this update is for
-     */
+
     private String sessionId;
-    
-    /**
-     * Type of update
-     */
     private UpdateType type;
-    
-    /**
-     * Overall progress (0-100)
-     */
     private int progress;
-    
-    /**
-     * Status message
-     */
     private String message;
-    
-    /**
-     * Results for completed verifications
-     */
     private List<EmailVerificationResponse> results;
-    
-    /**
-     * Single result for individual email verification
-     */
     private EmailVerificationResponse result;
-    
-    /**
-     * Possible status update types
-     */
     public enum UpdateType {
-        // Session started
         STARTED,
-        
-        // Progress update
         PROGRESS,
-        
-        // Individual result available
         RESULT,
-        
-        // All processing complete
         COMPLETED,
-        
-        // Error occurred
         ERROR
     }
 } 

@@ -22,18 +22,20 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Pattern;
 
 @Service
-public class EmailProviderDetectionServiceImpl implements EmailProviderDetectionService {
+public final class EmailProviderDetectionServiceImpl implements EmailProviderDetectionService {
     private final Resolver googleResolver;
     private final Resolver cloudflareResolver;
     private final MxRecordCache mxRecordCache;
     private final GoogleIpChecker googleIpChecker;
     private final Semaphore semaphore;
+    private static final String EMAIL_REGEX = "^[^\\s@]+@([^\\s@]+)$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
     public EmailProviderDetectionServiceImpl(
-            Resolver googleResolver,
-            Resolver cloudflareResolver,
-            MxRecordCache mxRecordCache,
-            GoogleIpChecker googleIpChecker) {
+            final Resolver googleResolver,
+            final Resolver cloudflareResolver,
+            final MxRecordCache mxRecordCache,
+            final GoogleIpChecker googleIpChecker) {
         this.googleResolver = googleResolver;
         this.cloudflareResolver = cloudflareResolver;
         this.mxRecordCache = mxRecordCache;
@@ -42,22 +44,20 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
     }
 
     @Override
-    public EmailProviderResult detectEmailProvider(String email) {
+    public EmailProviderResult detectEmailProvider(final String email) {
         if (email == null || email.isEmpty()) {
             return new EmailProviderResult("Not Google", "invalid");
         }
 
-        String emailRegex = "^[^\\s@]+@([^\\s@]+)$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        var matcher = pattern.matcher(email);
+        final var matcher = EMAIL_PATTERN.matcher(email);
         
         if (!matcher.matches()) {
             return new EmailProviderResult("Not Google", "invalid");
         }
 
-        String domain = matcher.group(1).toLowerCase();
+        final var domain = matcher.group(1).toLowerCase();
 
-        EmailProviderResult cachedResult = mxRecordCache.get(domain);
+        final var cachedResult = mxRecordCache.get(domain);
         if (cachedResult != null) {
             return cachedResult;
         }
@@ -65,13 +65,13 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
         try {
             semaphore.acquire();
             try {
-                List<Record> mxRecords = getMxRecords(domain);
+                final var mxRecords = getMxRecords(domain);
                 if (mxRecords.isEmpty()) {
                     return new EmailProviderResult("Not Google", "unknown");
                 }
 
-                boolean isGoogle = checkGoogleMxRecords(mxRecords);
-                EmailProviderResult result = new EmailProviderResult(
+                final var isGoogle = checkGoogleMxRecords(mxRecords);
+                final var result = new EmailProviderResult(
                     isGoogle ? "Google" : "Not Google",
                     isGoogle ? "google" : "other"
                 );
@@ -81,21 +81,21 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
             } finally {
                 semaphore.release();
             }
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             return new EmailProviderResult("Not Google", "error");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return new EmailProviderResult("Not Google", "error");
         }
     }
 
-    private List<Record> getMxRecords(String domain) throws ExecutionException, InterruptedException {
-        List<CompletableFuture<Record[]>> futures = new ArrayList<>();
+    private List<Record> getMxRecords(final String domain) throws ExecutionException, InterruptedException {
+        final var futures = new ArrayList<CompletableFuture<Record[]>>();
 
         futures.add(CompletableFuture.supplyAsync(() -> {
             try {
                 return new Lookup(domain, Type.MX).run();
-            } catch (TextParseException e) {
+            } catch (final TextParseException e) {
                 return new Record[0];
             }
         }));
@@ -103,10 +103,10 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
         // Google resolver
         futures.add(CompletableFuture.supplyAsync(() -> {
             try {
-                Lookup lookup = new Lookup(domain, Type.MX);
+                final var lookup = new Lookup(domain, Type.MX);
                 lookup.setResolver(googleResolver);
                 return lookup.run();
-            } catch (TextParseException e) {
+            } catch (final TextParseException e) {
                 return new Record[0];
             }
         }));
@@ -114,23 +114,23 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
         // Cloudflare resolver
         futures.add(CompletableFuture.supplyAsync(() -> {
             try {
-                Lookup lookup = new Lookup(domain, Type.MX);
+                final var lookup = new Lookup(domain, Type.MX);
                 lookup.setResolver(cloudflareResolver);
                 return lookup.run();
-            } catch (TextParseException e) {
+            } catch (final TextParseException e) {
                 return new Record[0];
             }
         }));
 
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(
+        final var allFutures = CompletableFuture.allOf(
             futures.toArray(new CompletableFuture[0])
         );
 
         allFutures.get();
 
-        Set<Record> uniqueRecords = new HashSet<>();
-        for (CompletableFuture<Record[]> future : futures) {
-            Record[] records = future.get();
+        final var uniqueRecords = new HashSet<Record>();
+        for (final var future : futures) {
+            final var records = future.get();
             if (records != null) {
                 uniqueRecords.addAll(Arrays.asList(records));
             }
@@ -139,10 +139,10 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
         return new ArrayList<>(uniqueRecords);
     }
 
-    private boolean checkGoogleMxRecords(List<Record> mxRecords) {
-        for (Record record : mxRecords) {
+    private boolean checkGoogleMxRecords(final List<Record> mxRecords) {
+        for (final var record : mxRecords) {
             if (record instanceof MXRecord mx) {
-                String host = mx.getTarget().toString().toLowerCase();
+                final var host = mx.getTarget().toString().toLowerCase();
 
                 if (googleIpChecker.getGoogleMxPatterns().stream()
                     .anyMatch(pattern -> pattern.matcher(host).matches())) {
@@ -150,13 +150,13 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
                 }
 
                 try {
-                    InetAddress[] addresses = InetAddress.getAllByName(host);
-                    for (InetAddress address : addresses) {
+                    final var addresses = InetAddress.getAllByName(host);
+                    for (final var address : addresses) {
                         if (googleIpChecker.isGoogleIp(address.getHostAddress())) {
                             return true;
                         }
                     }
-                } catch (UnknownHostException e) {
+                } catch (final UnknownHostException e) {
                     continue;
                 }
             }

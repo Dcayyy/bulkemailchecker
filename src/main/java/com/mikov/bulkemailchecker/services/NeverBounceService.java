@@ -1,7 +1,6 @@
 package com.mikov.bulkemailchecker.services;
 
 import com.mikov.bulkemailchecker.dtos.ValidationResult;
-import com.neverbounce.api.client.NeverbounceClient;
 import com.neverbounce.api.client.NeverbounceClientFactory;
 import com.neverbounce.api.client.exception.NeverbounceApiException;
 import org.slf4j.Logger;
@@ -9,22 +8,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Service for email verification using NeverBounce API
  */
 @Service
-public class NeverBounceService {
+public final class NeverBounceService {
     private static final Logger logger = LoggerFactory.getLogger(NeverBounceService.class);
 
-    public ValidationResult verifyEmail(String email, String apiKey) {
+    public ValidationResult verifyEmail(final String email, final String apiKey) {
         logger.debug("Verifying email {} with NeverBounce API", email);
         
         try {
-            NeverbounceClient client = NeverbounceClientFactory.create(apiKey);
+            final var client = NeverbounceClientFactory.create(apiKey);
             
-            Object response = client
+            final var response = client
                     .prepareSingleCheckRequest()
                     .withEmail(email)
                     .withAddressInfo(true)
@@ -32,11 +30,11 @@ public class NeverBounceService {
                     .build()
                     .execute();
             
-            Map<String, Object> details = new HashMap<>();
+            final var details = new HashMap<String, Object>();
             details.put("response", response);
             System.out.println(details.get("response"));
             
-            Map<String, Object> formattedResult = new HashMap<>();
+            final var formattedResult = new HashMap<String, Object>();
             formattedResult.put("result", "valid"); // Default to valid unless we detect otherwise
             details.put("formatted_result", formattedResult);
             
@@ -46,11 +44,11 @@ public class NeverBounceService {
                     .details(details)
                     .build();
                     
-        } catch (NeverbounceApiException e) {
+        } catch (final NeverbounceApiException e) {
             logger.error("NeverBounce API error: {}", e.getMessage());
             
             if (e.getMessage() != null && e.getMessage().contains("Invalid API key")) {
-                Map<String, Object> details = new HashMap<>();
+                final var details = new HashMap<String, Object>();
                 details.put("error", "Invalid NeverBounce API key. Please provide a valid API key.");
                 details.put("error_code", "invalid_api_key");
                 
@@ -62,7 +60,7 @@ public class NeverBounceService {
                         .build();
             }
             
-            Map<String, Object> details = new HashMap<>();
+            final var details = new HashMap<String, Object>();
             details.put("error", "NeverBounce API error: " + e.getMessage());
             details.put("error_code", "neverbounce_api_error");
             
@@ -73,10 +71,10 @@ public class NeverBounceService {
                     .details(details)
                     .build();
                     
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Error verifying email with NeverBounce: {}", e.getMessage());
             
-            Map<String, Object> details = new HashMap<>();
+            final var details = new HashMap<String, Object>();
             details.put("error", "Error verifying email with NeverBounce: " + e.getMessage());
             details.put("error_code", "verification_error");
             

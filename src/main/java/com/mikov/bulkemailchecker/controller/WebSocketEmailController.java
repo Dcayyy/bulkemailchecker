@@ -19,23 +19,23 @@ import java.util.*;
  * Controller for WebSocket-based email verification
  */
 @Controller
-public class WebSocketEmailController {
+public final class WebSocketEmailController {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEmailController.class);
     private final SimpMessagingTemplate messagingTemplate;
     private final BulkEmailCheckerService bulkEmailCheckerService;
     
     @Autowired
-    public WebSocketEmailController(SimpMessagingTemplate messagingTemplate,
-                                    BulkEmailCheckerService bulkEmailCheckerService) {
+    public WebSocketEmailController(final SimpMessagingTemplate messagingTemplate,
+                                  final BulkEmailCheckerService bulkEmailCheckerService) {
         this.messagingTemplate = messagingTemplate;
         this.bulkEmailCheckerService = bulkEmailCheckerService;
     }
 
     @MessageMapping("/verify")
-    public void verifyEmails(@Payload EmailVerificationRequest request) {
-        final String sessionId = request.getSessionId();
-        final List<String> emails = request.getEmails();
-        final String neverbounceApiKey = request.getNeverbounceApiKey();
+    public void verifyEmails(@Payload final EmailVerificationRequest request) {
+        final var sessionId = request.getSessionId();
+        final var emails = request.getEmails();
+        final var neverbounceApiKey = request.getNeverbounceApiKey();
         
         logger.info("Received verification request for {} emails, session: {}", 
             emails.size(), sessionId);
@@ -44,9 +44,9 @@ public class WebSocketEmailController {
         processEmails(sessionId, emails, neverbounceApiKey);
     }
 
-    private void processEmails(String sessionId, List<String> emails, String neverbounceApiKey) {
-        final int totalEmails = emails.size();
-        final Map<String, Object> stats = new HashMap<>();
+    private void processEmails(final String sessionId, final List<String> emails, final String neverbounceApiKey) {
+        final var totalEmails = emails.size();
+        final var stats = new HashMap<String, Object>();
         stats.put("valid", 0);
         stats.put("invalid", 0);
         stats.put("catchall", 0);
@@ -58,24 +58,24 @@ public class WebSocketEmailController {
         try {
             sendStatusUpdate(sessionId, "STARTED", 0, totalEmails, stats);
             
-            Map<String, List<String>> emailsByDomain = groupEmailsByDomain(emails);
+            final var emailsByDomain = groupEmailsByDomain(emails);
             logger.info("Grouped {} emails into {} domain groups", emails.size(), emailsByDomain.size());
             
-            int processedCount = 0;
+            var processedCount = 0;
             
-            for (Map.Entry<String, List<String>> entry : emailsByDomain.entrySet()) {
-                String domain = entry.getKey();
-                List<String> domainEmails = entry.getValue();
+            for (final var entry : emailsByDomain.entrySet()) {
+                final var domain = entry.getKey();
+                final var domainEmails = entry.getValue();
                 
                 logger.info("Processing batch of {} emails for domain {}", domainEmails.size(), domain);
                 
-                for (String email : domainEmails) {
-                    long startTime = System.currentTimeMillis();
-                    EmailVerificationResponse response = bulkEmailCheckerService.validateEmailWithRetry(email, neverbounceApiKey);
-                    ValidationResult result = convertToValidationResult(response);
-                    long processingTime = System.currentTimeMillis() - startTime;
+                for (final var email : domainEmails) {
+                    final var startTime = System.currentTimeMillis();
+                    final var response = bulkEmailCheckerService.validateEmailWithRetry(email, neverbounceApiKey);
+                    final var result = convertToValidationResult(response);
+                    final var processingTime = System.currentTimeMillis() - startTime;
                     
-                    VerificationResult verificationResult = new VerificationResult(email, result, processingTime);
+                    final var verificationResult = new VerificationResult(email, result, processingTime);
                     updateStatusStats(stats, result);
                     sendResultMessage(sessionId, verificationResult);
                     processedCount++;
@@ -83,7 +83,7 @@ public class WebSocketEmailController {
 
                     try {
                         Thread.sleep(100);
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
                 }
@@ -92,15 +92,15 @@ public class WebSocketEmailController {
             logger.info("All verification tasks completed for session {}", sessionId);
             sendStatusUpdate(sessionId, "COMPLETED", processedCount, totalEmails, stats);
             
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Error in email processing: {}", e.getMessage(), e);
             sendStatusUpdate(sessionId, "ERROR", 0, totalEmails, 
                 Map.of("error", e.getMessage()));
         }
     }
 
-    private ValidationResult convertToValidationResult(EmailVerificationResponse response) {
-        Map<String, Object> details = new HashMap<>();
+    private ValidationResult convertToValidationResult(final EmailVerificationResponse response) {
+        final var details = new HashMap<String, Object>();
         details.put("email", response.getEmail());
         details.put("message", response.getMessage());
         details.put("responseTime", response.getResponseTime());
@@ -109,7 +109,7 @@ public class WebSocketEmailController {
             details.put("event", response.getEvent());
         }
         
-        boolean isCatchAll = false;
+        var isCatchAll = false;
         if (response.getMessage() != null && response.getMessage().contains("Catch-all domain")) {
             details.put("catch-all", 1.0);
             isCatchAll = true;
@@ -125,7 +125,7 @@ public class WebSocketEmailController {
             return ValidationResult.catchAll("email", "Catch-all domain", details);
         } else if ("inconclusive".equals(response.getStatus())) {
             details.put("status", "inconclusive");
-            return ValidationResult.valid("email", details); // inconclusive treated as technically valid but marked
+            return ValidationResult.valid("email", details);
         } else if ("valid".equals(response.getStatus())) {
             details.put("status", "valid");
             return ValidationResult.valid("email", details);
@@ -135,10 +135,10 @@ public class WebSocketEmailController {
         }
     }
 
-    private void updateStatusStats(Map<String, Object> stats, ValidationResult result) {
-        Map<String, Object> details = result.getDetails();
+    private void updateStatusStats(final Map<String, Object> stats, final ValidationResult result) {
+        final var details = result.getDetails();
         
-        String status = "";
+        var status = "";
         if (details != null && details.containsKey("status")) {
             status = details.get("status").toString();
         }
@@ -154,19 +154,20 @@ public class WebSocketEmailController {
         }
     }
     
-    private void incrementStat(Map<String, Object> stats, String key) {
-        int current = (int) stats.getOrDefault(key, 0);
+    private void incrementStat(final Map<String, Object> stats, final String key) {
+        final var current = (int) stats.getOrDefault(key, 0);
         stats.put(key, current + 1);
     }
 
-    private void sendResultMessage(String sessionId, VerificationResult result) {
-        String destination = "/topic/verification-result/" + sessionId;
+    private void sendResultMessage(final String sessionId, final VerificationResult result) {
+        final var destination = "/topic/verification-result/" + sessionId;
         messagingTemplate.convertAndSend(destination, result.toMap());
     }
 
-    private void sendStatusUpdate(String sessionId, String status, int processed, int total, Map<String, Object> stats) {
-        String destination = "/topic/verification-status/" + sessionId;
-        Map<String, Object> update = new HashMap<>();
+    private void sendStatusUpdate(final String sessionId, final String status, final int processed, 
+                                final int total, final Map<String, Object> stats) {
+        final var destination = "/topic/verification-status/" + sessionId;
+        final var update = new HashMap<String, Object>();
         update.put("status", status);
         update.put("processed", processed);
         update.put("total", total);
@@ -176,17 +177,17 @@ public class WebSocketEmailController {
         messagingTemplate.convertAndSend(destination, update);
     }
 
-    private Map<String, List<String>> groupEmailsByDomain(List<String> emails) {
-        Map<String, List<String>> emailsByDomain = new HashMap<>();
+    private Map<String, List<String>> groupEmailsByDomain(final List<String> emails) {
+        final var emailsByDomain = new HashMap<String, List<String>>();
         
-        for (String email : emails) {
+        for (final var email : emails) {
             try {
-                String[] parts = email.trim().split("@", 2);
+                final var parts = email.trim().split("@", 2);
                 if (parts.length == 2) {
-                    String domain = parts[1].toLowerCase();
+                    final var domain = parts[1].toLowerCase();
                     emailsByDomain.computeIfAbsent(domain, k -> new ArrayList<>()).add(email);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 logger.warn("Error grouping email {}: {}", email, e.getMessage());
             }
         }

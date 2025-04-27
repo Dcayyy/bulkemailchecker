@@ -17,22 +17,23 @@ import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-public class ApiKeyAuthFilter extends OncePerRequestFilter {
+public final class ApiKeyAuthFilter extends OncePerRequestFilter {
 
     private final List<String> validApiKeys;
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository;
 
-    public ApiKeyAuthFilter(List<String> validApiKeys, SecurityContextRepository securityContextRepository) {
+    public ApiKeyAuthFilter(final List<String> validApiKeys, final SecurityContextRepository securityContextRepository) {
         this.validApiKeys = validApiKeys;
         this.securityContextRepository = securityContextRepository;
+        log.info("Initialized ApiKeyAuthFilter with valid API keys: {}", validApiKeys);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        
-        String apiKey = request.getHeader("X-API-KEY");
+    protected void doFilterInternal(final HttpServletRequest request, 
+                                  final HttpServletResponse response, 
+                                  final FilterChain filterChain) throws ServletException, IOException {
+        final String apiKey = request.getHeader("X-API-KEY");
         log.info("Received request with API Key: {}", apiKey);
         
         if (apiKey == null || !validApiKeys.contains(apiKey)) {
@@ -42,9 +43,9 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         }
 
         log.info("Valid API Key found, creating authentication");
-        Authentication authentication = new ApiKeyAuthentication(apiKey);
+        final Authentication authentication = new ApiKeyAuthentication(apiKey);
         
-        SecurityContext context = securityContextHolderStrategy.createEmptyContext();
+        final SecurityContext context = securityContextHolderStrategy.createEmptyContext();
         context.setAuthentication(authentication);
         securityContextRepository.saveContext(context, request, response);
         
@@ -52,8 +53,8 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } finally {
-            HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, response);
-            SecurityContext contextAfterChainExecution = securityContextRepository.loadContext(holder);
+            final HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, response);
+            final SecurityContext contextAfterChainExecution = securityContextRepository.loadContext(holder);
             if (contextAfterChainExecution.getAuthentication() == null) {
                 securityContextHolderStrategy.clearContext();
             }

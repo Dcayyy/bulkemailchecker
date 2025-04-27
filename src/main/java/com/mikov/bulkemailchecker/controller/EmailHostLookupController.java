@@ -12,40 +12,40 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/bulkemailchecker")
-public class EmailHostLookupController {
+public final class EmailHostLookupController {
 
     private final EmailProviderDetectionService emailProviderDetectionService;
 
-    public EmailHostLookupController(EmailProviderDetectionService emailProviderDetectionService) {
+    public EmailHostLookupController(final EmailProviderDetectionService emailProviderDetectionService) {
         this.emailProviderDetectionService = emailProviderDetectionService;
     }
 
     @GetMapping("/instance-info")
     public ResponseEntity<Map<String, String>> getInstanceInfo() {
-        Map<String, String> info = new HashMap<>();
+        final var info = new HashMap<String, String>();
         try {
             info.put("hostname", InetAddress.getLocalHost().getHostName());
             info.put("port", System.getProperty("server.port"));
             info.put("instance", "Instance-" + System.getProperty("server.port"));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             info.put("error", e.getMessage());
         }
         return ResponseEntity.ok(info);
     }
 
     @PostMapping("/email-host-lookup")
-    public ResponseEntity<?> detectEmailProvider(@RequestBody EmailRequest request) {
+    public ResponseEntity<?> detectEmailProvider(@RequestBody final EmailRequest request) {
         if (request.getEmail() == null || request.getEmail().isEmpty()) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Email field is required."));
         }
 
         try {
-            var result = emailProviderDetectionService.detectEmailProvider(request.getEmail());
-            Map<String, Object> response = new HashMap<>();
+            final var result = emailProviderDetectionService.detectEmailProvider(request.getEmail());
+            final var response = new HashMap<String, Object>();
             response.put("result", result);
             response.put("instance", "Instance-" + System.getProperty("server.port"));
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return ResponseEntity.internalServerError().body(new ErrorResponse(
                 "Error detecting email provider",
                 e.getMessage()
@@ -55,24 +55,23 @@ public class EmailHostLookupController {
 
     @Setter
     @Getter
-    public static class EmailRequest {
+    public static final class EmailRequest {
         private String email;
-
     }
 
     @Getter
-    public static class ErrorResponse {
+    public static final class ErrorResponse {
         private final String error;
-        private String details;
+        private final String details;
 
-        public ErrorResponse(String error) {
+        public ErrorResponse(final String error) {
             this.error = error;
+            this.details = null;
         }
 
-        public ErrorResponse(String error, String details) {
+        public ErrorResponse(final String error, final String details) {
             this.error = error;
             this.details = details;
         }
-
     }
 } 

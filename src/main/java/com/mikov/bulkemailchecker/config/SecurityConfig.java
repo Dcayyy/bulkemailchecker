@@ -25,14 +25,18 @@ import java.util.List;
 @Slf4j
 public class SecurityConfig {
 
-    private static final List<String> VALID_API_KEYS = Arrays.asList(
-        "zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy",
-        "martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy",
-        "yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy"
-    );
+    private final List<String> validApiKeys;
+
+    public SecurityConfig() {
+        this.validApiKeys = Arrays.asList(
+                "zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy",
+                "martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy",
+                "yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy"
+        );
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityContextRepository securityContextRepository) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http, final SecurityContextRepository securityContextRepository) throws Exception {
         log.info("Configuring security filter chain");
         
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
@@ -46,9 +50,9 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/error").permitAll()
-                .requestMatchers("/bulkemailchecker/**").hasRole("API")
+                .requestMatchers("/bulkemailchecker/**").hasAuthority("ROLE_API")
                 .anyRequest().authenticated())
-            .addFilterBefore(new ApiKeyAuthFilter(VALID_API_KEYS, securityContextRepository), BasicAuthenticationFilter.class)
+            .addFilterBefore(new ApiKeyAuthFilter(validApiKeys, securityContextRepository), BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> {
                 exception.authenticationEntryPoint((request, response, authException) -> {
                     log.error("Authentication error: {}", authException.getMessage());
@@ -70,12 +74,12 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+        final var configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("X-API-KEY"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }

@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter;
  * @author zahari.mikov
  */
 @Service
-public class BulkEmailCheckerService {
+public final class BulkEmailCheckerService {
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerService.class);
 
     private final SMTPValidator smtpValidator;
@@ -44,7 +44,7 @@ public class BulkEmailCheckerService {
         this.neverBounceService = neverBounceService;
     }
 
-    public EmailVerificationResponse verifyEmail(String email, String neverbounceApiKey) {
+    public EmailVerificationResponse verifyEmail(final String email, final String neverbounceApiKey) {
         logger.info("Starting email verification for: {}", email);
         logger.debug("NeverBounce API key in verifyEmail: {}", 
             neverbounceApiKey != null && !neverbounceApiKey.isBlank() ? "provided" : "missing");
@@ -57,51 +57,20 @@ public class BulkEmailCheckerService {
                     .build();
         }
 
-        email = email.trim().toLowerCase();
+        final var normalizedEmail = email.trim().toLowerCase();
 
-        ValidationResult result = executeValidationPipeline(email, neverbounceApiKey);
+        final var result = executeValidationPipeline(normalizedEmail, neverbounceApiKey);
         
-        String status;
+        final var status = determineStatus(result);
+        final var resultCode = getResultCode(result);
         
-        if (!result.isValid()) {
-            status = "invalid";
-        } else if (result.getDetails() != null) {
-            Map<String, Object> details = result.getDetails();
-
-            if (details.containsKey("event") && "server_restricted".equals(details.get("event"))) {
-                status = "unknown";
-            }
-
-            else if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
-                status = "catch-all";
-            }
-
-            else if (details.containsKey("has_dns_issues") && Boolean.TRUE.equals(details.get("has_dns_issues"))) {
-                status = "valid_with_warnings";
-            }
-
-            else if (details.containsKey("greylisting_detected") && Boolean.TRUE.equals(details.get("greylisting_detected"))) {
-                status = "valid";
-            }
-
-            else if (details.containsKey("event") && "inconclusive".equals(details.get("event"))) {
-                status = "inconclusive";
-            } else {
-                status = "valid";
-            }
-        } else {
-            status = "valid";
-        }
-        
-        String resultCode = getResultCode(result);
-        
-        EmailVerificationResponse.Builder responseBuilder = new EmailVerificationResponse.Builder(email)
+        final var responseBuilder = new EmailVerificationResponse.Builder(normalizedEmail)
                 .withStatus(status)
                 .withResultCode(resultCode)
                 .withValid(result.isValid());
                 
         if (result.getDetails() != null) {
-            Map<String, Object> details = result.getDetails();
+            final var details = result.getDetails();
             
             if (details.containsKey("server")) {
                 responseBuilder.withSmtpServer((String) details.get("server"));
@@ -117,7 +86,7 @@ public class BulkEmailCheckerService {
                 responseBuilder.withHasMx(Boolean.TRUE.equals(details.get("has-mx")));
             }
             
-            StringBuilder additionalInfo = new StringBuilder();
+            final var additionalInfo = new StringBuilder();
             if (details.containsKey("spf_record")) {
                 additionalInfo.append("SPF: ").append(details.get("spf_record"));
             }
@@ -140,12 +109,44 @@ public class BulkEmailCheckerService {
         return responseBuilder.build();
     }
 
-    private EmailVerificationResponse checkForCompletedVerification(String email, String neverbounceApiKey) {
+    private String determineStatus(final ValidationResult result) {
+        if (!result.isValid()) {
+            return "invalid";
+        }
+        
+        if (result.getDetails() != null) {
+            final var details = result.getDetails();
+
+            if (details.containsKey("event") && "server_restricted".equals(details.get("event"))) {
+                return "unknown";
+            }
+
+            if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
+                return "catch-all";
+            }
+
+            if (details.containsKey("has_dns_issues") && Boolean.TRUE.equals(details.get("has_dns_issues"))) {
+                return "valid_with_warnings";
+            }
+
+            if (details.containsKey("greylisting_detected") && Boolean.TRUE.equals(details.get("greylisting_detected"))) {
+                return "valid";
+            }
+
+            if (details.containsKey("event") && "inconclusive".equals(details.get("event"))) {
+                return "inconclusive";
+            }
+        }
+        
+        return "valid";
+    }
+
+    private EmailVerificationResponse checkForCompletedVerification(final String email, final String neverbounceApiKey) {
         final var startTime = Instant.now();
         final var result = executeValidationPipeline(email, neverbounceApiKey);
         final var detailsByValidator = getDetailsByValidator(result);
         
-        Map<String, Object> smtpDetails = detailsByValidator.getOrDefault("smtp", new HashMap<>());
+        final var smtpDetails = detailsByValidator.getOrDefault("smtp", new HashMap<>());
         if (smtpDetails != null && smtpDetails.containsKey("event") && 
                 ("retry_scheduled".equals(smtpDetails.get("event")) || 
                   smtpDetails.get("event").toString().contains("pending"))) {
@@ -168,18 +169,7 @@ public class BulkEmailCheckerService {
         
         setEmailVerificationFlags(responseBuilder, detailMap);
         
-        String status;
-        if (!result.isValid()) {
-            status = "invalid";
-        } else if (detailMap.containsKey("catch-all") && detailMap.get("catch-all").toString().equals("1.0")) {
-            status = "catch-all";
-        } else if (detailMap.containsKey("event") && 
-                  ("inconclusive".equals(detailMap.get("event")) || detailMap.get("event").toString().contains("inconclusive"))) {
-            status = "inconclusive";
-        } else {
-            status = "valid";
-        }
-        
+        final var status = determineStatusFromDetails(detailMap);
         final var resultCode = getResultCode(result);
         
         responseBuilder.withStatus(status)
@@ -191,7 +181,18 @@ public class BulkEmailCheckerService {
         return response;
     }
 
-    public List<EmailVerificationResponse> verifyEmails(final List<String> emails, String neverbounceApiKey) {
+    private String determineStatusFromDetails(final Map<String, Object> details) {
+        if (details.containsKey("catch-all") && details.get("catch-all").toString().equals("1.0")) {
+            return "catch-all";
+        }
+        if (details.containsKey("event") && 
+            ("inconclusive".equals(details.get("event")) || details.get("event").toString().contains("inconclusive"))) {
+            return "inconclusive";
+        }
+        return "valid";
+    }
+
+    public List<EmailVerificationResponse> verifyEmails(final List<String> emails, final String neverbounceApiKey) {
         logger.info("Starting batch verification for {} emails", emails.size());
         final var results = new ArrayList<EmailVerificationResponse>(emails.size());
         
@@ -213,23 +214,23 @@ public class BulkEmailCheckerService {
         return results;
     }
 
-    private ValidationResult executeValidationPipeline(final String email, String neverbounceApiKey) {
+    private ValidationResult executeValidationPipeline(final String email, final String neverbounceApiKey) {
         logger.debug("Executing validation pipeline for email: {} with NeverBounce API key present: {}", 
             email, neverbounceApiKey != null && !neverbounceApiKey.isBlank());
             
-        ValidationResult syntaxResult = syntaxValidator.validate(email);
+        final var syntaxResult = syntaxValidator.validate(email);
         if (!syntaxResult.isValid()) {
             logger.debug("Email {} failed syntax validation: {}", email, syntaxResult.getReason());
             return syntaxResult;
         }
         
-        ValidationResult mxResult = mxRecordValidator.validate(email);
+        final var mxResult = mxRecordValidator.validate(email);
         if (!mxResult.isValid()) {
             logger.debug("Email {} failed MX record validation: {}", email, mxResult.getReason());
             return mxResult;
         }
         
-        ValidationResult smtpResult = smtpValidator.validate(email);
+        final var smtpResult = smtpValidator.validate(email);
         
         if (!smtpResult.isValid()) {
             logger.debug("Email {} failed SMTP validation: {}", email, smtpResult.getReason());
@@ -237,13 +238,13 @@ public class BulkEmailCheckerService {
         }
         
         if (smtpResult.getDetails() != null) {
-            Map<String, Object> details = smtpResult.getDetails();
+            final var details = smtpResult.getDetails();
             if (details.containsKey("event") && "is_catchall".equals(details.get("event")) || "inconclusive".equals(details.get("event"))) {
                 logger.info("Catch-all domain detected for email {}. Performing additional verification with NeverBounce.", email);
                 logger.debug("NeverBounce API key before calling service: {}", 
                     neverbounceApiKey != null ? "present" : "null");
                 
-                ValidationResult neverBounceResult = neverBounceService.verifyEmail(email, neverbounceApiKey);
+                final var neverBounceResult = neverBounceService.verifyEmail(email, neverbounceApiKey);
                 
                 if (neverBounceResult.getDetails() != null &&
                     neverBounceResult.getDetails().containsKey("error_code") && 
@@ -254,10 +255,10 @@ public class BulkEmailCheckerService {
                 
                 if (neverBounceResult.getDetails().containsKey("formatted_result")) {
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> formattedResult = 
+                    final var formattedResult = 
                         (Map<String, Object>) neverBounceResult.getDetails().get("formatted_result");
                     
-                    String nbResult = (String) formattedResult.get("result");
+                    final var nbResult = (String) formattedResult.get("result");
                     logger.info("NeverBounce gave definitive result for catch-all domain email {}: {}", email, nbResult);
                     
                     if ("valid".equals(nbResult)) {
@@ -267,12 +268,12 @@ public class BulkEmailCheckerService {
                         return smtpResult;
                     } 
 
-                    else if ("catchall".equals(nbResult)) {
+                    if ("catchall".equals(nbResult)) {
                         details.put("event", "is_catchall");
                         return smtpResult; // Keep the catch-all status
                     }
 
-                    else if ("invalid".equals(nbResult)) {
+                    if ("invalid".equals(nbResult)) {
                         return neverBounceResult;
                     }
                 }
@@ -284,19 +285,19 @@ public class BulkEmailCheckerService {
         return smtpResult;
     }
 
-    private Map<String, Map<String, Object>> getDetailsByValidator(ValidationResult result) {
-        Map<String, Map<String, Object>> detailsByValidator = new HashMap<>();
+    private Map<String, Map<String, Object>> getDetailsByValidator(final ValidationResult result) {
+        final var detailsByValidator = new HashMap<String, Map<String, Object>>();
         detailsByValidator.put(result.getValidatorName(), result.getDetails());
         return detailsByValidator;
     }
 
-    private String getResultCode(ValidationResult result) {
+    private String getResultCode(final ValidationResult result) {
         if (!result.isValid()) {
             return result.getReason() != null ? result.getReason() : "invalid_email";
         }
         
         if (result.getDetails() != null) {
-            Map<String, Object> details = result.getDetails();
+            final var details = result.getDetails();
             
             if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
                 return "catch_all_domain";
@@ -380,11 +381,11 @@ public class BulkEmailCheckerService {
         }
     }
 
-    public EmailVerificationResponse validateEmailWithRetry(final String email, String neverbounceApiKey) {
+    public EmailVerificationResponse validateEmailWithRetry(final String email, final String neverbounceApiKey) {
         logger.debug("validateEmailWithRetry called for email {} with NeverBounce API key: {}", 
             email, neverbounceApiKey != null && !neverbounceApiKey.isBlank() ? "provided" : "missing");
             
-        EmailVerificationResponse completedResponse = checkForCompletedVerification(email, neverbounceApiKey);
+        final var completedResponse = checkForCompletedVerification(email, neverbounceApiKey);
         if (completedResponse != null) {
             return completedResponse;
         }
@@ -409,18 +410,7 @@ public class BulkEmailCheckerService {
         
         setEmailVerificationFlags(responseBuilder, detailMap);
         
-        String status;
-        if (!result.isValid()) {
-            status = "invalid";
-        } else if (detailMap.containsKey("catch-all") && detailMap.get("catch-all").toString().equals("1.0")) {
-            status = "catch-all";
-        } else if (detailMap.containsKey("event") && 
-                  ("inconclusive".equals(detailMap.get("event")) || detailMap.get("event").toString().contains("inconclusive"))) {
-            status = "inconclusive";
-        } else {
-            status = "valid";
-        }
-        
+        final var status = determineStatusFromDetails(detailMap);
         final var resultCode = getResultCode(result);
         
         responseBuilder.withStatus(status)

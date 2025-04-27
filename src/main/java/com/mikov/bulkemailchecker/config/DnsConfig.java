@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SimpleResolver;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Configuration
@@ -19,14 +20,16 @@ public class DnsConfig {
 
     @Bean
     public Resolver googleResolver() throws UnknownHostException {
-        Resolver resolver = new SimpleResolver(GOOGLE_DNS);
+        final InetAddress dnsServer = InetAddress.getByName(GOOGLE_DNS);
+        final Resolver resolver = new SimpleResolver(dnsServer);
         resolver.setTimeout(RESOLVER_TIMEOUT);
         return resolver;
     }
 
     @Bean
     public Resolver cloudflareResolver() throws UnknownHostException {
-        Resolver resolver = new SimpleResolver(CLOUDFLARE_DNS);
+        final InetAddress dnsServer = InetAddress.getByName(CLOUDFLARE_DNS);
+        final Resolver resolver = new SimpleResolver(dnsServer);
         resolver.setTimeout(RESOLVER_TIMEOUT);
         return resolver;
     }

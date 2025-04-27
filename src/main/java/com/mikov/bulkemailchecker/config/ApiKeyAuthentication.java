@@ -8,19 +8,19 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collection;
 
 @Slf4j
-public class ApiKeyAuthentication implements Authentication {
+public final class ApiKeyAuthentication implements Authentication {
 
     private final String apiKey;
     private boolean authenticated = true;
 
-    public ApiKeyAuthentication(String apiKey) {
+    public ApiKeyAuthentication(final String apiKey) {
         this.apiKey = apiKey;
         log.info("Created new ApiKeyAuthentication for key: {}", apiKey);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<? extends GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_API");
+        final Collection<? extends GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_API");
         log.info("Returning authorities: {}", authorities);
         return authorities;
     }
@@ -46,7 +46,7 @@ public class ApiKeyAuthentication implements Authentication {
     }
 
     @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    public void setAuthenticated(final boolean isAuthenticated) throws IllegalArgumentException {
         this.authenticated = isAuthenticated;
     }
 
