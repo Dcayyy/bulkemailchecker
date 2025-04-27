@@ -40,6 +40,7 @@ public class NeverBounceService {
             // Process the response
             Map<String, Object> details = new HashMap<>();
             details.put("response", response);
+            System.out.println(details.get("response"));
             
             // Format the result for our system
             Map<String, Object> formattedResult = new HashMap<>();

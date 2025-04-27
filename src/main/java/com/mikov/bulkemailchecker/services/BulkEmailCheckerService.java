@@ -82,23 +82,6 @@ public class BulkEmailCheckerService {
         // Clean email (trim, lowercase)
         email = email.trim().toLowerCase();
 
-        // First check if this is a catch-all domain that would require NeverBounce
-        String domain = extractDomain(email);
-        if (isLikelyCatchAllDomain(domain)) {
-            logger.info("Domain {} is likely catch-all, checking NeverBounce API key first", domain);
-            // Test NeverBounce API key by making a simple request
-            try {
-                ValidationResult neverBounceTest = neverBounceService.verifyEmail(email, neverbounceApiKey);
-                // If we get here, the API key is valid
-            } catch (Exception e) {
-                if (e.getMessage().contains("Invalid API key")) {
-                    logger.error("NeverBounce API key is invalid. Throwing exception.");
-                    throw new RuntimeException("Invalid NeverBounce API key. Please provide a valid API key.");
-                }
-                throw e;
-            }
-        }
-
         // Execute validation pipeline
         ValidationResult result = executeValidationPipeline(email, neverbounceApiKey);
         
@@ -111,8 +94,12 @@ public class BulkEmailCheckerService {
             // Check for specific cases in the result details
             Map<String, Object> details = result.getDetails();
             
+            // Check for server restrictions that prevented verification
+            if (details.containsKey("event") && "server_restricted".equals(details.get("event"))) {
+                status = "unknown";
+            }
             // Check for catch-all domains - ensure they are always marked as catch-all
-            if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
+            else if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
                 status = "catch-all";
             } 
             // Check for DNS issues that might affect deliverability
@@ -298,7 +285,7 @@ public class BulkEmailCheckerService {
         // Check if the result indicates a catch-all domain
         if (smtpResult.getDetails() != null) {
             Map<String, Object> details = smtpResult.getDetails();
-            if (details.containsKey("event") && "is_catchall".equals(details.get("event"))) {
+            if (details.containsKey("event") && "is_catchall".equals(details.get("event")) || "inconclusive".equals(details.get("event"))) {
                 logger.info("Catch-all domain detected for email {}. Performing additional verification with NeverBounce.", email);
                 logger.debug("NeverBounce API key before calling service: {}", 
                     neverbounceApiKey != null ? "present" : "null");
