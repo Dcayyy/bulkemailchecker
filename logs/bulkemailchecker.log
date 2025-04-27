@@ -3099,3 +3099,9 @@ Consider renaming one of the beans or enabling overriding by setting spring.main
 2025-04-27 17:30:51.758 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
 2025-04-27 17:30:51.758 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
 2025-04-27 17:30:51.758 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 17:33:26.275 [http-nio-8081-exec-8] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 17:33:26.275 [http-nio-8081-exec-8] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-27 17:33:26.275 [http-nio-8081-exec-8] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-27 17:33:26.275 [http-nio-8081-exec-8] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-27 17:33:26.276 [http-nio-8081-exec-8] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 17:33:26.280 [http-nio-8081-exec-8] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotReadableException: Required request body is missing: public org.springframework.http.ResponseEntity<?> com.mikov.bulkemailchecker.controller.EmailHostLookupController.detectEmailProvider(com.mikov.bulkemailchecker.controller.EmailHostLookupController$EmailRequest)]
