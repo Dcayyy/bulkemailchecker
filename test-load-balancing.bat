@@ -6,7 +6,7 @@ echo.
 
 for /L %%i in (1,1,10) do (
     echo Request %%i:
-    curl -v http://localhost/api/instance-info
+    curl -v -H "X-API-Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy" http://localhost:9655/bulkemailchecker/instance-info
     echo.
     echo ----------------------------------------
     timeout /t 2 >nul
@@ -14,7 +14,7 @@ for /L %%i in (1,1,10) do (
 
 echo.
 echo Checking Nginx status...
-curl http://localhost/nginx_status
+curl http://localhost:9655/nginx_status
 
 echo.
 echo Test completed! 
