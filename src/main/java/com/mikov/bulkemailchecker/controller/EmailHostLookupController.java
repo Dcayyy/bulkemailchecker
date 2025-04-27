@@ -1,6 +1,8 @@
 package com.mikov.bulkemailchecker.controller;
 
 import com.mikov.bulkemailchecker.service.EmailProviderDetectionService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +41,6 @@ public class EmailHostLookupController {
 
         try {
             var result = emailProviderDetectionService.detectEmailProvider(request.getEmail());
-            // Add instance info to the response
             Map<String, Object> response = new HashMap<>();
             response.put("result", result);
             response.put("instance", "Instance-" + System.getProperty("server.port"));
@@ -52,20 +53,16 @@ public class EmailHostLookupController {
         }
     }
 
+    @Setter
+    @Getter
     public static class EmailRequest {
         private String email;
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
     }
 
+    @Getter
     public static class ErrorResponse {
-        private String error;
+        private final String error;
         private String details;
 
         public ErrorResponse(String error) {
@@ -77,12 +74,5 @@ public class EmailHostLookupController {
             this.details = details;
         }
 
-        public String getError() {
-            return error;
-        }
-
-        public String getDetails() {
-            return details;
-        }
     }
 } 

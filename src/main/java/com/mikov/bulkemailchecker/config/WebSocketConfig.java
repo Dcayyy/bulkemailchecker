@@ -20,11 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        // Enable a simple in-memory message broker for sending messages back to the client
-        // Client subscribes to these destinations to receive messages
         config.enableSimpleBroker("/topic", "/queue");
-        
-        // Prefix for client-to-server messages
         config.setApplicationDestinationPrefixes("/app");
         
         logger.info("WebSocket message broker configured with topics: /topic, /queue");
@@ -32,9 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Register the "/ws-emailverifier" endpoint, enabling SockJS fallback options
         registry.addEndpoint("/ws-emailverifier")
-                .setAllowedOriginPatterns("*") // For development - restrict in production
+                .setAllowedOriginPatterns("*")
                 .withSockJS();
         
         logger.info("WebSocket STOMP endpoint registered at /ws-emailverifier");

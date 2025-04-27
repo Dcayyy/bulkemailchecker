@@ -1,6 +1,5 @@
 package com.mikov.bulkemailchecker.model;
 
-import com.mikov.bulkemailchecker.model.EmailVerificationResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

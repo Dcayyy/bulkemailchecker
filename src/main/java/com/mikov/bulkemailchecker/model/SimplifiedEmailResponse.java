@@ -22,14 +22,7 @@ public class SimplifiedEmailResponse {
         this.createdAt = createdAt;
     }
 
-    /**
-     * Create a simplified response from a complete email verification response
-     * 
-     * @param response The full email verification response
-     * @return A simplified response with only essential fields
-     */
     public static SimplifiedEmailResponse from(EmailVerificationResponse response) {
-        // Convert status to one of: "deliverable", "undeliverable", "catch-all", or "error"
         String simplifiedStatus;
         
         if (response.getStatus() != null && response.getStatus().equals("catch-all")) {

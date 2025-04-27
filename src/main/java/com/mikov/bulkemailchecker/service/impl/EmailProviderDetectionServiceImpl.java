@@ -10,7 +10,6 @@ import org.xbill.DNS.Lookup;
 import org.xbill.DNS.MXRecord;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.Resolver;
-import org.xbill.DNS.SimpleResolver;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
@@ -21,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.regex.Pattern;
-import java.util.function.Supplier;
 
 @Service
 public class EmailProviderDetectionServiceImpl implements EmailProviderDetectionService {
@@ -59,7 +57,6 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
 
         String domain = matcher.group(1).toLowerCase();
 
-        // Check cache first
         EmailProviderResult cachedResult = mxRecordCache.get(domain);
         if (cachedResult != null) {
             return cachedResult;
@@ -92,11 +89,10 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
         }
     }
 
-    private List<Record> getMxRecords(String domain) throws TextParseException, ExecutionException, InterruptedException {
+    private List<Record> getMxRecords(String domain) throws ExecutionException, InterruptedException {
         List<CompletableFuture<Record[]>> futures = new ArrayList<>();
 
-        // System resolver
-        futures.add(CompletableFuture.supplyAsync((Supplier<Record[]>) () -> {
+        futures.add(CompletableFuture.supplyAsync(() -> {
             try {
                 return new Lookup(domain, Type.MX).run();
             } catch (TextParseException e) {
@@ -105,7 +101,7 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
         }));
 
         // Google resolver
-        futures.add(CompletableFuture.supplyAsync((Supplier<Record[]>) () -> {
+        futures.add(CompletableFuture.supplyAsync(() -> {
             try {
                 Lookup lookup = new Lookup(domain, Type.MX);
                 lookup.setResolver(googleResolver);
@@ -116,7 +112,7 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
         }));
 
         // Cloudflare resolver
-        futures.add(CompletableFuture.supplyAsync((Supplier<Record[]>) () -> {
+        futures.add(CompletableFuture.supplyAsync(() -> {
             try {
                 Lookup lookup = new Lookup(domain, Type.MX);
                 lookup.setResolver(cloudflareResolver);
@@ -145,17 +141,14 @@ public class EmailProviderDetectionServiceImpl implements EmailProviderDetection
 
     private boolean checkGoogleMxRecords(List<Record> mxRecords) {
         for (Record record : mxRecords) {
-            if (record instanceof MXRecord) {
-                MXRecord mx = (MXRecord) record;
+            if (record instanceof MXRecord mx) {
                 String host = mx.getTarget().toString().toLowerCase();
 
-                // Check MX host patterns
                 if (googleIpChecker.getGoogleMxPatterns().stream()
                     .anyMatch(pattern -> pattern.matcher(host).matches())) {
                     return true;
                 }
 
-                // Check IP addresses
                 try {
                     InetAddress[] addresses = InetAddress.getAllByName(host);
                     for (InetAddress address : addresses) {

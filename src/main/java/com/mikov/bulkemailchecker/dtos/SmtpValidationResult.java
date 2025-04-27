@@ -1,10 +1,13 @@
 package com.mikov.bulkemailchecker.dtos;
 
+import lombok.Getter;
+
 /**
  * Results of SMTP validation for an email address.
  * 
  * @author zahari.mikov
  */
+@Getter
 public class SmtpValidationResult {
     private final boolean deliverable;
     private final boolean catchAll;
@@ -28,28 +31,5 @@ public class SmtpValidationResult {
         this.fullResponse = fullResponse;
         this.serverName = serverName;
     }
-    
-    public boolean isDeliverable() {
-        return deliverable;
-    }
-    
-    public boolean isCatchAll() {
-        return catchAll;
-    }
-    
-    public int getResponseCode() {
-        return responseCode;
-    }
-    
-    public boolean isTempError() {
-        return tempError;
-    }
-    
-    public String getFullResponse() {
-        return fullResponse;
-    }
-    
-    public String getServerName() {
-        return serverName;
-    }
+
 } 

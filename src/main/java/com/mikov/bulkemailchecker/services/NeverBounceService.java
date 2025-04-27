@@ -18,17 +18,12 @@ import java.util.Map;
 public class NeverBounceService {
     private static final Logger logger = LoggerFactory.getLogger(NeverBounceService.class);
 
-    /**
-     * Verify an email address using NeverBounce API
-     */
     public ValidationResult verifyEmail(String email, String apiKey) {
         logger.debug("Verifying email {} with NeverBounce API", email);
         
         try {
-            // Create NeverBounce client with the provided API key
             NeverbounceClient client = NeverbounceClientFactory.create(apiKey);
             
-            // Create single check request
             Object response = client
                     .prepareSingleCheckRequest()
                     .withEmail(email)
@@ -37,12 +32,10 @@ public class NeverBounceService {
                     .build()
                     .execute();
             
-            // Process the response
             Map<String, Object> details = new HashMap<>();
             details.put("response", response);
             System.out.println(details.get("response"));
             
-            // Format the result for our system
             Map<String, Object> formattedResult = new HashMap<>();
             formattedResult.put("result", "valid"); // Default to valid unless we detect otherwise
             details.put("formatted_result", formattedResult);
@@ -56,7 +49,6 @@ public class NeverBounceService {
         } catch (NeverbounceApiException e) {
             logger.error("NeverBounce API error: {}", e.getMessage());
             
-            // Check if the error is due to an invalid API key
             if (e.getMessage() != null && e.getMessage().contains("Invalid API key")) {
                 Map<String, Object> details = new HashMap<>();
                 details.put("error", "Invalid NeverBounce API key. Please provide a valid API key.");
@@ -70,7 +62,6 @@ public class NeverBounceService {
                         .build();
             }
             
-            // For other NeverBounce API errors
             Map<String, Object> details = new HashMap<>();
             details.put("error", "NeverBounce API error: " + e.getMessage());
             details.put("error_code", "neverbounce_api_error");

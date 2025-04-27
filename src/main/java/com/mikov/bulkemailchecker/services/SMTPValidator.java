@@ -3,6 +3,7 @@ package com.mikov.bulkemailchecker.services;
 import com.mikov.bulkemailchecker.dtos.ValidationResult;
 import com.mikov.bulkemailchecker.dtos.SmtpServerInfo;
 import com.mikov.bulkemailchecker.dtos.SmtpValidationResult;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,6 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import jakarta.annotation.PreDestroy;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 /**
  * Validator that checks SMTP servers for email validity.
@@ -49,8 +48,7 @@ public class SMTPValidator implements EmailValidator {
     private static final int SMTP_PORT = 25;
     private static final int GREYLISTING_RETRY_DELAY_MS = 3000;
     private static final int GREYLISTING_MAX_RETRIES = 2;
-    private static final int MAX_CONNECTIONS_PER_DOMAIN = 3;
-    
+
     private static final String[] INVALID_RESPONSE_SUBSTRINGS = {
         "does not exist", "no such user", "user unknown", "invalid recipient", 
         "recipient rejected", "address rejected", "not found", "mailbox unavailable",
@@ -105,7 +103,7 @@ public class SMTPValidator implements EmailValidator {
             
         } catch (final Exception e) {
             logger.warn("SMTP validation failed for email {}: {}", email, e.getMessage());
-            return handleValidationError(email, e);
+            return handleValidationError(e);
         } finally {
             logger.info("Total validation time for {}: {}ms", email, System.currentTimeMillis() - totalStartTime);
         }
@@ -148,7 +146,7 @@ public class SMTPValidator implements EmailValidator {
             .toArray(String[]::new);
         
         final var provider = identifyProvider(mxHosts);
-        final var primaryMxRecord = mxRecordsWithWeights.get(0);
+        final var primaryMxRecord = mxRecordsWithWeights.getFirst();
         
         return new MxAndDnsInfo(mxRecordsWithWeights, dnsDetails, provider, primaryMxRecord);
     }
@@ -160,7 +158,7 @@ public class SMTPValidator implements EmailValidator {
         
         // 1. Check for catch-all if not in fast mode
         if (!ENABLE_FAST_MODE) {
-            final var catchAllResult = checkForCatchAll(localPart, domain, mxInfo.getMxRecords());
+            final var catchAllResult = checkForCatchAll(domain, mxInfo.getMxRecords());
             if (catchAllResult != null) {
                 return catchAllResult;
             }
@@ -179,22 +177,22 @@ public class SMTPValidator implements EmailValidator {
         return analyzeVerificationResults(verificationResults, serverInfo, mxInfo);
     }
     
-    private ValidationResult checkForCatchAll(final String localPart, final String domain, 
+    private ValidationResult checkForCatchAll(final String domain,
                                             final List<MxRecord> mxRecords) {
         for (int i = 0; i < mxRecords.size() && i < 2; i++) {
             MxRecord mxRecord = mxRecords.get(i);
             logger.debug("Testing MX server {} (priority {}) for catch-all detection", 
                 mxRecord.hostname, mxRecord.priority);
             
-            if (detectCatchAll(localPart + "@" + domain, domain, mxRecord.hostname)) {
+            if (detectCatchAll(domain, mxRecord.hostname)) {
                 logger.info("Domain {} detected as catch-all", domain);
-                return createCatchAllResult(domain, mxRecord.hostname);
+                return createCatchAllResult(mxRecord.hostname);
             }
         }
         return null;
     }
     
-    private ValidationResult createCatchAllResult(final String domain, final String mxHost) {
+    private ValidationResult createCatchAllResult(final String mxHost) {
         final var details = createDetailsMap(true, "Catch-all domain",
                 mxHost, getIpAddress(mxHost), identifyProvider(new String[]{mxHost}));
         details.put("event", "is_catchall");
@@ -208,7 +206,7 @@ public class SMTPValidator implements EmailValidator {
                                                               final MxAndDnsInfo mxInfo) {
         final var details = createDetailsMap(greylistResult.isCatchAll(), 
             greylistResult.isDeliverable() ? null : "Email not deliverable",
-            serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
+            serverInfo.hostname(), serverInfo.ipAddress(), serverInfo.provider());
         
         details.put("event", greylistResult.isDeliverable() ? "mailbox_exists" : "inconclusive");
         details.put("response_code", greylistResult.getResponseCode());
@@ -216,7 +214,7 @@ public class SMTPValidator implements EmailValidator {
         details.put("mx_count", mxInfo.getMxRecords().size());
         details.putAll(mxInfo.getDnsDetails());
         
-        logger.info("Greylisting test for {}: {}", serverInfo.getHostname(), 
+        logger.info("Greylisting test for {}: {}", serverInfo.hostname(),
             greylistResult.isDeliverable() ? "DELIVERABLE" : "INCONCLUSIVE");
         
         return ValidationResult.valid(getName(), details);
@@ -242,7 +240,7 @@ public class SMTPValidator implements EmailValidator {
         logger.debug("SMTP verification confidence: {} of {} attempts deliverable (confidence: {})", 
                 deliverableCount, results.size(), String.format("%.2f", confidence));
         
-        return createFinalValidationResult(results, confidence, serverInfo, mxInfo);
+        return createFinalValidationResult(confidence, serverInfo, mxInfo);
     }
     
     private boolean isServerRestricted(final List<SmtpValidationResult> results) {
@@ -255,7 +253,7 @@ public class SMTPValidator implements EmailValidator {
                                                         final MxAndDnsInfo mxInfo) {
         logger.info("Email validation result: UNKNOWN (server restricted verification)");
         final var details = createDetailsMap(false, "Server restricted verification",
-                serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
+                serverInfo.hostname(), serverInfo.ipAddress(), serverInfo.provider());
         details.put("event", "server_restricted");
         details.put("status", "unknown");
         details.put("mx_count", mxInfo.getMxRecords().size());
@@ -268,7 +266,7 @@ public class SMTPValidator implements EmailValidator {
                                                     final MxAndDnsInfo mxInfo) {
         logger.info("No conclusive result after checking MX servers");
         final var details = createDetailsMap(false, "Inconclusive SMTP check",
-                serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
+                serverInfo.hostname(), serverInfo.ipAddress(), serverInfo.provider());
         details.put("event", "inconclusive");
         details.put("status", "unknown");
         details.put("mx_count", mxInfo.getMxRecords().size());
@@ -276,13 +274,12 @@ public class SMTPValidator implements EmailValidator {
         return ValidationResult.valid(getName(), details);
     }
     
-    private ValidationResult createFinalValidationResult(final List<SmtpValidationResult> results,
-                                                       final double confidence,
+    private ValidationResult createFinalValidationResult(final double confidence,
                                                        final SmtpServerInfo serverInfo,
                                                        final MxAndDnsInfo mxInfo) {
         final var isDeliverable = confidence >= 0.5;
         final var details = createDetailsMap(false, isDeliverable ? null : "Email not deliverable",
-                serverInfo.getHostname(), serverInfo.getIpAddress(), serverInfo.getProvider());
+                serverInfo.hostname(), serverInfo.ipAddress(), serverInfo.provider());
         
         details.put("confidence", isDeliverable ? confidence : 1.0 - confidence);
         details.put("event", isDeliverable ? "mailbox_exists" : "mailbox_does_not_exist");
@@ -292,14 +289,14 @@ public class SMTPValidator implements EmailValidator {
         logger.info("Email validation result: {} (confidence: {}, MX: {})", 
                 isDeliverable ? "DELIVERABLE" : "UNDELIVERABLE",
                 String.format("%.2f", isDeliverable ? confidence : 1.0 - confidence),
-                serverInfo.getHostname());
+                serverInfo.hostname());
         
         return isDeliverable ? 
             ValidationResult.valid(getName(), details) :
             ValidationResult.invalid(getName(), "Email not deliverable", details);
     }
     
-    private ValidationResult handleValidationError(final String email, final Exception e) {
+    private ValidationResult handleValidationError(final Exception e) {
         final var details = createDetailsMap(false, "SMTP check error: " + e.getMessage(), "", "", "");
         details.put("event", "inconclusive");
         details.put("status", "unknown");
@@ -307,6 +304,7 @@ public class SMTPValidator implements EmailValidator {
     }
     
     // Helper class to hold MX and DNS information
+    @Getter
     private static class MxAndDnsInfo {
         private final List<MxRecord> mxRecords;
         private final Map<String, Object> dnsDetails;
@@ -334,29 +332,10 @@ public class SMTPValidator implements EmailValidator {
         public boolean isValid() {
             return validationResult == null;
         }
-        
-        public ValidationResult getValidationResult() {
-            return validationResult;
-        }
-        
-        public List<MxRecord> getMxRecords() {
-            return mxRecords;
-        }
-        
-        public Map<String, Object> getDnsDetails() {
-            return dnsDetails;
-        }
-        
-        public String getProvider() {
-            return provider;
-        }
-        
-        public MxRecord getPrimaryMxRecord() {
-            return primaryMxRecord;
-        }
+
     }
 
-    private boolean detectCatchAll(final String originalEmail, final String domain, final String mxHost) {
+    private boolean detectCatchAll(final String domain, final String mxHost) {
         try {
             logger.debug("Testing if domain {} is catch-all using server {}", domain, mxHost);
             
@@ -378,7 +357,7 @@ public class SMTPValidator implements EmailValidator {
                         probeLocalPart, domain, mxHost);
                     return performOneSmtpVerification(probeLocalPart, domain, mxHost);
                 }, smtpExecutor))
-                .collect(Collectors.toList());
+                .toList();
             
             CompletableFuture.allOf(probeFutures.toArray(new CompletableFuture[0]))
                 .get(5, TimeUnit.SECONDS);
@@ -420,11 +399,6 @@ public class SMTPValidator implements EmailValidator {
         }
     }
 
-    private String generateInvalidLocalPart(final String originalLocalPart) {
-        final var randomSuffix = getRandomString(8);
-        return originalLocalPart + "." + randomSuffix;
-    }
-
     private String getRandomString(final int length) {
         final var allowedChars = "abcdefghijklmnopqrstuvwxyz";
         final var sb = new StringBuilder(length);
@@ -445,7 +419,7 @@ public class SMTPValidator implements EmailValidator {
         final var results = new ArrayList<SmtpValidationResult>();
         logger.debug("Starting SMTP verification for {}@{} on MX host {}", localPart, domain, mxHost);
         
-        applyThrottling(domain);
+        applyThrottling();
         
         List<CompletableFuture<SmtpValidationResult>> verificationFutures = new ArrayList<>();
         
@@ -461,7 +435,7 @@ public class SMTPValidator implements EmailValidator {
                         attempt + 1, localPart, domain, e.getMessage());
                     
                     if (shouldQueueForRetry(e)) {
-                        queueForRetry(localPart, domain, mxHost);
+                        queueForRetry(localPart, domain);
                     }
                     return new SmtpValidationResult(false, false, 0, true, e.getMessage(), mxHost);
                 }
@@ -556,11 +530,11 @@ public class SMTPValidator implements EmailValidator {
             
             int rcptToResponseCode = getResponseCode(rcptToResponse);
             boolean isTempError = false;
-            
+
             if (rcptToResponseCode >= 400 && rcptToResponseCode < 500) {
                 isTempError = true;
             }
-            
+
             out.print("QUIT\r\n");
             out.flush();
             
@@ -667,27 +641,9 @@ public class SMTPValidator implements EmailValidator {
             logger.info("MX records lookup for {} took {}ms", domain, System.currentTimeMillis() - startTime);
         }
     }
-    
-    private String[] getMxRecords(final String domain) throws Exception {
-        List<MxRecord> records = getMxRecordsWithWeights(domain);
-        return records.stream()
-            .sorted((a, b) -> Integer.compare(a.priority, b.priority))
-            .map(record -> record.hostname)
-            .toArray(String[]::new);
-    }
-    
-    /**
-     * Helper class to represent an MX record with hostname and priority
-     */
-    private static class MxRecord {
-        final String hostname;
-        final int priority;
-        
-        MxRecord(String hostname, int priority) {
-            this.hostname = hostname;
-            this.priority = priority;
-        }
-    }
+
+
+    private record MxRecord(String hostname, int priority) { }
     
     private String identifyProvider(final String[] mxHosts) {
         if (mxHosts == null || mxHosts.length == 0) {
@@ -776,6 +732,7 @@ public class SMTPValidator implements EmailValidator {
         resultCache.put(cacheKey, new CachedValidationResult(result));
     }
     
+    @Getter
     private static class CachedValidationResult {
         private final ValidationResult result;
         private final long timestamp;
@@ -784,15 +741,7 @@ public class SMTPValidator implements EmailValidator {
             this.result = result;
             this.timestamp = System.currentTimeMillis();
         }
-        
-        public ValidationResult getResult() {
-            return result;
-        }
-        
-        public long getTimestamp() {
-            return timestamp;
-        }
-        
+
         public boolean isExpired() {
             return false;
         }
@@ -801,7 +750,7 @@ public class SMTPValidator implements EmailValidator {
     /**
      * Apply throttling between verification attempts
      */
-    private void applyThrottling(String domain) {
+    private void applyThrottling() {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -1019,7 +968,7 @@ public class SMTPValidator implements EmailValidator {
         logger.debug("Starting greylisting test for {}@{} on MX host {}", localPart, domain, mxHost);
         String email = localPart + "@" + domain;
         
-        applyThrottling(domain);
+        applyThrottling();
         SmtpValidationResult firstAttempt = performOneSmtpVerification(localPart, domain, mxHost);
         logger.debug("Greylisting test - first attempt for {}: deliverable={}, response={}", 
             email, firstAttempt.isDeliverable(), firstAttempt.getFullResponse());
@@ -1032,7 +981,7 @@ public class SMTPValidator implements EmailValidator {
             try {
                 Thread.sleep(GREYLISTING_RETRY_DELAY_MS);
                 
-                applyThrottling(domain);
+                applyThrottling();
                 
                 SmtpValidationResult nextAttempt = performOneSmtpVerification(localPart, domain, mxHost);
                 logger.debug("Greylisting test - attempt #{} for {}: deliverable={}, response={}", 
@@ -1065,26 +1014,22 @@ public class SMTPValidator implements EmailValidator {
     }
 
     private boolean shouldQueueForRetry(Exception e) {
-        if (e instanceof SocketTimeoutException || 
+        if (e instanceof SocketTimeoutException ||
             e instanceof ConnectException ||
             e instanceof SocketException) {
             return true;
         }
         
         String message = e.getMessage();
-        if (message != null && (
-            message.contains("timeout") ||
-            message.contains("reset") ||
-            message.contains("refused") ||
-            message.contains("closed") ||
-            message.contains("limit"))) {
-            return true;
-        }
-        
-        return false;
+        return message != null && (
+                message.contains("timeout") ||
+                        message.contains("reset") ||
+                        message.contains("refused") ||
+                        message.contains("closed") ||
+                        message.contains("limit"));
     }
     
-    private void queueForRetry(String localPart, String domain, String mxHost) {
+    private void queueForRetry(String localPart, String domain) {
         logger.debug("Queuing {}@{} for retry later", localPart, domain);
     }
 

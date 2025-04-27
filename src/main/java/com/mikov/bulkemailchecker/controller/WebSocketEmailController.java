@@ -4,23 +4,16 @@ import com.mikov.bulkemailchecker.model.EmailVerificationRequest;
 import com.mikov.bulkemailchecker.model.EmailVerificationResponse;
 import com.mikov.bulkemailchecker.model.VerificationResult;
 import com.mikov.bulkemailchecker.services.BulkEmailCheckerService;
-import com.mikov.bulkemailchecker.services.SMTPValidator;
 import com.mikov.bulkemailchecker.dtos.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * Controller for WebSocket-based email verification
@@ -31,20 +24,13 @@ public class WebSocketEmailController {
     private final SimpMessagingTemplate messagingTemplate;
     private final BulkEmailCheckerService bulkEmailCheckerService;
     
-    // Simple cache to store recent results
-    private final Map<String, VerificationResult> recentVerifications = new HashMap<>();
-    
     @Autowired
     public WebSocketEmailController(SimpMessagingTemplate messagingTemplate,
-                                    BulkEmailCheckerService bulkEmailCheckerService,
-                                    SMTPValidator smtpValidator) {
+                                    BulkEmailCheckerService bulkEmailCheckerService) {
         this.messagingTemplate = messagingTemplate;
         this.bulkEmailCheckerService = bulkEmailCheckerService;
     }
-    
-    /**
-     * WebSocket endpoint for email verification
-     */
+
     @MessageMapping("/verify")
     public void verifyEmails(@Payload EmailVerificationRequest request) {
         final String sessionId = request.getSessionId();
@@ -55,13 +41,9 @@ public class WebSocketEmailController {
             emails.size(), sessionId);
         logger.debug("NeverBounce API key present: {}", neverbounceApiKey != null && !neverbounceApiKey.isBlank());
         
-        // Process emails directly in this thread - completely sequential
         processEmails(sessionId, emails, neverbounceApiKey);
     }
-    
-    /**
-     * Process emails one at a time, sequentially
-     */
+
     private void processEmails(String sessionId, List<String> emails, String neverbounceApiKey) {
         final int totalEmails = emails.size();
         final Map<String, Object> stats = new HashMap<>();
@@ -74,45 +56,31 @@ public class WebSocketEmailController {
             neverbounceApiKey != null ? "provided" : "not provided");
         
         try {
-            // Send initial status update
             sendStatusUpdate(sessionId, "STARTED", 0, totalEmails, stats);
             
-            // Group emails by domain (just for organizational purposes)
             Map<String, List<String>> emailsByDomain = groupEmailsByDomain(emails);
             logger.info("Grouped {} emails into {} domain groups", emails.size(), emailsByDomain.size());
             
-            // Process counter
             int processedCount = 0;
             
-            // Process each domain's emails
             for (Map.Entry<String, List<String>> entry : emailsByDomain.entrySet()) {
                 String domain = entry.getKey();
                 List<String> domainEmails = entry.getValue();
                 
                 logger.info("Processing batch of {} emails for domain {}", domainEmails.size(), domain);
                 
-                // Process each email one at a time
                 for (String email : domainEmails) {
-                    // Verify email using the enhanced method with catch-all heuristics
                     long startTime = System.currentTimeMillis();
                     EmailVerificationResponse response = bulkEmailCheckerService.validateEmailWithRetry(email, neverbounceApiKey);
                     ValidationResult result = convertToValidationResult(response);
                     long processingTime = System.currentTimeMillis() - startTime;
                     
-                    // Create verification result
                     VerificationResult verificationResult = new VerificationResult(email, result, processingTime);
-                    
-                    // Update stats
                     updateStatusStats(stats, result);
-                    
-                    // Send the result message
                     sendResultMessage(sessionId, verificationResult);
-                    
-                    // Update progress
                     processedCount++;
                     sendStatusUpdate(sessionId, "PROGRESS", processedCount, totalEmails, stats);
-                    
-                    // Add a small delay between emails to reduce load
+
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -121,7 +89,6 @@ public class WebSocketEmailController {
                 }
             }
             
-            // Send completion message
             logger.info("All verification tasks completed for session {}", sessionId);
             sendStatusUpdate(sessionId, "COMPLETED", processedCount, totalEmails, stats);
             
@@ -131,22 +98,17 @@ public class WebSocketEmailController {
                 Map.of("error", e.getMessage()));
         }
     }
-    
-    /**
-     * Convert EmailVerificationResponse to ValidationResult
-     */
+
     private ValidationResult convertToValidationResult(EmailVerificationResponse response) {
         Map<String, Object> details = new HashMap<>();
         details.put("email", response.getEmail());
         details.put("message", response.getMessage());
         details.put("responseTime", response.getResponseTime());
         
-        // Copy event, it's important for catch-all detection
         if (response.getEvent() != null) {
             details.put("event", response.getEvent());
         }
         
-        // Handle catch-all detection specially
         boolean isCatchAll = false;
         if (response.getMessage() != null && response.getMessage().contains("Catch-all domain")) {
             details.put("catch-all", 1.0);
@@ -158,7 +120,6 @@ public class WebSocketEmailController {
             isCatchAll = true;
         }
         
-        // Handle each status type
         if (isCatchAll) {
             details.put("status", "catch-all");
             return ValidationResult.catchAll("email", "Catch-all domain", details);
@@ -173,20 +134,15 @@ public class WebSocketEmailController {
             return ValidationResult.invalid("email", response.getMessage(), details);
         }
     }
-    
-    /**
-     * Update the statistics based on the verification result
-     */
+
     private void updateStatusStats(Map<String, Object> stats, ValidationResult result) {
         Map<String, Object> details = result.getDetails();
         
-        // Check for explicit status in the details
         String status = "";
         if (details != null && details.containsKey("status")) {
             status = details.get("status").toString();
         }
         
-        // Handle each status type
         if ("catch-all".equals(status)) {
             incrementStat(stats, "catchall");
         } else if ("inconclusive".equals(status)) {
@@ -202,18 +158,12 @@ public class WebSocketEmailController {
         int current = (int) stats.getOrDefault(key, 0);
         stats.put(key, current + 1);
     }
-    
-    /**
-     * Send a result message for a verified email
-     */
+
     private void sendResultMessage(String sessionId, VerificationResult result) {
         String destination = "/topic/verification-result/" + sessionId;
         messagingTemplate.convertAndSend(destination, result.toMap());
     }
-    
-    /**
-     * Send a status update message
-     */
+
     private void sendStatusUpdate(String sessionId, String status, int processed, int total, Map<String, Object> stats) {
         String destination = "/topic/verification-status/" + sessionId;
         Map<String, Object> update = new HashMap<>();
@@ -225,10 +175,7 @@ public class WebSocketEmailController {
         
         messagingTemplate.convertAndSend(destination, update);
     }
-    
-    /**
-     * Group emails by domain to optimize verification
-     */
+
     private Map<String, List<String>> groupEmailsByDomain(List<String> emails) {
         Map<String, List<String>> emailsByDomain = new HashMap<>();
         

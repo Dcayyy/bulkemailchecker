@@ -5010,3 +5010,8 @@ Consider renaming one of the beans or enabling overriding by setting spring.main
 2025-04-27 21:53:54.306 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Greylisting test for aspmx.l.google.com.: DELIVERABLE
 2025-04-27 21:53:54.306 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.services.SMTPValidator - Total validation time for dan@reveri.com: 6055ms
 2025-04-27 21:53:54.308 [http-nio-8085-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 21:55:48.169 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 21:55:48.179 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 21:55:48.182 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 21:55:48.183 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@27d73d22]]
+2025-04-27 21:55:48.183 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
