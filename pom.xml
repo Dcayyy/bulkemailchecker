@@ -132,6 +132,13 @@
             <artifactId>neverbounce-api-java</artifactId>
             <version>4.0.13</version>
         </dependency>
+        
+        <!-- DNS Java for DNS operations -->
+        <dependency>
+            <groupId>dnsjava</groupId>
+            <artifactId>dnsjava</artifactId>
+            <version>3.5.3</version>
+        </dependency>
     </dependencies>
 
     <build>
