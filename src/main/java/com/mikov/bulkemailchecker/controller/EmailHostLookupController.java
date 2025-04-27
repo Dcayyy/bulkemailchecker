@@ -4,6 +4,10 @@ import com.mikov.bulkemailchecker.service.EmailProviderDetectionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/bulkemailchecker")
 public class EmailHostLookupController {
@@ -14,6 +18,19 @@ public class EmailHostLookupController {
         this.emailProviderDetectionService = emailProviderDetectionService;
     }
 
+    @GetMapping("/instance-info")
+    public ResponseEntity<Map<String, String>> getInstanceInfo() {
+        Map<String, String> info = new HashMap<>();
+        try {
+            info.put("hostname", InetAddress.getLocalHost().getHostName());
+            info.put("port", System.getProperty("server.port"));
+            info.put("instance", "Instance-" + System.getProperty("server.port"));
+        } catch (Exception e) {
+            info.put("error", e.getMessage());
+        }
+        return ResponseEntity.ok(info);
+    }
+
     @PostMapping("/email-host-lookup")
     public ResponseEntity<?> detectEmailProvider(@RequestBody EmailRequest request) {
         if (request.getEmail() == null || request.getEmail().isEmpty()) {
@@ -22,7 +39,11 @@ public class EmailHostLookupController {
 
         try {
             var result = emailProviderDetectionService.detectEmailProvider(request.getEmail());
-            return ResponseEntity.ok(result);
+            // Add instance info to the response
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", result);
+            response.put("instance", "Instance-" + System.getProperty("server.port"));
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ErrorResponse(
                 "Error detecting email provider",
