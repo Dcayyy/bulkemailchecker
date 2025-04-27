@@ -2896,3 +2896,128 @@ com.neverbounce.api.client.exception.NeverbounceApiException: Invalid API key 'p
 2025-04-27 15:28:21.695 [ForkJoinPool.commonPool-worker-2] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
 2025-04-27 15:28:22.210 [ForkJoinPool.commonPool-worker-2] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email sylia.h@impulsenotion.com: valid
 2025-04-27 15:28:22.211 [http-nio-8081-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-27 16:13:12.552 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 78916 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 16:13:12.553 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 16:13:13.434 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 16:13:13.446 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 16:13:13.446 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 16:13:13.488 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 16:13:13.488 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 889 ms
+2025-04-27 16:13:13.586 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 16:13:13.782 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 16:13:13.789 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 16:13:13.809 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 16:13:14.032 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 16:13:14.033 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3dc82e6a]]
+2025-04-27 16:13:14.034 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 16:13:14.048 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 16:13:14.054 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.024 seconds (process running for 2.591)
+2025-04-27 16:13:45.325 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 16:13:45.332 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 16:13:45.334 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 16:13:45.334 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3dc82e6a]]
+2025-04-27 16:13:45.334 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 16:17:37.913 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 22616 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 16:17:37.915 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 16:17:38.944 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 16:17:38.958 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 16:17:38.958 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 16:17:39.003 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 16:17:39.003 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1023 ms
+2025-04-27 16:17:39.114 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 16:17:39.319 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 16:17:39.326 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 16:17:39.347 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 16:17:39.634 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 16:17:39.637 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 16:17:39.638 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 16:17:39.657 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 16:17:39.665 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.305 seconds (process running for 2.912)
+2025-04-27 16:17:47.605 [http-nio-8081-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 16:17:47.623 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: 
+2025-04-27 16:17:47.624 [http-nio-8081-exec-2] WARN  c.m.b.config.ApiKeyAuthFilter - Invalid API Key provided: 
+2025-04-27 16:17:47.625 [http-nio-8081-exec-2] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+org.springframework.security.authentication.BadCredentialsException: Invalid API Key
+	at com.mikov.bulkemailchecker.config.ApiKeyAuthFilter.doFilterInternal(ApiKeyAuthFilter.java:41)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-04-27 16:19:22.286 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-27 16:19:22.296 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-27 16:19:22.299 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-27 16:19:22.299 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@360d41d0]]
+2025-04-27 16:19:22.300 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-27 16:19:26.118 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 78292 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-27 16:19:26.119 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 16:19:26.995 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2025-04-27 16:19:27.006 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-27 16:19:27.007 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 16:19:27.047 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-27 16:19:27.048 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 887 ms
+2025-04-27 16:19:27.151 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-27 16:19:27.345 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-27 16:19:27.353 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-27 16:19:27.372 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-27 16:19:27.612 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-27 16:19:27.614 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@782ac148]]
+2025-04-27 16:19:27.615 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-27 16:19:27.629 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2025-04-27 16:19:27.636 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.005 seconds (process running for 2.63)
+2025-04-27 16:19:28.979 [http-nio-8081-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 16:19:28.999 [http-nio-8081-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: 
+2025-04-27 16:19:29.000 [http-nio-8081-exec-2] WARN  c.m.b.config.ApiKeyAuthFilter - Invalid API Key provided: 
+2025-04-27 16:19:31.487 [http-nio-8081-exec-4] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: 
+2025-04-27 16:19:31.487 [http-nio-8081-exec-4] WARN  c.m.b.config.ApiKeyAuthFilter - Invalid API Key provided: 
+2025-04-27 16:19:32.626 [http-nio-8081-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: 
+2025-04-27 16:19:32.626 [http-nio-8081-exec-3] WARN  c.m.b.config.ApiKeyAuthFilter - Invalid API Key provided: 
+2025-04-27 16:19:48.117 [http-nio-8081-exec-5] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: {{x-api-key}}
+2025-04-27 16:19:48.118 [http-nio-8081-exec-5] WARN  c.m.b.config.ApiKeyAuthFilter - Invalid API Key provided: {{x-api-key}}

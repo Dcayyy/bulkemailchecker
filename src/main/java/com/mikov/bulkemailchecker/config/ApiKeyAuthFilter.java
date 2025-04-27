@@ -4,7 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +37,8 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         
         if (apiKey == null || !validApiKeys.contains(apiKey)) {
             log.warn("Invalid API Key provided: {}", apiKey);
-            throw new BadCredentialsException("Invalid API Key");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
+            return;
         }
 
         log.info("Valid API Key found, creating authentication");
