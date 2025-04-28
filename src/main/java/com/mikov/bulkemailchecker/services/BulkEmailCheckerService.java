@@ -29,17 +29,17 @@ import java.time.format.DateTimeFormatter;
 public final class BulkEmailCheckerService {
     private static final Logger logger = LoggerFactory.getLogger(BulkEmailCheckerService.class);
 
-    private final SMTPValidator smtpValidator;
+    private final EmailValidatorService emailValidatorService;
     private final SyntaxValidator syntaxValidator;
     private final MXRecordValidator mxRecordValidator;
     private final NeverBounceService neverBounceService;
 
     @Autowired
-    public BulkEmailCheckerService(final SMTPValidator smtpValidator,
+    public BulkEmailCheckerService(final EmailValidatorService emailValidatorService,
                                    final SyntaxValidator syntaxValidator,
                                    final MXRecordValidator mxRecordValidator,
                                    final NeverBounceService neverBounceService) {
-        this.smtpValidator = smtpValidator;
+        this.emailValidatorService = emailValidatorService;
         this.syntaxValidator = syntaxValidator;
         this.mxRecordValidator = mxRecordValidator;
         this.neverBounceService = neverBounceService;
@@ -231,7 +231,7 @@ public final class BulkEmailCheckerService {
             return mxResult;
         }
         
-        final var smtpResult = smtpValidator.validate(email);
+        final var smtpResult = emailValidatorService.validate(email);
         
         if (!smtpResult.isValid()) {
             logger.debug("Email {} failed SMTP validation: {}", email, smtpResult.getReason());
@@ -240,7 +240,7 @@ public final class BulkEmailCheckerService {
         
         if (smtpResult.getDetails() != null) {
             final var details = smtpResult.getDetails();
-            if (details.containsKey("event") && "is_catchall".equals(details.get("event")) || "inconclusive".equals(details.get("event"))) {
+            if (details.containsKey("event") && ("is_catchall".equals(details.get("event")) || "inconclusive".equals(details.get("event")))) {
                 logger.info("Catch-all domain detected for email {}. Performing additional verification with NeverBounce.", email);
                 logger.debug("NeverBounce API key before calling service: {}", 
                     neverbounceApiKey != null ? "present" : "null");
