@@ -2,16 +2,14 @@ package com.mikov.bulkemailchecker.smtp.core.commands;
 
 import com.mikov.bulkemailchecker.smtp.core.SmtpCommand;
 import com.mikov.bulkemailchecker.smtp.core.SmtpResponse;
+import lombok.RequiredArgsConstructor;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
+@RequiredArgsConstructor
 public class HeloCommand implements SmtpCommand {
     private final String domain;
-
-    public HeloCommand(String domain) {
-        this.domain = domain;
-    }
 
     @Override
     public SmtpResponse execute(BufferedReader in, PrintWriter out) {
@@ -26,6 +24,6 @@ public class HeloCommand implements SmtpCommand {
 
     @Override
     public String getCommand() {
-        return "HELO";
+        return "HELO " + domain;
     }
 } 

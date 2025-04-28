@@ -1,51 +1,39 @@
 package com.mikov.bulkemailchecker.smtp.model;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Data
+@Getter
 @Builder
 public class SmtpResult {
     private final String mxHost;
     private final String ipAddress;
-    private final String responseMessage;
-    private final boolean deliverable;
-    private final boolean temporaryError;
-    private final boolean permanentError;
+    private final boolean isDeliverable;
+    private final boolean isCatchAll;
+    private final boolean isTempError;
     private final int responseCode;
-    private final String errorMessage;
+    private final String responseMessage;
     private final SmtpErrorCode errorCode;
     private final Map<String, Object> details;
 
-    public static SmtpResult fromResponse(String mxHost, String ipAddress, String responseMessage,
-                                        boolean deliverable, boolean temporaryError, boolean permanentError,
-                                        int responseCode, String errorMessage) {
-        SmtpErrorCode errorCode = SmtpErrorCode.fromResponseCode(responseCode, responseMessage);
+    public static SmtpResult fromResponse(String mxHost, String provider, String ipAddress, 
+                                        boolean isDeliverable, boolean isCatchAll, 
+                                        boolean isTempError, int responseCode, String responseMessage) {
         Map<String, Object> details = new HashMap<>();
+        details.put("provider", provider);
         
-        if (errorCode == SmtpErrorCode.CATCH_ALL) {
-            details.put("event", "is_catchall");
-        } else if (errorCode == SmtpErrorCode.INCONCLUSIVE) {
-            details.put("event", "inconclusive");
-        } else if (errorCode == SmtpErrorCode.SERVER_RESTRICTED) {
-            details.put("event", "server_restricted");
-        } else if (errorCode == SmtpErrorCode.GREYLISTING) {
-            details.put("greylisting_detected", true);
-        }
-
         return SmtpResult.builder()
                 .mxHost(mxHost)
                 .ipAddress(ipAddress)
-                .responseMessage(responseMessage)
-                .deliverable(deliverable)
-                .temporaryError(temporaryError)
-                .permanentError(permanentError)
+                .isDeliverable(isDeliverable)
+                .isCatchAll(isCatchAll)
+                .isTempError(isTempError)
                 .responseCode(responseCode)
-                .errorMessage(errorMessage)
-                .errorCode(errorCode)
+                .responseMessage(responseMessage)
+                .errorCode(SmtpErrorCode.fromCode(responseCode))
                 .details(details)
                 .build();
     }

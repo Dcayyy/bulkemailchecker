@@ -1,39 +1,40 @@
 package com.mikov.bulkemailchecker.smtp.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum SmtpErrorCode {
     // Success codes
-    SUCCESS(200, "Success"),
-    MAILBOX_EXISTS(201, "Mailbox exists"),
+    SUCCESS(200, false),
+    MAILBOX_EXISTS(250, false),
     
     // Temporary errors
-    GREYLISTING(451, "Greylisting detected"),
-    TEMPORARY_FAILURE(450, "Temporary failure"),
-    SERVER_BUSY(421, "Server busy"),
+    GREYLISTING(451, true),
+    TEMPORARY_FAILURE(451, true),
+    CONNECTION_ERROR(421, true),
     
     // Permanent errors
-    MAILBOX_DOES_NOT_EXIST(550, "Mailbox does not exist"),
-    INVALID_DOMAIN(550, "Invalid domain"),
-    ACCESS_DENIED(550, "Access denied"),
+    MAILBOX_DOES_NOT_EXIST(550, false),
+    INVALID_DOMAIN(550, false),
+    ACCESS_DENIED(550, false),
+    NO_MX_RECORDS(550, false),
+    DNS_ISSUES(550, false),
     
     // Special cases
-    CATCH_ALL(250, "Catch-all domain"),
-    INCONCLUSIVE(252, "Inconclusive result"),
-    SERVER_RESTRICTED(550, "Server restricted");
+    CATCH_ALL(250, false),
+    INCONCLUSIVE(550, false);
 
     private final int code;
-    private final String message;
-
-    SmtpErrorCode(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
+    private final boolean temporary;
 
     public int getCode() {
         return code;
     }
 
     public String getMessage() {
-        return message;
+        return this.name();
     }
 
     public static SmtpErrorCode fromResponseCode(int responseCode, String responseMessage) {
@@ -47,11 +48,6 @@ public enum SmtpErrorCode {
             return GREYLISTING;
         }
 
-        // Check for server restrictions
-        if (responseMessage != null && responseMessage.toLowerCase().contains("restricted")) {
-            return SERVER_RESTRICTED;
-        }
-
         // Map standard SMTP response codes
         switch (responseCode) {
             case 250:
@@ -59,7 +55,7 @@ public enum SmtpErrorCode {
             case 450:
                 return TEMPORARY_FAILURE;
             case 421:
-                return SERVER_BUSY;
+                return CONNECTION_ERROR;
             case 550:
                 return MAILBOX_DOES_NOT_EXIST;
             case 252:
@@ -71,19 +67,31 @@ public enum SmtpErrorCode {
 
     public boolean requiresNeverBounceVerification() {
         return this == CATCH_ALL || 
-               this == INCONCLUSIVE || 
-               this == SERVER_RESTRICTED;
+               this == INCONCLUSIVE;
     }
 
-    public boolean isTemporaryError() {
-        return this == GREYLISTING || 
-               this == TEMPORARY_FAILURE || 
-               this == SERVER_BUSY;
+    public boolean isTemporary() {
+        return temporary;
     }
 
     public boolean isPermanentError() {
         return this == MAILBOX_DOES_NOT_EXIST || 
                this == INVALID_DOMAIN || 
-               this == ACCESS_DENIED;
+               this == ACCESS_DENIED ||
+               this == NO_MX_RECORDS ||
+               this == DNS_ISSUES;
+    }
+
+    public static SmtpErrorCode fromCode(int code) {
+        for (SmtpErrorCode errorCode : values()) {
+            if (errorCode.getCode() == code) {
+                return errorCode;
+            }
+        }
+        return INCONCLUSIVE;
+    }
+
+    public boolean isTemporaryError() {
+        return isTemporary();
     }
 } 

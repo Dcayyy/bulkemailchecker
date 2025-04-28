@@ -10,27 +10,41 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailValidatorService implements EmailValidator {
     private final SmtpValidator smtpValidator;
+    private static final int MAX_RETRIES = 3;
+    private static final int RETRY_DELAY_MS = 1000;
 
     @Override
     public ValidationResult validate(String email) {
         log.info("Starting SMTP validation for email: {}", email);
         
         try {
-            SmtpResult smtpResult = smtpValidator.validate(email);
-            log.info("SMTP validation result for {}: {}", email, smtpResult);
+            SmtpResult smtpResult = null;
+            int retryCount = 0;
+            
+            while (retryCount < MAX_RETRIES) {
+                smtpResult = smtpValidator.validate(email);
+                log.info("SMTP validation attempt {} for {}: {}", retryCount + 1, email, smtpResult);
 
-            if (smtpResult.isTemporaryError()) {
-                return createErrorResult(smtpResult.getErrorMessage(), "Temporary SMTP error");
+                if (smtpResult.isTemporaryError()) {
+                    log.info("Temporary error detected for {}, retrying...", email);
+                    retryCount++;
+                    if (retryCount < MAX_RETRIES) {
+                        TimeUnit.MILLISECONDS.sleep(RETRY_DELAY_MS);
+                        continue;
+                    }
+                }
+                break;
             }
 
-            if (smtpResult.isPermanentError()) {
-                return createErrorResult(smtpResult.getErrorMessage(), "Permanent SMTP error");
+            if (smtpResult == null) {
+                return createErrorResult("Failed to validate email after " + MAX_RETRIES + " attempts", "Validation failed");
             }
 
             Map<String, Object> details = new HashMap<>();
@@ -41,9 +55,31 @@ public class EmailValidatorService implements EmailValidator {
             details.put("catch_all", smtpResult.getErrorCode() == SmtpErrorCode.CATCH_ALL);
             details.put("greylisting", smtpResult.getErrorCode() == SmtpErrorCode.GREYLISTING);
             details.put("requires_neverbounce", smtpResult.requiresNeverBounceVerification());
+            details.put("retry_count", retryCount);
 
             if (smtpResult.getDetails() != null) {
                 details.putAll(smtpResult.getDetails());
+            }
+
+            // Handle DNS issues
+            if (details.containsKey("has_dns_issues") && Boolean.TRUE.equals(details.get("has_dns_issues"))) {
+                log.warn("DNS issues detected for {}: SPF={}, DKIM={}, DMARC={}", 
+                    email, 
+                    details.get("spf_record"),
+                    details.get("dkim_record"),
+                    details.get("dmarc_record"));
+            }
+
+            // Handle catch-all detection
+            if (smtpResult.getErrorCode() == SmtpErrorCode.CATCH_ALL) {
+                log.info("Catch-all domain detected for {}", email);
+                details.put("event", "is_catchall");
+            }
+
+            // Handle inconclusive results
+            if (smtpResult.getErrorCode() == SmtpErrorCode.INCONCLUSIVE) {
+                log.info("Inconclusive result for {}", email);
+                details.put("event", "inconclusive");
             }
 
             return ValidationResult.builder()

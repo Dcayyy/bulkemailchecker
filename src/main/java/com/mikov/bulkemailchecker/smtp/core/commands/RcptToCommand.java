@@ -2,20 +2,18 @@ package com.mikov.bulkemailchecker.smtp.core.commands;
 
 import com.mikov.bulkemailchecker.smtp.core.SmtpCommand;
 import com.mikov.bulkemailchecker.smtp.core.SmtpResponse;
+import lombok.RequiredArgsConstructor;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
+@RequiredArgsConstructor
 public class RcptToCommand implements SmtpCommand {
-    private final String toEmail;
-
-    public RcptToCommand(String toEmail) {
-        this.toEmail = toEmail;
-    }
+    private final String email;
 
     @Override
     public SmtpResponse execute(BufferedReader in, PrintWriter out) {
-        out.print("RCPT TO:<" + toEmail + ">\r\n");
+        out.print("RCPT TO:<" + email + ">\r\n");
         out.flush();
         try {
             return new SmtpResponse(in.readLine());
@@ -26,6 +24,6 @@ public class RcptToCommand implements SmtpCommand {
 
     @Override
     public String getCommand() {
-        return "RCPT TO";
+        return "RCPT TO: <" + email + ">";
     }
 } 

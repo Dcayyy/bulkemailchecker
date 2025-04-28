@@ -4,20 +4,22 @@ import lombok.Getter;
 
 @Getter
 public class SmtpResponse {
+    private final String response;
     private final int code;
     private final String message;
-    private final SmtpResponseCode type;
+    private final boolean isSuccess;
     private final boolean isTempError;
 
     public SmtpResponse(String response) {
-        this.code = extractCode(response);
-        this.message = response;
-        this.type = SmtpResponseCode.fromCode(code);
-        this.isTempError = determineIfTempError(code, response);
+        this.response = response;
+        this.code = parseCode(response);
+        this.message = parseMessage(response);
+        this.isSuccess = code >= 200 && code < 300;
+        this.isTempError = code >= 400 && code < 500;
     }
 
-    private int extractCode(String response) {
-        if (response == null || response.length() < 3) {
+    private int parseCode(String response) {
+        if (response == null || response.isEmpty()) {
             return 0;
         }
         try {
@@ -27,29 +29,14 @@ public class SmtpResponse {
         }
     }
 
-    private boolean determineIfTempError(int code, String response) {
-        if (code >= 400 && code < 500) {
-            return true;
+    private String parseMessage(String response) {
+        if (response == null || response.isEmpty()) {
+            return "";
         }
-        if (code == 550) {
-            String lowerResponse = response.toLowerCase();
-            return lowerResponse.contains("try again") ||
-                   lowerResponse.contains("try later") ||
-                   lowerResponse.contains("unavailable") ||
-                   lowerResponse.contains("temporarily");
-        }
-        return false;
-    }
-
-    public boolean isSuccess() {
-        return type == SmtpResponseCode.SUCCESS;
+        return response.substring(4).trim();
     }
 
     public boolean isTemporaryFailure() {
-        return type == SmtpResponseCode.TEMPORARY_FAILURE;
-    }
-
-    public boolean isPermanentFailure() {
-        return type == SmtpResponseCode.PERMANENT_FAILURE;
+        return isTempError;
     }
 } 

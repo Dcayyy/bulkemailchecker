@@ -1,5 +1,6 @@
 package com.mikov.bulkemailchecker.smtp.model;
 
+import com.mikov.bulkemailchecker.smtp.core.ProxyManager;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,6 +15,8 @@ public class SmtpConfig {
     private final boolean enableFastMode;
     private final boolean enableAggressiveVerification;
     private final String fromEmail;
+    private final int timeout;
+    private final ProxyManager proxyManager;
 
     public static SmtpConfig getDefault() {
         return SmtpConfig.builder()
@@ -25,6 +28,8 @@ public class SmtpConfig {
             .enableFastMode(false)
             .enableAggressiveVerification(true)
             .fromEmail("verify@fake.com")
+            .timeout(30000)
+            .proxyManager(new ProxyManager())
             .build();
     }
 } 

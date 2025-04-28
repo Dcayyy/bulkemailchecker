@@ -642,3 +642,47 @@
 2025-04-28 20:52:21.903 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.EmailValidatorService - Starting SMTP validation for email: dan@reveri.com
 2025-04-28 20:52:23.593 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.EmailValidatorService - SMTP validation result for dan@reveri.com: SmtpResult(mxHost=aspmx.l.google.com., ipAddress=Google, responseMessage=172.217.218.26, deliverable=true, temporaryError=false, permanentError=false, responseCode=250, errorMessage=250 2.1.5 OK 4fb4d7f45d1cf-5f7012fb7cesi5558442a12.53 - gsmtp, errorCode=MAILBOX_EXISTS, details={spf_record=missing, dmarc_record=present, dmarc_policy=quarantine, has_dns_issues=true, dkim_record=not_found})
 2025-04-28 20:52:27.421 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:52:41.746 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:52:41.746 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:52:41.746 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:52:41.747 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:52:41.747 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:52:41.748 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@reveri.com
+2025-04-28 20:52:41.748 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:52:41.748 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@reveri.com with NeverBounce API key present: true
+2025-04-28 20:52:41.748 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.EmailValidatorService - Starting SMTP validation for email: kkrastev@reveri.com
+2025-04-28 20:52:43.287 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.services.EmailValidatorService - SMTP validation result for kkrastev@reveri.com: SmtpResult(mxHost=aspmx.l.google.com., ipAddress=Google, responseMessage=172.217.218.26, deliverable=false, temporaryError=false, permanentError=true, responseCode=550, errorMessage=550-5.1.1 The email account that you tried to reach does not exist. Please try, errorCode=MAILBOX_DOES_NOT_EXIST, details={spf_record=missing, dmarc_record=present, dmarc_policy=quarantine, has_dns_issues=true, dkim_record=not_found})
+2025-04-28 20:52:43.287 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - Email kkrastev@reveri.com failed SMTP validation: 550-5.1.1 The email account that you tried to reach does not exist. Please try
+2025-04-28 20:52:43.288 [http-nio-8085-exec-7] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:56:54.557 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:56:54.564 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:56:54.567 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:56:54.567 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:56:54.567 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 21:02:11.723 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 45268 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 21:02:11.725 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 21:02:12.718 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 21:02:12.731 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 21:02:12.732 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 21:02:12.773 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 21:02:12.774 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1001 ms
+2025-04-28 21:02:12.833 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'bulkEmailCheckerController' defined in file [C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes\com\mikov\bulkemailchecker\controller\BulkEmailCheckerController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'bulkEmailCheckerService' defined in file [C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes\com\mikov\bulkemailchecker\services\BulkEmailCheckerService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'emailValidatorService' defined in file [C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes\com\mikov\bulkemailchecker\services\EmailValidatorService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'smtpValidator' defined in file [C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes\com\mikov\bulkemailchecker\smtp\SmtpValidator.class]: Unsatisfied dependency expressed through constructor parameter 1: No qualifying bean of type 'com.mikov.bulkemailchecker.smtp.dns.MxResolver' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2025-04-28 21:02:12.835 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-04-28 21:02:12.845 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-28 21:02:12.867 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 1 of constructor in com.mikov.bulkemailchecker.smtp.SmtpValidator required a bean of type 'com.mikov.bulkemailchecker.smtp.dns.MxResolver' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.mikov.bulkemailchecker.smtp.dns.MxResolver' in your configuration.
+

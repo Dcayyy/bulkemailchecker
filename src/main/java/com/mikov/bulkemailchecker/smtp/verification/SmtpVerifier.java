@@ -7,33 +7,29 @@ import com.mikov.bulkemailchecker.smtp.core.commands.MailFromCommand;
 import com.mikov.bulkemailchecker.smtp.core.commands.RcptToCommand;
 import com.mikov.bulkemailchecker.smtp.model.SmtpConfig;
 import com.mikov.bulkemailchecker.smtp.model.SmtpResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class SmtpVerifier {
-    private static final Logger logger = LoggerFactory.getLogger(SmtpVerifier.class);
     private final SmtpClient client;
     private final SmtpConfig config;
 
-    public SmtpVerifier(SmtpClient client) {
-        this(client, SmtpConfig.getDefault());
-    }
-
-    public SmtpVerifier(SmtpClient client, SmtpConfig config) {
-        this.client = client;
-        this.config = config;
-    }
-
     public SmtpResult verify(String localPart, String domain) throws Exception {
+        log.debug("Starting SMTP verification for {}@{}", localPart, domain);
+        
         for (int attempt = 0; attempt < config.getVerificationAttempts(); attempt++) {
             try {
                 if (attempt > 0) {
-                    logger.debug("Retrying SMTP verification for {}@{} (attempt {}/{})", 
+                    log.debug("Retrying SMTP verification for {}@{} (attempt {}/{})", 
                         localPart, domain, attempt + 1, config.getVerificationAttempts());
-                    TimeUnit.MILLISECONDS.sleep(1000); // Wait before retry
+                    TimeUnit.MILLISECONDS.sleep(1000);
                 }
 
                 SmtpResponse heloResponse = client.executeCommand(new HeloCommand("fake.com"));
@@ -41,6 +37,7 @@ public class SmtpVerifier {
                     if (heloResponse.isTemporaryFailure() && attempt < config.getVerificationAttempts() - 1) {
                         continue;
                     }
+                    log.warn("HELO command failed for {}@{}: {}", localPart, domain, heloResponse.getMessage());
                     return createErrorResult(heloResponse);
                 }
 
@@ -49,6 +46,7 @@ public class SmtpVerifier {
                     if (mailFromResponse.isTemporaryFailure() && attempt < config.getVerificationAttempts() - 1) {
                         continue;
                     }
+                    log.warn("MAIL FROM command failed for {}@{}: {}", localPart, domain, mailFromResponse.getMessage());
                     return createErrorResult(mailFromResponse);
                 }
 
@@ -63,6 +61,9 @@ public class SmtpVerifier {
                 String provider = identifyProvider(client.getHost());
                 String ipAddress = getIpAddress(client.getHost());
 
+                log.debug("SMTP verification completed for {}@{}: deliverable={}, catchAll={}", 
+                    localPart, domain, isDeliverable, isCatchAll);
+
                 return SmtpResult.fromResponse(
                     client.getHost(),
                     provider,
@@ -75,7 +76,7 @@ public class SmtpVerifier {
                 );
 
             } catch (Exception e) {
-                logger.debug("SMTP verification attempt {} failed for {}@{}: {}", 
+                log.error("SMTP verification attempt {} failed for {}@{}: {}", 
                     attempt + 1, localPart, domain, e.getMessage());
                 if (attempt == config.getVerificationAttempts() - 1) {
                     return SmtpResult.fromResponse(
@@ -92,6 +93,7 @@ public class SmtpVerifier {
             }
         }
 
+        log.error("All SMTP verification attempts failed for {}@{}", localPart, domain);
         return SmtpResult.fromResponse(
             client.getHost(),
             null,
@@ -157,6 +159,7 @@ public class SmtpVerifier {
         try {
             return InetAddress.getByName(hostname).getHostAddress();
         } catch (Exception e) {
+            log.warn("Failed to resolve IP address for {}: {}", hostname, e.getMessage());
             return "";
         }
     }

@@ -1,84 +1,79 @@
 package com.mikov.bulkemailchecker.smtp.verification;
 
 import com.mikov.bulkemailchecker.smtp.core.SmtpClient;
-import com.mikov.bulkemailchecker.smtp.model.SmtpResult;
+import com.mikov.bulkemailchecker.smtp.model.SmtpConfig;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class CatchAllDetector {
-    private static final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-    private static final Random random = new Random();
+    private final SmtpConfig config;
+    private static final int MAX_RETRIES = 3;
+    private static final int RETRY_DELAY_MS = 1000;
 
     public boolean detect(String domain, String mxHost) {
-        try {
-            List<CompletableFuture<SmtpResult>> probeFutures = createProbeEmails(domain, mxHost);
-            CompletableFuture.allOf(probeFutures.toArray(new CompletableFuture[0]))
-                .get(5, TimeUnit.SECONDS);
+        SmtpClient client = null;
+        int retryCount = 0;
 
-            int acceptedCount = 0;
-            boolean anyRejected = false;
-
-            for (CompletableFuture<SmtpResult> future : probeFutures) {
-                SmtpResult result = future.get();
-                if (result.isDeliverable()) {
-                    acceptedCount++;
-                } else if (!result.isTemporaryError() && result.getResponseCode() >= 500) {
-                    anyRejected = true;
-                }
-            }
-
-            return acceptedCount >= 2 && !anyRejected;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private List<CompletableFuture<SmtpResult>> createProbeEmails(String domain, String mxHost) {
-        String randomId1 = generateRandomString(10);
-        String randomId2 = generateRandomString(12);
-        String randomId3 = generateRandomString(8);
-
-        String[] probeLocalParts = {
-            "nonexistent-user-" + randomId1,
-            "invalid.email." + randomId2,
-            "probe_" + randomId3 + "_test"
-        };
-
-        return List.of(
-            verifyProbeEmail(probeLocalParts[0], domain, mxHost),
-            verifyProbeEmail(probeLocalParts[1], domain, mxHost),
-            verifyProbeEmail(probeLocalParts[2], domain, mxHost)
-        );
-    }
-
-    private CompletableFuture<SmtpResult> verifyProbeEmail(String localPart, String domain, String mxHost) {
-        return CompletableFuture.supplyAsync(() -> {
+        while (retryCount < MAX_RETRIES) {
             try {
-                SmtpClient client = new SmtpClient(mxHost);
+                client = new SmtpClient(mxHost, config.getProxyManager());
                 client.connect();
                 
-                SmtpResult result = new SmtpVerifier(client).verify(localPart, domain);
-                client.disconnect();
+                String response = client.sendCommand("HELO " + domain);
+                if (!response.startsWith("250")) {
+                    return false;
+                }
+
+                response = client.sendCommand("MAIL FROM: <check@" + domain + ">");
+                if (!response.startsWith("250")) {
+                    return false;
+                }
+
+                // Generate a random email address that is unlikely to exist
+                String randomEmail = generateRandomEmail(domain);
+                response = client.sendCommand("RCPT TO: <" + randomEmail + ">");
                 
-                return result;
+                // If the server accepts a random email, it's likely a catch-all
+                return response.startsWith("250");
+
             } catch (Exception e) {
-                return SmtpResult.fromResponse(mxHost, null, null, false, false, true, 0, e.getMessage());
+                log.error("Error detecting catch-all for domain {}: {}", domain, e.getMessage());
+                retryCount++;
+                if (retryCount < MAX_RETRIES) {
+                    try {
+                        Thread.sleep(RETRY_DELAY_MS);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                    continue;
+                }
+                return false;
+            } finally {
+                if (client != null) {
+                    try {
+                        client.disconnect();
+                    } catch (Exception e) {
+                        log.warn("Error disconnecting from SMTP server: {}", e.getMessage());
+                    }
+                }
             }
-        }, executor);
+        }
+        return false;
     }
 
-    private String generateRandomString(int length) {
-        String allowedChars = "abcdefghijklmnopqrstuvwxyz";
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            sb.append(allowedChars.charAt(random.nextInt(allowedChars.length())));
+    private String generateRandomEmail(String domain) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            sb.append((char) ('a' + random.nextInt(26)));
         }
+        sb.append('@').append(domain);
         return sb.toString();
     }
 } 

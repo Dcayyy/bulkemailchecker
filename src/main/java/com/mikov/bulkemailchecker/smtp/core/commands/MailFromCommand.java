@@ -2,20 +2,18 @@ package com.mikov.bulkemailchecker.smtp.core.commands;
 
 import com.mikov.bulkemailchecker.smtp.core.SmtpCommand;
 import com.mikov.bulkemailchecker.smtp.core.SmtpResponse;
+import lombok.RequiredArgsConstructor;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
+@RequiredArgsConstructor
 public class MailFromCommand implements SmtpCommand {
-    private final String fromEmail;
-
-    public MailFromCommand(String fromEmail) {
-        this.fromEmail = fromEmail;
-    }
+    private final String email;
 
     @Override
     public SmtpResponse execute(BufferedReader in, PrintWriter out) {
-        out.print("MAIL FROM:<" + fromEmail + ">\r\n");
+        out.print("MAIL FROM:<" + email + ">\r\n");
         out.flush();
         try {
             return new SmtpResponse(in.readLine());
@@ -26,6 +24,6 @@ public class MailFromCommand implements SmtpCommand {
 
     @Override
     public String getCommand() {
-        return "MAIL FROM";
+        return "MAIL FROM: <" + email + ">";
     }
 } 
