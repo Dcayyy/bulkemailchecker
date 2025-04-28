@@ -7,10 +7,14 @@ import com.mikov.bulkemailchecker.smtp.core.commands.MailFromCommand;
 import com.mikov.bulkemailchecker.smtp.core.commands.RcptToCommand;
 import com.mikov.bulkemailchecker.smtp.model.SmtpConfig;
 import com.mikov.bulkemailchecker.smtp.model.SmtpResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
 
 public class SmtpVerifier {
+    private static final Logger logger = LoggerFactory.getLogger(SmtpVerifier.class);
     private final SmtpClient client;
     private final SmtpConfig config;
 
@@ -24,48 +28,80 @@ public class SmtpVerifier {
     }
 
     public SmtpResult verify(String localPart, String domain) throws Exception {
-        try {
-            SmtpResponse heloResponse = client.executeCommand(new HeloCommand("fake.com"));
-            if (!heloResponse.isSuccess()) {
-                return createErrorResult(heloResponse);
+        for (int attempt = 0; attempt < config.getVerificationAttempts(); attempt++) {
+            try {
+                if (attempt > 0) {
+                    logger.debug("Retrying SMTP verification for {}@{} (attempt {}/{})", 
+                        localPart, domain, attempt + 1, config.getVerificationAttempts());
+                    TimeUnit.MILLISECONDS.sleep(1000); // Wait before retry
+                }
+
+                SmtpResponse heloResponse = client.executeCommand(new HeloCommand("fake.com"));
+                if (!heloResponse.isSuccess()) {
+                    if (heloResponse.isTemporaryFailure() && attempt < config.getVerificationAttempts() - 1) {
+                        continue;
+                    }
+                    return createErrorResult(heloResponse);
+                }
+
+                SmtpResponse mailFromResponse = client.executeCommand(new MailFromCommand(config.getFromEmail()));
+                if (!mailFromResponse.isSuccess()) {
+                    if (mailFromResponse.isTemporaryFailure() && attempt < config.getVerificationAttempts() - 1) {
+                        continue;
+                    }
+                    return createErrorResult(mailFromResponse);
+                }
+
+                SmtpResponse rcptToResponse = client.executeCommand(new RcptToCommand(localPart + "@" + domain));
+                if (rcptToResponse.isTemporaryFailure() && attempt < config.getVerificationAttempts() - 1) {
+                    continue;
+                }
+                
+                boolean isDeliverable = rcptToResponse.isSuccess();
+                boolean isCatchAll = isDeliverable && isCatchAllResponse(rcptToResponse);
+                
+                String provider = identifyProvider(client.getHost());
+                String ipAddress = getIpAddress(client.getHost());
+
+                return SmtpResult.fromResponse(
+                    client.getHost(),
+                    provider,
+                    ipAddress,
+                    isDeliverable,
+                    isCatchAll,
+                    rcptToResponse.isTempError(),
+                    rcptToResponse.getCode(),
+                    rcptToResponse.getMessage()
+                );
+
+            } catch (Exception e) {
+                logger.debug("SMTP verification attempt {} failed for {}@{}: {}", 
+                    attempt + 1, localPart, domain, e.getMessage());
+                if (attempt == config.getVerificationAttempts() - 1) {
+                    return SmtpResult.fromResponse(
+                        client.getHost(),
+                        null,
+                        null,
+                        false,
+                        false,
+                        true,
+                        0,
+                        e.getMessage()
+                    );
+                }
             }
-
-            SmtpResponse mailFromResponse = client.executeCommand(new MailFromCommand(config.getFromEmail()));
-            if (!mailFromResponse.isSuccess()) {
-                return createErrorResult(mailFromResponse);
-            }
-
-            SmtpResponse rcptToResponse = client.executeCommand(new RcptToCommand(localPart + "@" + domain));
-            
-            boolean isDeliverable = rcptToResponse.isSuccess();
-            boolean isCatchAll = isDeliverable && isCatchAllResponse(rcptToResponse);
-            
-            String provider = identifyProvider(client.getHost());
-            String ipAddress = getIpAddress(client.getHost());
-
-            return SmtpResult.fromResponse(
-                client.getHost(),
-                provider,
-                ipAddress,
-                isDeliverable,
-                isCatchAll,
-                rcptToResponse.isTempError(),
-                rcptToResponse.getCode(),
-                rcptToResponse.getMessage()
-            );
-
-        } catch (Exception e) {
-            return SmtpResult.fromResponse(
-                client.getHost(),
-                null,
-                null,
-                false,
-                false,
-                true,
-                0,
-                e.getMessage()
-            );
         }
+
+        return SmtpResult.fromResponse(
+            client.getHost(),
+            null,
+            null,
+            false,
+            false,
+            true,
+            0,
+            "All verification attempts failed"
+        );
     }
 
     private SmtpResult createErrorResult(SmtpResponse response) {

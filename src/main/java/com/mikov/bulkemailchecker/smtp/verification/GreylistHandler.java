@@ -16,7 +16,7 @@ public class GreylistHandler {
 
     public SmtpResult handle(String localPart, String domain) throws Exception {
         SmtpResult firstAttempt = verifier.verify(localPart, domain);
-        if (!firstAttempt.isTempError()) {
+        if (!firstAttempt.isTemporaryError()) {
             return firstAttempt;
         }
 
@@ -24,12 +24,12 @@ public class GreylistHandler {
             TimeUnit.MILLISECONDS.sleep(config.getGreylistingRetryDelay());
             
             SmtpResult nextAttempt = verifier.verify(localPart, domain);
-            if (!nextAttempt.isTempError()) {
+            if (!nextAttempt.isTemporaryError()) {
                 return nextAttempt;
             }
 
             if (nextAttempt.getResponseCode() != firstAttempt.getResponseCode() ||
-                !nextAttempt.getFullResponse().equals(firstAttempt.getFullResponse())) {
+                !nextAttempt.getResponseMessage().equals(firstAttempt.getResponseMessage())) {
                 return nextAttempt.isDeliverable() ? nextAttempt : firstAttempt;
             }
         }

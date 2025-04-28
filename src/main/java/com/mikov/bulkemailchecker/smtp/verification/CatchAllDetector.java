@@ -27,7 +27,7 @@ public class CatchAllDetector {
                 SmtpResult result = future.get();
                 if (result.isDeliverable()) {
                     acceptedCount++;
-                } else if (!result.isTempError() && result.getResponseCode() >= 500) {
+                } else if (!result.isTemporaryError() && result.getResponseCode() >= 500) {
                     anyRejected = true;
                 }
             }

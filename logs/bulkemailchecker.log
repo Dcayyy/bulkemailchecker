@@ -189,3 +189,456 @@
 2025-04-28 20:18:49.498 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
 2025-04-28 20:18:50.612 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email kkrastev@osemdental.com: VALID
 2025-04-28 20:18:50.621 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:19:14.688 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:19:14.694 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:19:14.696 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:19:14.697 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7e3ee128]]
+2025-04-28 20:19:14.697 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:19:16.797 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 29412 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:19:16.798 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:19:17.719 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:19:17.731 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:19:17.731 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:19:17.772 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:19:17.773 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 926 ms
+2025-04-28 20:19:17.913 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:19:18.015 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:19:18.123 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:19:18.130 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:19:18.150 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:19:18.163 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:19:18.388 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:19:18.390 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@84f51d9]]
+2025-04-28 20:19:18.390 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:19:18.405 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:19:18.411 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.127 seconds (process running for 2.687)
+2025-04-28 20:20:00.280 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:20:00.288 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:20:00.290 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:20:00.290 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@84f51d9]]
+2025-04-28 20:20:00.291 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:20:03.081 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 39088 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:20:03.082 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:20:04.060 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:20:04.073 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:20:04.073 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:20:04.124 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:20:04.125 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 992 ms
+2025-04-28 20:20:04.288 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:20:04.393 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:20:04.517 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:20:04.526 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:20:04.548 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:20:04.564 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:20:04.811 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:20:04.813 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@580ffea]]
+2025-04-28 20:20:04.814 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:20:04.831 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:20:04.838 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.372 seconds (process running for 3.243)
+2025-04-28 20:20:13.441 [http-nio-8085-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:20:13.466 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:20:13.466 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:20:13.467 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:20:13.480 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:20:13.482 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:20:13.504 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:20:13.504 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:20:13.505 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:24:40.978 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email kkrastev@osemdental.com. Performing additional verification with NeverBounce.
+2025-04-28 20:24:40.979 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-28 20:24:40.979 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email kkrastev@osemdental.com with NeverBounce API
+2025-04-28 20:24:40.991 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-28 20:24:41.027 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:25:28.078 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 42800 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:25:28.086 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:25:29.101 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:25:29.114 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:25:29.114 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:25:29.157 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:25:29.157 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1001 ms
+2025-04-28 20:25:29.303 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:25:29.402 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:25:29.509 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:25:29.521 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:25:29.541 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:25:29.554 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:25:29.774 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:25:29.776 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@84f51d9]]
+2025-04-28 20:25:29.777 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:25:29.792 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:25:29.799 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.288 seconds (process running for 2.955)
+2025-04-28 20:25:34.031 [http-nio-8085-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:25:34.054 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:25:34.055 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:25:34.055 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:25:34.070 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:25:34.072 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:25:34.092 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:25:34.092 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:25:34.092 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:25:34.344 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email kkrastev@osemdental.com. Performing additional verification with NeverBounce.
+2025-04-28 20:25:34.345 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-28 20:25:34.345 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email kkrastev@osemdental.com with NeverBounce API
+2025-04-28 20:25:34.350 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-28 20:25:35.344 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email kkrastev@osemdental.com: VALID
+2025-04-28 20:25:35.353 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:27:11.702 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:27:11.712 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:27:11.714 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:27:11.714 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@84f51d9]]
+2025-04-28 20:27:11.714 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:29:11.000 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 34548 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:29:11.002 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:29:11.952 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:29:11.964 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:29:11.964 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:29:12.011 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:29:12.012 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 961 ms
+2025-04-28 20:29:12.157 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:29:12.255 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:29:12.368 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:29:12.376 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:29:12.397 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:29:12.411 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:29:12.693 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:29:12.695 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7e3ee128]]
+2025-04-28 20:29:12.697 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:29:12.712 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:29:12.720 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.221 seconds (process running for 2.831)
+2025-04-28 20:29:16.392 [http-nio-8085-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:29:16.411 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:29:16.411 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:29:16.412 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:29:16.425 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:29:16.427 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:29:16.448 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:29:16.448 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:29:16.449 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:29:16.450 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: kkrastev@osemdental.com
+2025-04-28 20:29:16.536 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.EmailValidatorService - Error during SMTP validation for kkrastev@osemdental.com: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:29:16.537 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Email kkrastev@osemdental.com failed SMTP validation: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:29:16.546 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:41:27.118 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:41:27.126 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:41:27.128 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:41:27.129 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7e3ee128]]
+2025-04-28 20:41:27.129 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:41:30.660 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 38180 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:41:30.662 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:41:31.705 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:41:31.718 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:41:31.719 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:41:31.763 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:41:31.764 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1035 ms
+2025-04-28 20:41:31.929 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:41:32.046 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:41:32.176 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:41:32.185 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:41:32.209 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:41:32.225 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:41:32.479 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:41:32.481 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:41:32.482 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:41:32.500 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:41:32.507 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.444 seconds (process running for 3.136)
+2025-04-28 20:41:48.663 [http-nio-8085-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:41:48.684 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:41:48.684 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:41:48.685 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:41:48.699 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:41:48.702 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:41:48.725 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:41:48.726 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:41:48.726 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:41:48.728 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: kkrastev@osemdental.com
+2025-04-28 20:41:48.855 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.EmailValidatorService - Error during SMTP validation for kkrastev@osemdental.com: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:41:48.856 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Email kkrastev@osemdental.com failed SMTP validation: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:41:48.866 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:41:55.174 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:41:55.182 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:41:55.185 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:41:55.185 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:41:55.186 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:41:57.932 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 43740 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:41:57.934 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:41:58.921 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:41:58.934 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:41:58.934 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:41:58.977 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:41:58.978 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 993 ms
+2025-04-28 20:41:59.141 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:41:59.250 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:41:59.372 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:41:59.381 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:41:59.404 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:41:59.418 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:41:59.659 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:41:59.661 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@191e654]]
+2025-04-28 20:41:59.662 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:41:59.680 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:41:59.688 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.354 seconds (process running for 3.22)
+2025-04-28 20:42:00.617 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:42:00.639 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:42:00.639 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:42:00.640 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:42:00.654 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:42:00.656 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:42:00.694 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:42:00.694 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:42:00.694 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:42:00.696 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: kkrastev@osemdental.com
+2025-04-28 20:42:00.814 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.EmailValidatorService - Error during SMTP validation for kkrastev@osemdental.com: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:42:37.075 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Email kkrastev@osemdental.com failed SMTP validation: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:42:37.092 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:42:37.106 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:42:37.295 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:42:37.298 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:42:37.299 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@191e654]]
+2025-04-28 20:42:37.299 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:42:43.743 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 11156 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:42:43.745 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:42:44.669 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:42:44.681 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:42:44.681 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:42:44.721 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:42:44.721 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 926 ms
+2025-04-28 20:42:44.857 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:42:44.960 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:42:45.071 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:42:45.078 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:42:45.098 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:42:45.111 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:42:45.326 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:42:45.327 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7e3ee128]]
+2025-04-28 20:42:45.328 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:42:45.343 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:42:45.354 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.097 seconds (process running for 2.618)
+2025-04-28 20:42:46.443 [http-nio-8085-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:42:46.466 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:42:46.466 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:42:46.467 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:42:46.480 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:42:46.483 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:42:46.504 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:42:46.504 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:42:46.504 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:42:46.506 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: kkrastev@osemdental.com
+2025-04-28 20:42:46.616 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.EmailValidatorService - Error during SMTP validation for kkrastev@osemdental.com: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:42:46.626 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:42:59.095 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:42:59.102 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:42:59.104 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:42:59.104 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7e3ee128]]
+2025-04-28 20:42:59.104 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:43:01.724 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 21416 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:43:01.726 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:43:02.725 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:43:02.738 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:43:02.738 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:43:02.784 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:43:02.785 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1007 ms
+2025-04-28 20:43:02.950 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:43:03.063 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:43:03.190 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:43:03.198 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:43:03.222 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:43:03.235 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:43:03.480 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:43:03.482 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:43:03.483 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:43:03.500 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:43:03.507 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.399 seconds (process running for 3.239)
+2025-04-28 20:43:04.697 [http-nio-8085-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:43:04.718 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:43:04.719 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:43:04.720 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:43:04.732 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:43:04.734 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:43:04.757 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:43:04.757 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:43:04.757 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:43:04.759 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: kkrastev@osemdental.com
+2025-04-28 20:43:04.850 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.EmailValidatorService - Error during SMTP validation for kkrastev@osemdental.com: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:45:14.227 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:45:14.309 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:45:14.446 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:45:14.449 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:45:14.449 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:45:14.449 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:45:19.252 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 17240 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:45:19.254 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:45:20.245 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:45:20.257 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:45:20.258 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:45:20.301 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:45:20.301 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 996 ms
+2025-04-28 20:45:20.454 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:45:20.577 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:45:20.699 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:45:20.707 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:45:20.730 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:45:20.745 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:45:20.984 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:45:20.986 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:45:20.987 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:45:21.005 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:45:21.012 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.321 seconds (process running for 3.007)
+2025-04-28 20:45:21.818 [http-nio-8085-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:45:21.837 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:45:21.837 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:45:21.838 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:45:21.851 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:45:21.853 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:45:21.883 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: kkrastev@osemdental.com
+2025-04-28 20:45:21.884 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:45:21.884 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: kkrastev@osemdental.com with NeverBounce API key present: true
+2025-04-28 20:45:21.886 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: kkrastev@osemdental.com
+2025-04-28 20:45:22.074 [ForkJoinPool.commonPool-worker-1] ERROR c.m.b.services.EmailValidatorService - Error during SMTP validation for kkrastev@osemdental.com: Temporary SMTP server error: 451 Temporary local problem - please try later
+2025-04-28 20:45:26.390 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email kkrastev@osemdental.com. Performing additional verification with NeverBounce.
+2025-04-28 20:45:26.390 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-28 20:45:26.391 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email kkrastev@osemdental.com with NeverBounce API
+2025-04-28 20:45:26.418 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-28 20:45:29.808 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email kkrastev@osemdental.com: VALID
+2025-04-28 20:45:29.818 [http-nio-8085-exec-4] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:45:59.704 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:45:59.705 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:45:59.705 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:45:59.705 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:45:59.705 [http-nio-8085-exec-6] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:45:59.706 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: dan@reveri.com
+2025-04-28 20:45:59.706 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:45:59.706 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: dan@reveri.com with NeverBounce API key present: true
+2025-04-28 20:45:59.918 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: dan@reveri.com
+2025-04-28 20:46:02.243 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.EmailValidatorService - SMTP validation result for dan@reveri.com: com.mikov.bulkemailchecker.smtp.model.SmtpResult@6fe69199
+2025-04-28 20:46:02.243 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email dan@reveri.com. Performing additional verification with NeverBounce.
+2025-04-28 20:46:02.243 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-28 20:46:02.244 [ForkJoinPool.commonPool-worker-3] DEBUG c.m.b.services.NeverBounceService - Verifying email dan@reveri.com with NeverBounce API
+2025-04-28 20:46:02.244 [ForkJoinPool.commonPool-worker-3] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-28 20:46:02.866 [ForkJoinPool.commonPool-worker-3] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email dan@reveri.com: VALID
+2025-04-28 20:46:02.867 [http-nio-8085-exec-8] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:46:09.604 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:46:09.604 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:46:09.604 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:46:09.605 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:46:09.605 [http-nio-8085-exec-10] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:46:09.606 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: dan@reveri.com
+2025-04-28 20:46:09.606 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:46:09.606 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: dan@reveri.com with NeverBounce API key present: true
+2025-04-28 20:46:09.606 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: dan@reveri.com
+2025-04-28 20:46:11.298 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.EmailValidatorService - SMTP validation result for dan@reveri.com: com.mikov.bulkemailchecker.smtp.model.SmtpResult@799ef0c4
+2025-04-28 20:46:11.299 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email dan@reveri.com. Performing additional verification with NeverBounce.
+2025-04-28 20:46:11.299 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-28 20:46:11.299 [ForkJoinPool.commonPool-worker-4] DEBUG c.m.b.services.NeverBounceService - Verifying email dan@reveri.com with NeverBounce API
+2025-04-28 20:46:11.299 [ForkJoinPool.commonPool-worker-4] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-28 20:46:11.934 [ForkJoinPool.commonPool-worker-4] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email dan@reveri.com: VALID
+2025-04-28 20:46:11.936 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:46:47.432 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:46:47.439 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:46:47.441 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:46:47.441 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:46:47.441 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:46:50.217 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 43944 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:46:50.224 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:46:52.232 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:46:52.246 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:46:52.246 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:46:52.294 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:46:52.295 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1940 ms
+2025-04-28 20:46:52.515 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:46:52.641 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:46:52.900 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:46:52.922 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:46:52.980 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:46:53.044 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:46:53.728 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:46:53.734 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@250a946]]
+2025-04-28 20:46:53.737 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:46:53.821 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:46:53.838 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 4.457 seconds (process running for 5.339)
+2025-04-28 20:46:54.867 [http-nio-8085-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:46:54.902 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:46:54.903 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:46:54.904 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:46:54.922 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:46:54.926 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:46:54.982 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: dan@reveri.com
+2025-04-28 20:46:54.982 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:46:54.982 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: dan@reveri.com with NeverBounce API key present: true
+2025-04-28 20:46:54.985 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - Starting SMTP validation for email: dan@reveri.com
+2025-04-28 20:46:56.769 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.EmailValidatorService - SMTP validation result for dan@reveri.com: com.mikov.bulkemailchecker.smtp.model.SmtpResult@6eb98f4e
+2025-04-28 20:47:10.315 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Catch-all domain detected for email dan@reveri.com. Performing additional verification with NeverBounce.
+2025-04-28 20:47:10.315 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key before calling service: present
+2025-04-28 20:47:10.316 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.services.NeverBounceService - Verifying email dan@reveri.com with NeverBounce API
+2025-04-28 20:47:10.321 [ForkJoinPool.commonPool-worker-1] INFO  c.n.api.internal.HttpClientImpl - Initialized Neverbounce API HTTP client; version: 4.0.13.
+2025-04-28 20:47:11.533 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - NeverBounce gave definitive result for catch-all domain email dan@reveri.com: VALID
+2025-04-28 20:47:11.544 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:51:34.906 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:51:34.914 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:51:34.916 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:51:34.917 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@250a946]]
+2025-04-28 20:51:34.917 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:51:56.153 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 44512 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:51:56.155 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:51:57.092 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:51:57.104 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:51:57.104 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:51:57.145 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:51:57.146 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 943 ms
+2025-04-28 20:51:57.284 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:51:57.385 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:51:57.517 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:51:57.527 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:51:57.549 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:51:57.562 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:51:57.786 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:51:57.787 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2e29f28e]]
+2025-04-28 20:51:57.788 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:51:57.803 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:51:57.810 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.172 seconds (process running for 2.726)
+2025-04-28 20:52:00.425 [http-nio-8085-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:52:00.452 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:52:00.452 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:52:00.453 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:52:00.467 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:52:00.469 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:52:00.492 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: dan@reveri.com
+2025-04-28 20:52:00.492 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:52:00.492 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: dan@reveri.com with NeverBounce API key present: true
+2025-04-28 20:52:00.494 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.EmailValidatorService - Starting SMTP validation for email: dan@reveri.com
+2025-04-28 20:52:02.252 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.EmailValidatorService - SMTP validation result for dan@reveri.com: SmtpResult(mxHost=aspmx.l.google.com., ipAddress=Google, responseMessage=172.217.218.26, deliverable=true, temporaryError=false, permanentError=false, responseCode=250, errorMessage=250 2.1.5 OK 4fb4d7f45d1cf-5f7012fb5cbsi5283650a12.87 - gsmtp, errorCode=MAILBOX_EXISTS, details={spf_record=missing, dmarc_record=present, dmarc_policy=quarantine, has_dns_issues=true, dkim_record=not_found})
+2025-04-28 20:52:02.265 [http-nio-8085-exec-2] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:52:16.047 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-28 20:52:16.056 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-28 20:52:16.059 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-04-28 20:52:16.059 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2e29f28e]]
+2025-04-28 20:52:16.059 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-04-28 20:52:18.257 [main] INFO  c.m.b.BulkEmailCheckerApplication - Starting BulkEmailCheckerApplication using Java 22.0.1 with PID 41252 (C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker\target\classes started by zahar in C:\Users\zahar\Documents\IdeaProjects\BulkEmailChecker)
+2025-04-28 20:52:18.260 [main] INFO  c.m.b.BulkEmailCheckerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-28 20:52:19.324 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8085 (http)
+2025-04-28 20:52:19.336 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-28 20:52:19.336 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-28 20:52:19.381 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-28 20:52:19.381 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1064 ms
+2025-04-28 20:52:19.558 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket message broker configured with topics: /topic, /queue
+2025-04-28 20:52:19.666 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-04-28 20:52:19.789 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket transport configured with expanded limits
+2025-04-28 20:52:19.797 [main] INFO  c.m.b.config.WebSocketConfig - WebSocket STOMP endpoint registered at /ws-emailverifier
+2025-04-28 20:52:19.820 [main] INFO  c.m.b.config.SecurityConfig - Configuring security filter chain
+2025-04-28 20:52:19.834 [main] INFO  c.m.b.config.ApiKeyAuthFilter - Initialized ApiKeyAuthFilter with valid API keys: [zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, martinZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy, yoanZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy]
+2025-04-28 20:52:20.077 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-04-28 20:52:20.079 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f3fec43]]
+2025-04-28 20:52:20.080 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-04-28 20:52:20.097 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8085 (http) with context path '/'
+2025-04-28 20:52:20.104 [main] INFO  c.m.b.BulkEmailCheckerApplication - Started BulkEmailCheckerApplication in 2.433 seconds (process running for 3.116)
+2025-04-28 20:52:21.836 [http-nio-8085-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-28 20:52:21.860 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Received request with API Key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:52:21.860 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Valid API Key found, creating authentication
+2025-04-28 20:52:21.861 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Created new ApiKeyAuthentication for key: zahariZDEwNWRlYTUtZjMzMy00MzE4LWJlN2QtZTIxYzYzZTFlODAy
+2025-04-28 20:52:21.874 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthFilter - Authentication set in SecurityContext, proceeding with filter chain
+2025-04-28 20:52:21.877 [http-nio-8085-exec-1] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]
+2025-04-28 20:52:21.900 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.s.BulkEmailCheckerService - Starting email verification for: dan@reveri.com
+2025-04-28 20:52:21.901 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - NeverBounce API key in verifyEmail: provided
+2025-04-28 20:52:21.901 [ForkJoinPool.commonPool-worker-1] DEBUG c.m.b.s.BulkEmailCheckerService - Executing validation pipeline for email: dan@reveri.com with NeverBounce API key present: true
+2025-04-28 20:52:21.903 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.EmailValidatorService - Starting SMTP validation for email: dan@reveri.com
+2025-04-28 20:52:23.593 [ForkJoinPool.commonPool-worker-1] INFO  c.m.b.services.EmailValidatorService - SMTP validation result for dan@reveri.com: SmtpResult(mxHost=aspmx.l.google.com., ipAddress=Google, responseMessage=172.217.218.26, deliverable=true, temporaryError=false, permanentError=false, responseCode=250, errorMessage=250 2.1.5 OK 4fb4d7f45d1cf-5f7012fb7cesi5558442a12.53 - gsmtp, errorCode=MAILBOX_EXISTS, details={spf_record=missing, dmarc_record=present, dmarc_policy=quarantine, has_dns_issues=true, dkim_record=not_found})
+2025-04-28 20:52:27.421 [http-nio-8085-exec-3] INFO  c.m.b.config.ApiKeyAuthentication - Returning authorities: [ROLE_API]

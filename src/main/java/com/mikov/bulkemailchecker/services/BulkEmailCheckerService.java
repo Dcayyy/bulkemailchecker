@@ -240,7 +240,7 @@ public final class BulkEmailCheckerService {
         
         if (smtpResult.getDetails() != null) {
             final var details = smtpResult.getDetails();
-            if (details.containsKey("event") && ("is_catchall".equals(details.get("event")) || "inconclusive".equals(details.get("event")))) {
+            if (details.containsKey("event") && ("is_catchall".equals(details.get("event")) || "inconclusive".equals(details.get("event")) || String.valueOf(details.get("error_message")).contains("451"))) {
                 logger.info("Catch-all domain detected for email {}. Performing additional verification with NeverBounce.", email);
                 logger.debug("NeverBounce API key before calling service: {}", 
                     neverbounceApiKey != null ? "present" : "null");
